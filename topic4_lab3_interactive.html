@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lab 3 — Interactive Proteus & AVR ATmega328P Stepper & Playground</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    :root {
+      --pcb: #061916;
+      --panel: #0B2621;
+      --panel2: #10312A;
+      --edge: rgba(120, 200, 180, 0.16);
+      --silk: #E8F2EE;
+      --muted: #7FA79C;
+      --gold: #DBA92F;
+      --led: #FF4A3D;
+      --cyan: #3FE0C0;
+      --violet: #9C8CFF;
+      --mono: "JetBrains Mono", "Consolas", monospace;
+    }
+    
+    .eyebrow {
+      font-family: var(--font-code);
+      font-size: 12px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .eyebrow span { height: 1px; flex: 1; min-width: 30px; background: linear-gradient(90deg, var(--gold), transparent); }
+    
+    .bar {
+      display: flex; gap: 7px; flex-wrap: wrap; align-items: center; padding: 14px 16px;
+      border: 1px solid var(--edge); border-radius: 14px; background: rgba(6, 30, 26, 0.6); width: fit-content; max-width: 100%;
+    }
+    .bar b { font-family: var(--font-code); font-size: 11px; color: var(--muted); letter-spacing: .12em; margin-right: 6px; }
+    .dot { width: 15px; height: 15px; border-radius: 50%; background: #2A1614; border: 1px solid #46201C; transition: .14s; }
+    .dot.on { background: var(--led); border-color: #FF8A80; box-shadow: 0 0 10px 2px rgba(255, 74, 61, .65); }
+
+    .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+    .tab {
+      font-family: var(--font-th); font-size: 14.5px; font-weight: 600; color: var(--muted);
+      background: rgba(11, 38, 33, .7); border: 1px solid var(--edge); border-radius: 11px;
+      padding: 11px 16px; cursor: pointer; display: flex; gap: 10px; align-items: center; transition: .18s;
+    }
+    .tab u { font-family: var(--font-code); font-size: 11px; text-decoration: none; color: var(--gold); opacity: .8; }
+    .tab:hover { color: var(--silk); border-color: rgba(63, 224, 192, .35); }
+    .tab[aria-selected="true"] { background: var(--cyan); color: #04211C; border-color: var(--cyan); }
+    .tab[aria-selected="true"] u { color: #04211C; opacity: .65; }
+
+    .sim { display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+    .sim-card { background: linear-gradient(180deg, var(--panel), var(--panel2)); border: 1px solid var(--edge); border-radius: 16px; padding: 16px; }
+    .sim-card > header { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 12px; }
+    .sim-card > header h3 { margin: 0; font-size: 1.1rem; color: var(--primary); }
+    .tagline { font-family: var(--font-code); font-size: 11px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; }
+
+    pre.code { margin: 0; font-family: var(--font-code); font-size: 12.6px; line-height: 1.85; overflow-x: auto; max-height: 430px; overflow-y: auto; }
+    .ln { display: block; padding: 1px 10px 1px 42px; position: relative; white-space: pre; border-radius: 6px; color: #CFE4DD; }
+    .ln:before { content: attr(data-n); position: absolute; left: 0; width: 30px; text-align: right; color: #3F6B60; font-size: 11px; }
+    .ln.hot { background: rgba(63, 224, 192, .14); box-shadow: inset 3px 0 0 var(--cyan); }
+
+    .now { margin-top: 12px; padding: 11px 13px; border-radius: 11px; background: rgba(63, 224, 192, .09); border: 1px solid rgba(63, 224, 192, .25); font-size: 14px; min-height: 44px; display: flex; gap: 10px; align-items: center; }
+    .now i { font-family: var(--font-code); font-style: normal; font-size: 11px; color: var(--cyan); letter-spacing: .1em; flex: none; }
+
+    .ctrl { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+    .speed { display: flex; gap: 4px; margin-left: auto; background: rgba(4, 20, 17, .6); padding: 4px; border-radius: 10px; border: 1px solid var(--edge); }
+    .speed button { font-family: var(--font-code); font-size: 12px; background: none; border: 0; color: var(--muted); padding: 6px 10px; border-radius: 7px; cursor: pointer; }
+    .speed button[aria-pressed="true"] { background: var(--gold); color: #241802; font-weight: 600; }
+
+    .port { margin-bottom: 14px; }
+    .port h4 { margin: 0 0 8px; font-family: var(--font-code); font-size: 11.5px; letter-spacing: .14em; color: var(--muted); font-weight: 500; display: flex; justify-content: space-between; }
+    .port h4 b { color: var(--gold); font-weight: 600; }
+    .leds { display: flex; gap: 8px; flex-wrap: wrap; }
+    .pin { display: flex; flex-direction: column; align-items: center; gap: 5px; width: 38px; }
+    .pin .dot { width: 20px; height: 20px; }
+    .pin small { font-family: var(--font-code); font-size: 9.5px; color: #5E8A7E; }
+    .pin.off-duty { opacity: .28; }
+
+    .regs { display: flex; flex-direction: column; gap: 9px; }
+    .rrow { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+    .rname { font-family: var(--font-code); font-size: 12px; color: var(--gold); width: 56px; flex: none; }
+    .bits { display: flex; gap: 3px; }
+    .bit { width: 20px; height: 22px; display: grid; place-items: center; font-family: var(--font-code); font-size: 11px; border-radius: 5px; background: rgba(4, 20, 17, .7); border: 1px solid var(--edge); color: #4E7B6F; }
+    .bit.one { background: rgba(219, 169, 47, .9); color: #241802; border-color: var(--gold); font-weight: 600; }
+    .rhex { font-family: var(--font-code); font-size: 12px; color: #BFD8D0; margin-left: auto; }
+
+    canvas#wave { width: 100%; height: 132px; display: block; border-radius: 10px; background: rgba(3, 16, 14, .75); border: 1px solid var(--edge); }
+    .legend { display: flex; gap: 16px; font-family: var(--font-code); font-size: 11px; color: var(--muted); margin-top: 8px; flex-wrap: wrap; }
+    .legend i { display: inline-block; width: 16px; height: 2px; vertical-align: middle; margin-right: 6px; }
+
+    .flow { display: flex; flex-direction: column; gap: 0; }
+    .fnode { border: 1px solid var(--edge); border-radius: 10px; padding: 9px 12px; font-size: 13.2px; background: rgba(4, 20, 17, .45); transition: .2s; display: flex; gap: 9px; align-items: center; }
+    .fnode code { font-family: var(--font-code); font-size: 11.5px; color: var(--muted); }
+    .fnode.hot { background: rgba(219, 169, 47, .16); border-color: var(--gold); color: #FFF; }
+    .fnode.hot code { color: var(--gold); }
+    .farrow { height: 14px; width: 1px; background: var(--edge); margin: 0 auto; position: relative; }
+    .farrow:after { content: ""; position: absolute; bottom: -1px; left: -3px; border: 3px solid transparent; border-top-color: var(--edge); }
+    .floop { font-family: var(--font-code); font-size: 10.5px; color: var(--gold); text-align: center; padding: 7px 0; letter-spacing: .08em; }
+
+    .calc { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; align-items: end; }
+    label.f { display: block; font-family: var(--font-code); font-size: 11px; color: var(--muted); letter-spacing: .1em; margin-bottom: 6px; }
+    input[type=number] { width: 100%; background: rgba(3, 16, 14, .8); border: 1px solid var(--edge); color: var(--silk); font-family: var(--font-code); font-size: 15px; padding: 10px 12px; border-radius: 10px; }
+    .readout { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 18px; }
+    .stat b { display: block; font-family: var(--font-en); font-size: 26px; color: var(--cyan); font-weight: 700; line-height: 1.2; }
+    .stat span { font-family: var(--font-code); font-size: 11px; color: var(--muted); letter-spacing: .1em; }
+    .bitbtn { width: 44px; height: 46px; border-radius: 9px; border: 1px solid var(--edge); background: rgba(3, 16, 14, .8); color: #4E7B6F; font-family: var(--font-code); font-size: 16px; cursor: pointer; transition: .14s; }
+    .bitbtn.one { background: var(--gold); color: #241802; border-color: var(--gold); font-weight: 600; }
+    .bitlab { display: flex; gap: 6px; flex-wrap: wrap; }
+    .bitcol { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .bitcol small { font-family: var(--font-code); font-size: 9.5px; color: #5E8A7E; }
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">⚡ EMBEDDED EXAM HUB</a>
+    <ul class="nav-links">
+      <li><a href="index.html">หน้าหลัก</a></li>
+      <li><a href="topic1_rom_control.html">1. ROM Control Store</a></li>
+      <li><a href="topic2_ec1_cpu.html">2. EC-1 CPU</a></li>
+      <li><a href="topic3_digital_logic.html">3. Digital Logic & ALU</a></li>
+      <li><a href="topic4_avr_assembly.html" class="active">4. AVR Assembly</a></li>
+      <li><a href="topic5_cpu_architecture.html">5. CPU & Arithmetic</a></li>
+      <li><a href="topic6_io_interrupts_dma.html">6. I/O & DMA</a></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN CONTAINER -->
+  <main class="container">
+
+    <!-- PAGE BANNER -->
+    <header class="page-banner">
+      <div class="eyebrow">Lab 3 · Embedded System Design <span></span> ATmega328P @ 16 MHz</div>
+      <h1 class="page-title">🕹️ ห้องปฏิบัติการจำลอง AVR ATmega328P (Interactive Template)</h1>
+      <p class="page-subtitle">
+        ทดสอบซิมมูเลชันโค้ดไฟกระพริบ 3 เวอร์ชัน (Assembly ดั้งเดิม, Assembly สลับเฟส, ภาษา C หน่วงอสมมาตร) ดูการทำงานของบอร์ดจำลอง, 8-bit Register Inspectors, Logic Waveform Canvas, Delay Calculator และ Bit Playground
+      </p>
+      <div class="bar" id="heroBar" style="margin-top: 14px;"><b>PORTD</b></div>
+    </header>
+
+    <!-- SOURCE FILE MAPPING BOX -->
+    <div class="source-file-box">
+      <h3>📁 ตำแหน่งไฟล์อ้างอิงบทเรียนนี้ใน Workspace (Source File Mapping)</h3>
+      <ul class="source-file-list">
+        <li class="source-file-item">
+          <span class="source-tag">Interactive Template</span>
+          <a href="file:///C:/Users/kong/Downloads/avr-blink-lab3.zip" class="file-link">C:\Users\kong\Downloads\avr-blink-lab3.zip</a>
+          <span style="color: var(--text-muted); font-size: 0.82rem;">(ไฟล์สื่อการทดลองเรียนรู้ฉบับสมบูรณ์)</span>
+        </li>
+        <li class="source-file-item">
+          <span class="source-tag">Report HTML</span>
+          <a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Reports/Lab_3_Proteus_and_AVR_Microcontroller/Report_Lab3_Proteus_AVR.html" class="file-link">Reports/Lab_3_Proteus_and_AVR_Microcontroller/Report_Lab3_Proteus_AVR.html</a>
+          <span style="color: var(--text-muted); font-size: 0.82rem;">(รายงานฉบับเต็ม Lab 3)</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- SECTION: INTERACTIVE SIMULATOR HUB -->
+    <section class="section-block">
+      <h2 class="section-title">1. ห้องจำลองการทำงาน (Interactive Stepper & Board)</h2>
+      <p style="color: var(--text-muted); margin-bottom: 20px;">
+        เลือกโปรแกรมที่ต้องการศึกษา แล้วกด <b>เล่น</b> เพื่อดูทั้งระบบขยับพร้อมกัน หรือกด <b>ทีละคำสั่ง</b> เพื่อไล่ตรวจสอบด้วยตัวเอง
+      </p>
+
+      <div class="tabs" role="tablist" id="tabs"></div>
+
+      <div class="ctrl">
+        <button class="btn primary" id="playBtn">▶ เล่น</button>
+        <button class="btn" id="stepBtn">ทีละคำสั่ง</button>
+        <button class="btn" id="resetBtn">เริ่มใหม่</button>
+        <div class="speed" id="speed">
+          <button data-s="0.5">0.5×</button>
+          <button data-s="1" aria-pressed="true">1×</button>
+          <button data-s="2">2×</button>
+          <button data-s="4">4×</button>
+        </div>
+      </div>
+
+      <div class="sim">
+        <div>
+          <div class="sim-card">
+            <header><h3 id="progName">—</h3><span class="tagline" id="progFile"></span></header>
+            <pre class="code" id="code"></pre>
+            <div class="now"><i>กำลังทำ</i><span id="nowText">กด “เล่น” เพื่อเริ่ม</span></div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="sim-card">
+            <header><h3>บอร์ดจำลอง</h3><span class="tagline">LED + R 220 Ω</span></header>
+            <div class="port">
+              <h4>PORTD <b id="pdHex">0x00</b></h4>
+              <div class="leds" id="pdLeds"></div>
+            </div>
+            <div class="port">
+              <h4>PORTB <b id="pbHex">0x00</b></h4>
+              <div class="leds" id="pbLeds"></div>
+            </div>
+          </div>
+
+          <div class="sim-card">
+            <header><h3>รีจิสเตอร์ (8-bit Register File)</h3><span class="tagline">bit 7 → bit 0</span></header>
+            <div class="regs" id="regs"></div>
+          </div>
+
+          <div class="sim-card">
+            <header><h3>รูปคลื่นลอจิก (Logic Waveform Canvas)</h3><span class="tagline">Logic timing</span></header>
+            <canvas id="wave"></canvas>
+            <div class="legend">
+              <span><i style="background:#FF4A3D"></i><span id="legB">PORTB</span></span>
+              <span><i style="background:#3FE0C0"></i><span id="legD">PORTD</span></span>
+              <span>เส้นแนวตั้ง = จังหวะที่ค่าพอร์ตเปลี่ยน</span>
+            </div>
+          </div>
+
+          <div class="sim-card">
+            <header><h3>ผังการไหล (Flowchart)</h3><span class="tagline">Flowchart</span></header>
+            <div class="flow" id="flow"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: KEY UNDERSTANDINGS -->
+    <section class="section-block">
+      <h2 class="section-title">2. จุดสำคัญที่ต้องเข้าใจในทางทฤษฎี</h2>
+      <p style="color: var(--text-muted); margin-bottom: 20px;" id="notesSub">คำอธิบายจะเปลี่ยนตามโปรแกรมที่เลือกอยู่</p>
+      <div class="grid-3" id="notes"></div>
+    </section>
+
+    <!-- SECTION: DELAY CALCULATOR -->
+    <section class="section-block">
+      <h2 class="section-title">3. คำนวณเวลาหน่วง (Delay Calculator)</h2>
+      <p style="color: var(--text-muted); margin-bottom: 16px;">
+        คำนวณลูปซ้อน 3 ชั้นใน <code>MY_DELAY</code> ที่ 16 MHz ปรับค่า R20 / R21 / R22 แล้วดูผลลัพธ์
+      </p>
+      <div class="sim-card">
+        <div class="calc">
+          <div><label class="f" for="r20">R20 — ลูปนอกสุด</label><input type="number" id="r20" value="8" min="1" max="255"></div>
+          <div><label class="f" for="r21">R21 — ลูปกลาง</label><input type="number" id="r21" value="200" min="1" max="255"></div>
+          <div><label class="f" for="r22">R22 — ลูปในสุด</label><input type="number" id="r22" value="250" min="1" max="255"></div>
+          <div><label class="f" for="fclk">ความถี่สัญญาณนาฬิกา (MHz)</label><input type="number" id="fclk" value="16" min="1" max="20" step="1"></div>
+        </div>
+        <div class="readout">
+          <div class="stat"><b id="oCyc">—</b><span>CLOCK CYCLES</span></div>
+          <div class="stat"><b id="oMs">—</b><span>เวลาหน่วง 1 ครั้ง</span></div>
+          <div class="stat"><b id="oHz">—</b><span>ความถี่กระพริบ</span></div>
+        </div>
+        <p style="margin:16px 0 0;font-size:13.5px;color:#C3D9D2" id="calcNote"></p>
+      </div>
+    </section>
+
+    <!-- SECTION: BIT PLAYGROUND -->
+    <section class="section-block">
+      <h2 class="section-title">4. สนามทดลองบิต (Interactive Bitwise Playground)</h2>
+      <p style="color: var(--text-muted); margin-bottom: 16px;">
+        กดสลับบิตเองเพื่อดูค่า Hex, Binary, Decimal และทดลองคำสั่ง Bitwise Operations
+      </p>
+      <div class="sim-card">
+        <div class="bitlab" id="playBits"></div>
+        <div class="readout" style="margin-top:16px">
+          <div class="stat"><b id="pvHex">0x00</b><span>HEX</span></div>
+          <div class="stat"><b id="pvBin" style="font-family:var(--font-code);font-size:19px">0b00000000</b><span>BINARY</span></div>
+          <div class="stat"><b id="pvDec">0</b><span>DECIMAL</span></div>
+        </div>
+        <div class="ctrl" style="margin:18px 0 0">
+          <button class="btn" data-op="com">com — กลับทุกบิต (~)</button>
+          <button class="btn" data-op="or">| 0b00100000 — ตั้ง PB5</button>
+          <button class="btn" data-op="and">&amp; ~0b00100000 — ล้าง PB5</button>
+          <button class="btn" data-op="ff">= 0xFF</button>
+          <button class="btn" data-op="zero">= 0x00</button>
+          <button class="btn" data-op="3f">= 0x3F</button>
+        </div>
+        <p style="margin:14px 0 0;font-size:13.5px;color:#C3D9D2" id="playNote">
+          สังเกตว่า <code>| 0b00100000</code> แตะเฉพาะบิต 5 ส่วนบิตอื่นเก็บค่าเดิมไว้ครบ — นี่คือเหตุผลที่โค้ด C ใช้ OR/AND แทนการเขียนทับทั้งพอร์ต
+        </p>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <p>Embedded System Exam Guide &copy; 2569 | Lab 3 Interactive AVR Simulator Template</p>
+    </footer>
+
+  </main>
+
+  <script>
+  "use strict";
+  const $ = s => document.querySelector(s);
+  const hex = v => "0x" + v.toString(16).toUpperCase().padStart(2,"0");
+
+  const ASM1 = [
+  ".nolist",
+  '.include "m328pdef.inc"',
+  ".list",
+  "",
+  "rjmp main",
+  "",
+  "main:",
+  "    ldi r16, 0xFF      ; โหลด 0xFF ลงรีจิสเตอร์ R16",
+  "    out DDRB, r16      ; ตั้ง PORTB ทุกพินเป็น Output",
+  "    out DDRD, r16      ; ตั้ง PORTD ทุกพินเป็น Output",
+  "    ldi r16, 0x00      ; ล้างค่า R16 ให้เริ่มที่ 0x00",
+  "",
+  "loop:",
+  "    com r16            ; กลับบิตทุกตัวใน R16",
+  "    out PORTB, r16     ; ส่งค่าออกพอร์ต B",
+  "    out PORTD, r16     ; ส่งค่าออกพอร์ต D",
+  "    call MY_DELAY      ; หน่วงเวลาให้ตามองเห็น",
+  "    rjmp loop          ; วนกลับไปที่ loop",
+  "",
+  "MY_DELAY:",
+  "    ldi r20, 8         ; ลูปนอกสุด 8 รอบ",
+  "L1: ldi r21, 200       ; ลูปกลาง 200 รอบ",
+  "L2: ldi r22, 250       ; ลูปในสุด 250 รอบ",
+  "L3: dec r22",
+  "    brne L3",
+  "    dec r21",
+  "    brne L2",
+  "    dec r20",
+  "    brne L1",
+  "    ret                ; กลับไปทำงานต่อที่จุดเรียก"
+  ];
+
+  const ASM2 = [
+  ".nolist",
+  '.include "m328pdef.inc"',
+  ".list",
+  "",
+  "rjmp main",
+  "",
+  "main:",
+  "    ldi r16, 0xFF",
+  "    out DDRB, r16      ; PORTB เป็น Output",
+  "    out DDRD, r16      ; PORTD เป็น Output",
+  "    ldi r16, 0x00",
+  "",
+  "loop:",
+  "    com r16            ; สลับ R16 ระหว่าง 0x00 กับ 0xFF",
+  "    out PORTB, r16     ; พอร์ต B ตามค่า R16",
+  "",
+  "    mov r17, r16       ; คัดลอกค่า R16 ไปเก็บที่ R17",
+  "    com r17            ; กลับบิต R17 ให้ตรงข้ามกับ R16",
+  "    out PORTD, r17     ; พอร์ต D จึงตรงข้ามกับพอร์ต B เสมอ",
+  "",
+  "    call MY_DELAY",
+  "    rjmp loop",
+  "",
+  "MY_DELAY:",
+  "    ldi r20, 8",
+  "L1: ldi r21, 200",
+  "L2: ldi r22, 250",
+  "L3: dec r22",
+  "    brne L3",
+  "    dec r21",
+  "    brne L2",
+  "    dec r20",
+  "    brne L1",
+  "    ret"
+  ];
+
+  const CSRC = [
+  "#include <avr/io.h>",
+  "",
+  "int main(void)",
+  "{",
+  "    unsigned int i, j;",
+  "",
+  "    DDRD = 0xFF;       // PD0-PD7 เป็น Output ทั้งพอร์ต",
+  "    DDRB = 0x3F;       // PB0-PB5 เป็น Output (เว้น PB6, PB7)",
+  "",
+  "    for (j = 0; j < 1; j++)          // หน่วงเวลาเริ่มต้น 1 รอบ",
+  "        for (i = 0; i < 42150; i++);",
+  "",
+  "    PORTD = 0x00;      // เริ่มต้นให้ทุกพินเป็น LOW",
+  "    PORTB = 0x00;",
+  "",
+  "    while (1)",
+  "    {",
+  "        PORTD = 0xFF;                  // ไฟพอร์ต D ติดทั้งหมด",
+  "        PORTB = PORTB | 0b00100000;    // ตั้งบิต 5 (PB5) เป็น HIGH",
+  "",
+  "        for (j = 0; j < 5; j++)        // ช่วงติด = 5 คาบ",
+  "            for (i = 0; i < 42150; i++);",
+  "",
+  "        PORTD = 0x00;                  // ดับพอร์ต D",
+  "        PORTB = PORTB & ~0b00100000;   // ล้างบิต 5 (PB5) เป็น LOW",
+  "",
+  "        for (j = 0; j < 2; j++)        // ช่วงดับ = 2 คาบ",
+  "            for (i = 0; i < 42150; i++);",
+  "    }",
+  "    return 0;",
+  "}"
+  ];
+
+  const U = 400;
+
+  const PROGRAMS = {
+    asm1:{
+      label:"Assembly ดั้งเดิม", num:"6.1", file:"AssemblyBlink1.asm", lang:"asm", code:ASM1,
+      tagB:"PORTB", tagD:"PORTD", pbAll:true,
+      steps:[
+        {l:4, d:U, t:"กระโดดไปเริ่มที่ label main"},
+        {l:7, d:U, t:"โหลดค่า 0xFF (ทุกบิตเป็น 1) เก็บไว้ใน R16", a:s=>s.R16=0xFF},
+        {l:8, d:U, t:"เขียน R16 ลง DDRB → ขา PORTB ทุกพินกลายเป็นทางออก", a:s=>s.DDRB=0xFF},
+        {l:9, d:U, t:"เขียน R16 ลง DDRD → ขา PORTD ทุกพินกลายเป็นทางออก", a:s=>s.DDRD=0xFF},
+        {l:10,d:U, t:"ล้าง R16 เป็น 0x00 เตรียมใช้สลับสถานะไฟ", a:s=>s.R16=0x00},
+        {l:13,d:U, t:"com กลับบิตทุกตัว: 0x00 กลายเป็น 0xFF (และรอบถัดไปกลับกัน)", a:s=>s.R16=(~s.R16)&0xFF},
+        {l:14,d:U, t:"ส่งค่า R16 ออกพอร์ต B ทั้ง 8 บิตพร้อมกัน", a:s=>s.PORTB=s.R16},
+        {l:15,d:U, t:"ส่งค่าเดียวกันออกพอร์ต D — สองพอร์ตจึงติดดับพร้อมกัน", a:s=>s.PORTD=s.R16},
+        {l:16,d:U*3.2, t:"เรียก MY_DELAY หน่วงเวลาด้วยลูปซ้อน 3 ชั้น (R20 × R21 × R22)", delay:true},
+        {l:17,d:U*0.8, t:"วนกลับขึ้นไปที่ loop ทำงานซ้ำไม่รู้จบ", jump:5}
+      ],
+      flow:[
+        {n:"ตั้ง DDRB, DDRD = 0xFF และ R16 = 0x00", c:"main", s:[0,1,2,3,4]},
+        {n:"กลับบิต R16", c:"com r16", s:[5]},
+        {n:"PORTB = R16", c:"out", s:[6]},
+        {n:"PORTD = R16", c:"out", s:[7]},
+        {n:"หน่วงเวลา", c:"MY_DELAY", s:[8,9]}
+      ],
+      notes:[
+        {k:"com คือหัวใจของการกระพริบ", p:"คำสั่ง com ทำ One’s Complement คือกลับบิต 0 ↔ 1 ทุกตำแหน่ง ค่าใน R16 จึงสลับไปมาระหว่าง 0x00 กับ 0xFF ทุกรอบ โดยไม่ต้องเขียนค่าตายตัวสองชุด"},
+        {k:"DDR ต้องมาก่อน PORT เสมอ", p:"ถ้าไม่ตั้ง DDRx = 1 ก่อน การเขียน PORTx จะกลายเป็นการเปิดตัวต้านทานพูลอัพภายใน ไม่ใช่การจ่ายไฟออก ไฟ LED จะไม่ติดตามที่คิด"},
+        {k:"ทำไมต้องหน่วงเวลา", p:"ที่ 16 MHz ซีพียูทำได้ 16 ล้านคำสั่งต่อวินาที ถ้าไม่หน่วง ไฟจะกระพริบเร็วจนตาเห็นเป็นแสงสว่างค้างจาง ๆ ลูปซ้อน 3 ชั้นจึงถูกใส่เข้ามาเพื่อถ่วงเวลาล้วน ๆ"}
+      ]
+    },
+
+    asm2:{
+      label:"Assembly แก้ไข (สลับเฟส)", num:"6.2", file:"AssemblyBlink1_modified.asm", lang:"asm", code:ASM2,
+      tagB:"PORTB", tagD:"PORTD", pbAll:true,
+      steps:[
+        {l:4, d:U, t:"กระโดดไปเริ่มที่ label main"},
+        {l:7, d:U, t:"โหลด 0xFF ลง R16", a:s=>s.R16=0xFF},
+        {l:8, d:U, t:"ตั้ง PORTB ทุกพินเป็น Output", a:s=>s.DDRB=0xFF},
+        {l:9, d:U, t:"ตั้ง PORTD ทุกพินเป็น Output", a:s=>s.DDRD=0xFF},
+        {l:10,d:U, t:"ล้าง R16 เป็น 0x00", a:s=>s.R16=0x00},
+        {l:13,d:U, t:"สลับ R16 ด้วย com", a:s=>s.R16=(~s.R16)&0xFF},
+        {l:14,d:U, t:"พอร์ต B รับค่า R16 ตรง ๆ", a:s=>s.PORTB=s.R16},
+        {l:16,d:U, t:"คัดลอก R16 ไปพักไว้ที่ R17 (R16 ยังเก็บค่าเดิมไว้ใช้รอบหน้า)", a:s=>s.R17=s.R16},
+        {l:17,d:U, t:"กลับบิต R17 — ตอนนี้ R17 ตรงข้ามกับ R16 ทุกบิต", a:s=>s.R17=(~s.R17)&0xFF},
+        {l:18,d:U, t:"ส่ง R17 ออกพอร์ต D → พอร์ต D จึงติดตอนพอร์ต B ดับ", a:s=>s.PORTD=s.R17},
+        {l:20,d:U*3.2, t:"หน่วงเวลาให้เห็นเฟสตรงข้ามชัดเจน", delay:true},
+        {l:21,d:U*0.8, t:"วนกลับไปที่ loop", jump:5}
+      ],
+      flow:[
+        {n:"ตั้ง DDRB, DDRD = 0xFF และ R16 = 0x00", c:"main", s:[0,1,2,3,4]},
+        {n:"กลับบิต R16", c:"com r16", s:[5]},
+        {n:"PORTB = R16", c:"out", s:[6]},
+        {n:"R17 = R16 แล้วกลับบิต", c:"mov + com", s:[7,8]},
+        {n:"PORTD = R17 (ตรงข้าม)", c:"out", s:[9]},
+        {n:"หน่วงเวลา", c:"MY_DELAY", s:[10,11]}
+      ],
+      notes:[
+        {k:"ทำไมต้องใช้ R17", p:"ถ้ากลับบิต R16 ซ้ำอีกครั้งเพื่อส่งออกพอร์ต D ค่าใน R16 จะกลับไปเป็นค่าเดิม รอบถัดไปไฟก็จะไม่สลับ การพักค่าไว้ที่ R17 จึงรักษาสถานะของ R16 เอาไว้ครบ"},
+        {k:"เฟสตรงข้ามคืออะไร", p:"สองพอร์ตทำงานสวนทางกัน 180 องศา คือ B = 0xFF ตอน D = 0x00 และสลับกันทุกคาบ ในวงจรจริงจะเห็นไฟวิ่งไขว้กันสองฝั่งของชิป"},
+        {k:"เทียบกับโค้ดเดิม", p:"เพิ่มมาแค่ 2 บรรทัด (mov และ com) แต่เปลี่ยนพฤติกรรมทั้งระบบ — เป็นตัวอย่างว่าใน Assembly การจัดการรีจิสเตอร์คือการออกแบบตรรกะโดยตรง"}
+      ]
+    },
+
+    c:{
+      label:"ภาษา C (หน่วงอสมมาตร)", num:"6.3", file:"GccAppBlink1.c", lang:"c", code:CSRC,
+      tagB:"PB5 (ขา 13)", tagD:"PORTD", pbAll:false,
+      steps:[
+        {l:6, d:U, t:"DDRD = 0xFF ตั้งพอร์ต D ทั้ง 8 พินเป็น Output", a:s=>s.DDRD=0xFF},
+        {l:7, d:U, t:"DDRB = 0x3F ตั้งเฉพาะ PB0–PB5 เป็น Output เว้น PB6/PB7 ไว้ให้คริสตัล", a:s=>s.DDRB=0x3F},
+        {l:9, d:U*2, t:"ลูปหน่วงเริ่มต้น 1 รอบ (42,150 ครั้ง) ก่อนเข้าโปรแกรมหลัก", delay:true},
+        {l:12,d:U, t:"เคลียร์ PORTD ให้เป็น LOW ทั้งหมด", a:s=>s.PORTD=0x00},
+        {l:13,d:U, t:"เคลียร์ PORTB ให้เป็น LOW ทั้งหมด", a:s=>s.PORTB=0x00},
+        {l:17,d:U, t:"เขียน 0xFF ลงพอร์ต D → LED ทั้งแถวติดพร้อมกัน", a:s=>s.PORTD=0xFF},
+        {l:18,d:U, t:"OR กับ 0b00100000 ตั้งเฉพาะบิต 5 ให้ HIGH โดยบิตอื่นคงเดิม", a:s=>s.PORTB=s.PORTB|0x20},
+        {l:20,d:U*5, t:"หน่วงช่วงติด 5 คาบ — ไฟค้างสว่างนาน", delay:true},
+        {l:23,d:U, t:"เขียน 0x00 ลงพอร์ต D → ดับทั้งแถว", a:s=>s.PORTD=0x00},
+        {l:24,d:U, t:"AND กับบิตกลับขั้ว ล้างเฉพาะบิต 5 ให้ LOW", a:s=>s.PORTB=s.PORTB & (~0x20 & 0xFF)},
+        {l:26,d:U*2, t:"หน่วงช่วงดับ 2 คาบ — สั้นกว่าช่วงติด ได้จังหวะ 5:2", delay:true, jump:5}
+      ],
+      flow:[
+        {n:"ตั้ง DDRD = 0xFF, DDRB = 0x3F", c:"setup", s:[0,1]},
+        {n:"หน่วงเริ่มต้น 1 คาบ", c:"delay", s:[2]},
+        {n:"เคลียร์พอร์ตให้เป็น LOW", c:"PORT = 0", s:[3,4]},
+        {n:"เปิดไฟ: PORTD = 0xFF, PB5 = 1", c:"while(1)", s:[5,6]},
+        {n:"หน่วงช่วงติด 5 คาบ", c:"5 × 42150", s:[7]},
+        {n:"ปิดไฟ: PORTD = 0x00, PB5 = 0", c:"clear", s:[8,9]},
+        {n:"หน่วงช่วงดับ 2 คาบ", c:"2 × 42150", s:[10]}
+      ],
+      notes:[
+        {k:"DDRB = 0x3F ไม่ใช่ 0xFF", p:"0x3F คือ 0b00111111 เปิดเฉพาะ PB0–PB5 เพราะ PB6 กับ PB7 ต่อกับคริสตัลภายนอกบนบอร์ดจริง ถ้าตั้งเป็น Output อาจไปกวนสัญญาณนาฬิกาของทั้งระบบ"},
+        {k:"อ่าน-แก้-เขียน (read–modify–write)", p:"PORTB = PORTB | 0x20 คือการอ่านค่าเดิมมาก่อน แล้วเติมเฉพาะบิตที่ต้องการ ต่างจากการเขียนทับทั้งพอร์ตซึ่งจะทำให้ไฟดวงอื่นดับไปด้วยโดยไม่ตั้งใจ"},
+        {k:"จังหวะ 5:2 มาจากไหน", p:"ลูปหน่วงชุดเดียวกัน (42,150 รอบ) ถูกเรียก 5 ครั้งตอนไฟติดและ 2 ครั้งตอนไฟดับ อัตราส่วนเวลาสว่างต่อดับจึงเป็น 5 ต่อ 2 เห็นเป็นไฟติดค้างนานแล้วกะพริบดับสั้น ๆ"}
+      ]
+    }
+  };
+
+  function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+  function hlAsm(s){
+    return esc(s).replace(/(;.*$)|(\.[a-z]+)|\b(ldi|out|in|com|mov|call|rjmp|ret|dec|brne)\b|\b([rR]\d{1,2})\b|\b(DDRB|DDRD|PORTB|PORTD)\b|(0x[0-9A-Fa-f]+|\b\d+\b)/g,
+      (m,cm,dir,kw,reg,io,num)=>{
+        if(cm)return '<span class="cm">'+cm+'</span>';
+        if(dir)return '<span class="cm">'+dir+'</span>';
+        if(kw)return '<span class="kw">'+kw+'</span>';
+        if(reg)return '<span class="reg">'+reg+'</span>';
+        if(io)return '<span class="io">'+io+'</span>';
+        return '<span class="num">'+num+'</span>';
+      });
+  }
+  function hlC(s){
+    return esc(s).replace(/(\/\/.*$)|(#include\s*&lt;[^&]*&gt;)|\b(int|unsigned|while|for|return|void|main)\b|\b(DDRB|DDRD|PORTB|PORTD)\b|(0x[0-9A-Fa-f]+|0b[01]+|\b\d+\b)/g,
+      (m,cm,inc,kw,io,num)=>{
+        if(cm)return '<span class="cm">'+cm+'</span>';
+        if(inc)return '<span class="cm">'+inc+'</span>';
+        if(kw)return '<span class="kw">'+kw+'</span>';
+        if(io)return '<span class="io">'+io+'</span>';
+        return '<span class="num">'+num+'</span>';
+      });
+  }
+
+  let key = "asm1";
+  let P = PROGRAMS[key];
+  let st = {R16:0,R17:0,DDRB:0,DDRD:0,PORTB:0,PORTD:0};
+  let pc = 0, timer = 0, running = false, speed = 1, last = 0;
+  const samples = [];
+
+  const tabsEl = $("#tabs");
+  Object.keys(PROGRAMS).forEach(k=>{
+    const b = document.createElement("button");
+    b.className="tab"; b.setAttribute("role","tab"); b.dataset.k=k;
+    b.innerHTML = '<u>'+PROGRAMS[k].num+'</u>'+PROGRAMS[k].label;
+    b.onclick = ()=>select(k);
+    tabsEl.appendChild(b);
+  });
+
+  function makeLeds(el, prefix, n){
+    el.innerHTML="";
+    for(let i=n-1;i>=0;i--){
+      const d=document.createElement("div"); d.className="pin";
+      d.innerHTML='<div class="dot" data-bit="'+i+'"></div><small>'+prefix+i+'</small>';
+      el.appendChild(d);
+    }
+  }
+  makeLeds($("#pdLeds"),"PD",8);
+  makeLeds($("#pbLeds"),"PB",8);
+
+  const REG_LIST = [["R16","R16"],["R17","R17"],["DDRB","DDRB"],["DDRD","DDRD"],["PORTB","PORTB"],["PORTD","PORTD"]];
+  const regsEl = $("#regs");
+  REG_LIST.forEach(([id])=>{
+    const row=document.createElement("div"); row.className="rrow"; row.dataset.r=id;
+    let bits="";
+    for(let i=7;i>=0;i--) bits+='<div class="bit" data-b="'+i+'">0</div>';
+    row.innerHTML='<span class="rname">'+id+'</span><div class="bits">'+bits+'</div><span class="rhex">0x00</span>';
+    regsEl.appendChild(row);
+  });
+
+  const heroBar=$("#heroBar");
+  for(let i=0;i<8;i++){const d=document.createElement("div");d.className="dot";heroBar.appendChild(d);}
+  const heroDots=[...heroBar.querySelectorAll(".dot")];
+  let heroI=0;
+  setInterval(()=>{heroDots.forEach((d,i)=>d.classList.toggle("on", (i===heroI%8)||(i===(7-heroI%8))));heroI++;},260);
+
+  function select(k){
+    key=k; P=PROGRAMS[k];
+    [...tabsEl.children].forEach(b=>b.setAttribute("aria-selected", b.dataset.k===k?"true":"false"));
+    $("#progName").textContent = P.label;
+    $("#progFile").textContent = P.file;
+    $("#legB").textContent = P.tagB;
+    $("#legD").textContent = P.tagD;
+    const hlf = P.lang==="asm"?hlAsm:hlC;
+    $("#code").innerHTML = P.code.map((l,i)=>'<span class="ln" data-l="'+i+'" data-n="'+(i+1)+'">'+(hlf(l)||" ")+'</span>').join("");
+    $("#flow").innerHTML = P.flow.map((f,i)=>
+       '<div class="fnode" data-f="'+i+'"><code>'+f.c+'</code>'+f.n+'</div>'+
+       (i<P.flow.length-1?'<div class="farrow"></div>':'<div class="floop">↻ วนกลับขึ้นไปทำซ้ำ</div>')
+    ).join("");
+    $("#notes").innerHTML = P.notes.map(n=>'<div class="note" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px;"><span class="k" style="color: var(--gold); font-family: var(--font-code); display: block; margin-bottom: 6px; font-weight: 700;">'+n.k+'</span><p style="margin:0; font-size:14px; color: var(--text-muted);">'+n.p+'</p></div>').join("");
+    $("#notesSub").textContent = "คำอธิบายของ " + P.label + " — " + P.file;
+    reset();
+  }
+
+  function reset(){
+    running=false; $("#playBtn").textContent="▶ เล่น";
+    st={R16:0,R17:0,DDRB:0,DDRD:0,PORTB:0,PORTD:0};
+    pc=0; timer=0; samples.length=0;
+    paint(); $("#nowText").textContent="กด “เล่น” เพื่อเริ่มเดินโปรแกรม";
+    document.querySelectorAll(".ln.hot").forEach(e=>e.classList.remove("hot"));
+    document.querySelectorAll(".fnode.hot").forEach(e=>e.classList.remove("hot"));
+  }
+
+  function paint(){
+    const pdDots=$("#pdLeds").querySelectorAll(".dot");
+    pdDots.forEach(d=>{
+      const b=+d.dataset.bit, on=(st.PORTD>>b&1)&&(st.DDRD>>b&1);
+      d.classList.toggle("on",!!on);
+    });
+    const pbPins=$("#pbLeds").querySelectorAll(".pin");
+    pbPins.forEach(p=>{
+      const d=p.querySelector(".dot"), b=+d.dataset.bit;
+      const usable = (st.DDRB>>b&1);
+      p.classList.toggle("off-duty", !usable && st.DDRB!==0);
+      d.classList.toggle("on", !!((st.PORTB>>b&1)&&usable));
+    });
+    $("#pdHex").textContent=hex(st.PORTD);
+    $("#pbHex").textContent=hex(st.PORTB);
+    regsEl.querySelectorAll(".rrow").forEach(row=>{
+      const v=st[row.dataset.r];
+      row.querySelectorAll(".bit").forEach(bt=>{
+        const on=(v>>(+bt.dataset.b))&1; bt.textContent=on; bt.classList.toggle("one",!!on);
+      });
+      row.querySelector(".rhex").textContent=hex(v);
+    });
+  }
+
+  function enter(i){
+    const s=P.steps[i];
+    if(s.a){ s.a(st); flashReg(); }
+    document.querySelectorAll(".ln.hot").forEach(e=>e.classList.remove("hot"));
+    const ln=document.querySelector('.ln[data-l="'+s.l+'"]');
+    if(ln){ ln.classList.add("hot"); ln.scrollIntoView({block:"nearest"}); }
+    document.querySelectorAll(".fnode.hot").forEach(e=>e.classList.remove("hot"));
+    const fi=P.flow.findIndex(f=>f.s.includes(i));
+    if(fi>=0) document.querySelector('.fnode[data-f="'+fi+'"]').classList.add("hot");
+    $("#nowText").textContent=s.t;
+    paint();
+    markEdge();
+  }
+  function flashReg(){
+    regsEl.querySelectorAll(".rrow").forEach(r=>{r.classList.remove("flash");void r.offsetWidth;r.classList.add("flash");});
+  }
+  function advance(){
+    const s=P.steps[pc];
+    pc = (s.jump!==undefined) ? s.jump : (pc+1)%P.steps.length;
+    enter(pc); timer=0;
+  }
+
+  const cv=$("#wave"), ctx=cv.getContext("2d");
+  function fit(){const r=cv.getBoundingClientRect(),dpr=devicePixelRatio||1;cv.width=r.width*dpr;cv.height=132*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
+  addEventListener("resize",fit); fit();
+  function markEdge(){ if(samples.length) samples[samples.length-1].edge=true; }
+  function sample(){
+    const bVal = P.pbAll ? (st.PORTB!==0) : !!(st.PORTB>>5&1);
+    samples.push({b:bVal?1:0, d:st.PORTD!==0?1:0, edge:false});
+    if(samples.length>460) samples.shift();
+  }
+  function drawWave(){
+    const w=cv.getBoundingClientRect().width,h=132;
+    ctx.clearRect(0,0,w,h);
+    ctx.strokeStyle="rgba(120,200,180,.13)"; ctx.lineWidth=1;
+    for(let x=0;x<w;x+=32){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();}
+    const draw=(field,color,yHi,yLo)=>{
+      ctx.strokeStyle=color; ctx.lineWidth=2; ctx.beginPath();
+      const step=w/460;
+      samples.forEach((s,i)=>{
+        const x=i*step, y=s[field]?yHi:yLo;
+        if(i===0){ctx.moveTo(x,y);}
+        else{
+          const prev=samples[i-1][field];
+          if(prev!==s[field]){ctx.lineTo(x,prev?yHi:yLo);ctx.lineTo(x,y);}
+          else ctx.lineTo(x,y);
+        }
+      });
+      ctx.stroke();
+    };
+    ctx.font="10px monospace"; ctx.fillStyle="rgba(127,167,156,.8)";
+    ctx.fillText("HIGH",4,22); ctx.fillText("LOW",4,58);
+    ctx.fillText("HIGH",4,86); ctx.fillText("LOW",4,122);
+    draw("b","#FF4A3D",26,52);
+    draw("d","#3FE0C0",90,116);
+    const step=w/460;
+    ctx.strokeStyle="rgba(219,169,47,.35)";ctx.lineWidth=1;
+    samples.forEach((s,i)=>{if(s.edge){ctx.beginPath();ctx.moveTo(i*step,8);ctx.lineTo(i*step,h-6);ctx.stroke();}});
+  }
+
+  function frame(ts){
+    const dt=Math.min(60, ts-last||16); last=ts;
+    if(running){
+      timer+=dt*speed;
+      if(timer>=P.steps[pc].d) advance();
+    }
+    sample(); drawWave();
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(ts=>{last=ts;frame(ts);});
+
+  $("#playBtn").onclick=()=>{
+    running=!running;
+    $("#playBtn").textContent = running ? "❚❚ หยุดชั่วคราว" : "▶ เล่น";
+    if(running && !document.querySelector(".ln.hot")) enter(pc);
+  };
+  $("#stepBtn").onclick=()=>{
+    running=false; $("#playBtn").textContent="▶ เล่น";
+    if(!document.querySelector(".ln.hot")) enter(pc); else advance();
+  };
+  $("#resetBtn").onclick=reset;
+  $("#speed").onclick=e=>{
+    const b=e.target.closest("button"); if(!b)return;
+    speed=+b.dataset.s;
+    [...e.currentTarget.children].forEach(x=>x.setAttribute("aria-pressed", x===b?"true":"false"));
+  };
+
+  function calc(){
+    const a=+$("#r20").value||1, b=+$("#r21").value||1, c=+$("#r22").value||1, f=(+$("#fclk").value||16)*1e6;
+    const inner=3*c, mid=b*(inner+3), cyc=a*(mid+3);
+    const secs=cyc/f;
+    $("#oCyc").textContent=cyc.toLocaleString();
+    $("#oMs").textContent=(secs*1000).toFixed(1)+" ms";
+    const blink=1/(2*secs);
+    $("#oHz").textContent=blink.toFixed(1)+" Hz";
+    $("#calcNote").textContent = blink>25
+      ? "ที่ค่านี้ไฟกระพริบเร็วกว่าที่ตาจะแยกออก จะเห็นเป็นแสงค้างจาง ๆ ลองเพิ่มค่า R20 ให้มากขึ้น"
+      : blink>8
+      ? "กระพริบเร็วแต่ยังพอเห็นการสั่น ถ้าอยากได้จังหวะสบายตาราว 1–3 Hz ลองเพิ่ม R20 เป็นหลักสิบ"
+      : "ช่วงนี้ตามองเห็นการติดดับได้สบาย เหมาะกับการสาธิตหน้าจอ Proteus";
+  }
+  ["r20","r21","r22","fclk"].forEach(id=>$("#"+id).addEventListener("input",calc));
+  calc();
+
+  let pv=0;
+  const pbEl=$("#playBits");
+  for(let i=7;i>=0;i--){
+    const c=document.createElement("div"); c.className="bitcol";
+    c.innerHTML='<button class="bitbtn" data-i="'+i+'" aria-label="สลับบิต '+i+'">0</button><small>bit '+i+'</small>';
+    pbEl.appendChild(c);
+  }
+  function pvPaint(){
+    pbEl.querySelectorAll(".bitbtn").forEach(b=>{
+      const on=(pv>>(+b.dataset.i))&1; b.textContent=on; b.classList.toggle("one",!!on);
+    });
+    $("#pvHex").textContent=hex(pv);
+    $("#pvBin").textContent="0b"+pv.toString(2).padStart(8,"0");
+    $("#pvDec").textContent=pv;
+  }
+  pbEl.onclick=e=>{const b=e.target.closest(".bitbtn");if(!b)return;pv^=(1<<(+b.dataset.i));pvPaint();};
+  document.querySelectorAll("[data-op]").forEach(b=>b.onclick=()=>{
+    const o=b.dataset.op;
+    if(o==="com")pv=(~pv)&0xFF;
+    else if(o==="or")pv=pv|0x20;
+    else if(o==="and")pv=pv&(~0x20&0xFF);
+    else if(o==="ff")pv=0xFF;
+    else if(o==="zero")pv=0x00;
+    else if(o==="3f")pv=0x3F;
+    pvPaint();
+  });
+  pvPaint();
+
+  addEventListener("keydown",e=>{
+    if(e.target.tagName==="INPUT")return;
+    if(e.code==="Space"){e.preventDefault();$("#playBtn").click();}
+    if(e.code==="ArrowRight"){e.preventDefault();$("#stepBtn").click();}
+  });
+
+  select("asm1");
+  </script>
+</body>
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>หัวข้อที่ 6: Input-Output Organization, Interrupts & DMA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    canvas#dmaWave { width: 100%; height: 120px; display: block; border-radius: 8px; background: #060911; border: 1px solid var(--border-color); margin-top: 12px; }
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">⚡ EMBEDDED EXAM HUB</a>
+    <ul class="nav-links">
+      <li><a href="index.html">หน้าหลัก</a></li>
+      <li><a href="topic1_rom_control.html">1. ROM Control Store</a></li>
+      <li><a href="topic2_ec1_cpu.html">2. EC-1 CPU</a></li>
+      <li><a href="topic3_digital_logic.html">3. Digital Logic & ALU</a></li>
+      <li><a href="topic4_avr_assembly.html">4. AVR Assembly</a></li>
+      <li><a href="topic5_cpu_architecture.html">5. CPU & Arithmetic</a></li>
+      <li><a href="topic6_io_interrupts_dma.html" class="active">6. I/O & DMA</a></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN CONTAINER -->
+  <main class="container">
+
+    <!-- PAGE BANNER -->
+    <header class="page-banner">
+      <h1 class="page-title">🔌 หัวข้อที่ 6: Input-Output Organization, Interrupts & DMA</h1>
+      <p class="page-subtitle">
+        เจาะลึกโครงสร้างบัสไอโอ (I/O Bus & Interface Modules), โหมดการส่งข้อมูลแบบไม่อิงนาฬิกา (Handshaking Protocol), โหมดการส่งข้อมูล (Polling, Interrupts, DMA) และวงจรจัดลำดับความสำคัญ Priority Interrupts
+      </p>
+    </header>
+
+    <!-- SOURCE FILE MAPPING BOX -->
+    <div class="source-file-box">
+      <h3>📁 ตำแหน่งไฟล์อ้างอิงบทเรียนนี้ใน Workspace (Source File Mapping)</h3>
+      <ul class="source-file-list">
+        <li class="source-file-item">
+          <span class="source-tag">Textbook PDF</span>
+          <a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Lectures_and_Textbooks/0132539977_pp6a.pdf" class="file-link">Lectures_and_Textbooks/0132539977_pp6a.pdf</a>
+          <span style="color: var(--text-muted); font-size: 0.82rem;">(หนังสือ Mano บทที่ 11: Input-Output Organization)</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- SECTION 1: I/O INTERFACE & BUS -->
+    <section class="section-block">
+      <h2 class="section-title">1. โครงสร้าง I/O Bus และ Interface Unit</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3 class="card-title">🖥️ บทบาทของ I/O Interface Unit</h3>
+          <p>อินเทอร์เฟซทำหน้าที่แปลงสัญญาณและเชื่อมต่ออุปกรณ์ต่อพ่วง (Peripherals) เข้ากับ CPU Bus:</p>
+          <div class="theory-box">
+            • <b>Data Conversion:</b> แปลงข้อมูลระหว่าง Parallel Bus กับ Serial Data<br>
+            • <b>Synchronization:</b> ปรับความเร็วที่แตกต่างกันมากระหว่าง CPU (ระดับ GHz) กับ I/O Device (ระดับ KHz)<br>
+            • <b>Address Decoding:</b> ตรวจจับรหัสที่อยู่พอร์ต (I/O Port Address)
+          </div>
+        </div>
+        <div class="card">
+          <h3 class="card-title">🗺️ Isolated I/O vs Memory-Mapped I/O</h3>
+          <ul style="padding-left: 18px; font-size: 0.9rem; color: var(--text-muted);">
+            <li><b>Isolated I/O:</b> แยกชุดคำสั่งอ่านเขียนพอร์ตเฉพาะ (เช่น `IN`, `OUT`) แยกสาย Read/Write บัสกับ Memory</li>
+            <li><b>Memory-Mapped I/O:</b> มองพอร์ต I/O เป็นที่อยู่หนึ่งใน Memory Space ใช้คำสั่งเดียวกับ Memory (เช่น `LDS`, `STS`)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: ASYNCHRONOUS DATA TRANSFER -->
+    <section class="section-block">
+      <h2 class="section-title">2. การส่งสัญญาณข้อมูลแบบไม่อิงนาฬิกา (Asynchronous Data Transfer)</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3 class="card-title">⚡ Strobe Control Scheme</h3>
+          <p>ใช้สายสัญญาณ Strobe เพียงเส้นเดียวในการแจ้งเตือนการส่งข้อมูล:</p>
+          <div class="formula-box">
+            Source-Initiated: [ส่ง Data] → [จุด Strobe High] → [Destination อ่านค่า]<br>
+            • <b>ข้อเสีย:</b> ไม่มีสัญญาณยืนยันกลับว่าผู้รับได้รับข้อมูลเรียบร้อยแล้วหรือไม่
+          </div>
+        </div>
+        <div class="card">
+          <h3 class="card-title">🤝 Handshaking Protocol (2-Way Confirmation)</h3>
+          <p>ใช้สายสัญญาณควบคุม 2 เส้น (Data Valid และ Data Accepted):</p>
+          <div class="formula-box">
+            1. Source ส่ง Data และขึ้นสัญญาณ <b>Data Valid</b><br>
+            2. Destination อ่าน Data แล้วขึ้นสัญญาณ <b>Data Accepted</b> ยืนยัน<br>
+            3. Source ลงสัญญาณ Data Valid → Destination ลงสัญญาณ Data Accepted<br>
+            • <b>ข้อดี:</b> ปลอดภัยสูงสุด ป้องกันการสูญหายของข้อมูลบนสาย Bus
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: MODES OF TRANSFER & INTERRUPTS -->
+    <section class="section-block">
+      <h2 class="section-title">3. โหมดการรับส่งข้อมูล (Modes of Transfer) & Priority Interrupts</h2>
+      <table class="data-tbl">
+        <thead>
+          <tr>
+            <th>โหมดการส่งข้อมูล</th>
+            <th>กลไกการทำงาน</th>
+            <th>ข้อดี / ข้อเสีย</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>Programmed I/O (Polling)</b></td>
+            <td>CPU วนลูปอ่าน Flag สถาวะของอุปกรณ์ I/O ตลอดเวลาจนกว่าจะพร้อมส่งข้อมูล</td>
+            <td>❌ เสียเวลา CPU ทรัพยากรค้างวนลูปไร้ประโยชน์ (CPU Waste)</td>
+          </tr>
+          <tr>
+            <td><b>Interrupt-Initiated I/O</b></td>
+            <td>อุปกรณ์ I/O ส่งสัญญาณขัดจังหวะ (Interrupt Request: IRQ) เมื่อพร้อม CPU จึงสลับไปทำงาน Interrupt Service Routine (ISR)</td>
+            <td>✅ CPU ทำงานอื่นได้เต็มที่ แต่ยังเสียเวลาสลับ Context สแต็ก Register</td>
+          </tr>
+          <tr>
+            <td><b>Direct Memory Access (DMA)</b></td>
+            <td>ย้ายการส่งข้อมูลก้อนใหญ่ (Block Transfer) ให้ DMA Controller จัดการส่งเข้า Memory โดยตรงโดยไม่ผ่าน CPU</td>
+            <td>⚡ ประสิทธิภาพสูงสุด ความเร็วในการย้ายข้อมูลสูงที่สุดในระบบคอมพิวเตอร์</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- SECTION 4: INTERACTIVE DMA & HANDSHAKING PROTOCOL SIMULATOR -->
+    <section class="section-block">
+      <h2 class="section-title">4. Interactive DMA Bus Stepper & Handshaking Protocol Monitor</h2>
+      <div class="sim-container">
+        <div class="sim-header">
+          <div>
+            <h3 style="color: var(--primary);">จำลองขั้นตอนการขอบัส DMA (BR/BG Arbitration & Handshaking)</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">ทดสอบลำดับขั้นตอน Bus Request (BR), Bus Grant (BG), สัญญาณ Data Valid และ Data Accepted</p>
+          </div>
+          <div class="sim-controls">
+            <button class="btn btn-primary" onclick="stepDmaSim()">⏯️ Step Protocol (+1)</button>
+            <button class="btn btn-danger" onclick="resetDmaSim()">🔄 Reset Bus</button>
+          </div>
+        </div>
+
+        <div class="circuit-grid">
+          <div class="node-box active">
+            <div class="node-label">Bus Request (BR)</div>
+            <div class="node-val" id="val-br">0 (IDLE)</div>
+          </div>
+          <div class="node-box highlight">
+            <div class="node-label">Bus Grant (BG)</div>
+            <div class="node-val" id="val-bg">0 (CPU Active)</div>
+          </div>
+          <div class="node-box">
+            <div class="node-label">Data Valid</div>
+            <div class="node-val" id="val-dv">0</div>
+          </div>
+          <div class="node-box highlight">
+            <div class="node-label">Data Accepted</div>
+            <div class="node-val" id="val-da">0</div>
+          </div>
+          <div class="node-box">
+            <div class="node-label">DMA Block Progress</div>
+            <div class="node-val" id="val-dma-cnt">0 / 4 Bytes</div>
+          </div>
+        </div>
+
+        <div class="theory-box" id="dma-status-desc">
+          <b>ขั้นตอนปัจจุบัน:</b> CPU ทำงานปกติ (CPU Master Mode) - DMA Controller อยู่ในสถานะเฝ้ารอสัญญาณ (IDLE)
+        </div>
+
+        <!-- WAVEFORM CANVAS -->
+        <h4 style="color: var(--gold); margin: 20px 0 6px; font-size: 0.9rem;">รูปคลื่นสัญญาณบัส DMA & Handshaking Timing</h4>
+        <canvas id="dmaWave"></canvas>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <p>Embedded System Exam Guide &copy; 2569 | หัวข้อที่ 6: Input-Output Organization, Interrupts & DMA</p>
+    </footer>
+
+  </main>
+
+  <script>
+    const dmaSequence = [
+      { br: 0, bg: 0, dv: 0, da: 0, cnt: 0, desc: 'ขั้นตอนที่ 0: CPU ถือครองสาย Bus (CPU Master) - DMA Controller อยู่ในสถานะเฝ้ารอ' },
+      { br: 1, bg: 0, dv: 0, da: 0, cnt: 0, desc: 'ขั้นตอนที่ 1: DMA Controller ส่งสัญญาณ Bus Request (BR = 1) ร้องขอขอบัสจาก CPU' },
+      { br: 1, bg: 1, dv: 0, da: 0, cnt: 0, desc: 'ขั้นตอนที่ 2: CPU ปลดสาย Bus เข้าสู่ High-Z แล้วส่ง Bus Grant (BG = 1) อนุมัติให้ DMA เป็น Master' },
+      { br: 1, bg: 1, dv: 1, da: 0, cnt: 1, desc: 'ขั้นตอนที่ 3: DMA วางข้อมูลลงบัส พร้อมส่งสัญญาณ Data Valid (DV = 1) ไปยัง Memory' },
+      { br: 1, bg: 1, dv: 1, da: 1, cnt: 1, desc: 'ขั้นตอนที่ 4: Memory บันทึกข้อมูลเรียบร้อย ส่งสัญญาณตอบรับ Data Accepted (DA = 1)' },
+      { br: 0, bg: 0, dv: 0, da: 0, cnt: 4, desc: 'ขั้นตอนที่ 5: ส่งข้อมูลครบ 4 Bytes! DMA ปลดสัญญาณ BR=0 และ CPU กลับมาถือครองสาย Bus ตามปกติ' }
+    ];
+    let dmaStepIndex = 0;
+    const dmaSamples = [];
+
+    function stepDmaSim() {
+      dmaStepIndex = (dmaStepIndex + 1) % dmaSequence.length;
+      const state = dmaSequence[dmaStepIndex];
+      document.getElementById('val-br').innerText = state.br ? '1 (REQUEST)' : '0 (IDLE)';
+      document.getElementById('val-bg').innerText = state.bg ? '1 (GRANTED)' : '0 (CPU)';
+      document.getElementById('val-dv').innerText = state.dv;
+      document.getElementById('val-da').innerText = state.da;
+      document.getElementById('val-dma-cnt').innerText = `${state.cnt} / 4 Bytes`;
+      document.getElementById('dma-status-desc').innerHTML = '<b>ขั้นตอนปัจจุบัน:</b> ' + state.desc;
+
+      dmaSamples.push({ br: state.br, bg: state.bg });
+      if (dmaSamples.length > 50) dmaSamples.shift();
+      drawDmaWave();
+    }
+
+    function resetDmaSim() {
+      dmaStepIndex = 0;
+      dmaSamples.length = 0;
+      const state = dmaSequence[0];
+      document.getElementById('val-br').innerText = '0 (IDLE)';
+      document.getElementById('val-bg').innerText = '0 (CPU Master)';
+      document.getElementById('val-dv').innerText = '0';
+      document.getElementById('val-da').innerText = '0';
+      document.getElementById('val-dma-cnt').innerText = '0 / 4 Bytes';
+      document.getElementById('dma-status-desc').innerHTML = '<b>ขั้นตอนปัจจุบัน:</b> CPU ทำงานปกติ (CPU Master Mode) - DMA Controller อยู่ในสถานะเฝ้ารอสัญญาณ (IDLE)';
+      drawDmaWave();
+    }
+
+    function drawDmaWave() {
+      const cv = document.getElementById('dmaWave');
+      if (!cv) return;
+      const ctx = cv.getContext('2d');
+      cv.width = cv.clientWidth; cv.height = 120;
+      const w = cv.width, h = cv.height;
+      ctx.clearRect(0, 0, w, h);
+      ctx.strokeStyle = '#2e3c54'; ctx.lineWidth = 1;
+      for (let x = 0; x < w; x += 30) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+
+      if (dmaSamples.length < 2) return;
+      const step = w / 50;
+      ctx.strokeStyle = '#4ade80'; ctx.lineWidth = 2; ctx.beginPath();
+      dmaSamples.forEach((s, i) => {
+        const x = i * step, y = s.bg ? 30 : 90;
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+    }
+  </script>
+</body>
+</html>

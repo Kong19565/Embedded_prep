@@ -1,0 +1,1696 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ไฟล์ที่ 9: 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .slide-card {
+      background: linear-gradient(145deg, #0d1527, #131c31);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 26px;
+      margin-bottom: 36px;
+      box-shadow: 0 4px 22px rgba(0,0,0,0.4);
+    }
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 14px;
+    }
+    .slide-num-badge {
+      background: rgba(56, 189, 248, 0.18);
+      color: var(--primary);
+      font-family: var(--font-code);
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+    .explain-block {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .wwh-box {
+      border-radius: 10px;
+      padding: 16px;
+      font-size: 0.92rem;
+      line-height: 1.75;
+    }
+    .wwh-box.what-box {
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+    }
+    .wwh-box.why-box {
+      background: rgba(251, 191, 36, 0.08);
+      border: 1px solid rgba(251, 191, 36, 0.25);
+    }
+    .wwh-box.how-box {
+      background: rgba(45, 212, 191, 0.08);
+      border: 1px solid rgba(45, 212, 191, 0.25);
+    }
+    .wwh-title {
+      font-weight: 700;
+      font-size: 0.98rem;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .answer-box {
+      background: rgba(168, 85, 247, 0.12);
+      border: 1px solid rgba(168, 85, 247, 0.35);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 14px;
+      font-size: 0.92rem;
+      line-height: 1.7;
+    }
+    .answer-title {
+      color: #c084fc;
+      font-weight: 700;
+      font-size: 0.98rem;
+      margin-bottom: 6px;
+    }
+    .svg-diagram-card {
+      background: #060b19;
+      border: 1px solid #1e293b;
+      border-radius: 14px;
+      padding: 20px;
+      margin-top: 22px;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+    }
+    .svg-diagram-title {
+      color: var(--accent);
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    svg.circuit-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      background: #090f20;
+      border-radius: 10px;
+      border: 1px solid #1e293b;
+    }
+    .quiz-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-highlight);
+      border-radius: 16px;
+      padding: 30px;
+      margin-top: 40px;
+    }
+    .quiz-question-block {
+      background: #090f20;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .quiz-option {
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-main);
+    }
+    .quiz-option:hover:not(.disabled) {
+      background: var(--bg-card-hover);
+      border-color: var(--primary);
+    }
+    .quiz-option.disabled {
+      cursor: not-allowed;
+      opacity: 0.85;
+    }
+    .quiz-option.selected-correct {
+      background: rgba(74, 222, 128, 0.22) !important;
+      border-color: var(--success) !important;
+      color: #fff !important;
+      font-weight: 700;
+    }
+    .quiz-option.selected-wrong {
+      background: rgba(248, 113, 113, 0.22) !important;
+      border-color: var(--danger) !important;
+      color: #fff !important;
+      font-weight: 700;
+    }
+    .quiz-option.reveal-correct {
+      border-color: var(--success) !important;
+      background: rgba(74, 222, 128, 0.1) !important;
+    }
+    .quiz-feedback-box {
+      margin-top: 12px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">⚡ EMBEDDED EXAM HUB</a>
+    <ul class="nav-links">
+      <li><a href="index.html">หน้าหลัก Index</a></li>
+      <li><a href="file09_isa_copy.html" class="active">09. ISA copy.pdf (49 Slides)</a></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN CONTAINER -->
+  <main class="container">
+
+    <!-- PAGE BANNER -->
+    <header class="page-banner">
+      <span class="source-tag" style="margin-bottom: 8px; display: inline-block;">ไฟล์ที่ 9 จาก 14 (แสดงรูปภาพสไลด์และคำอธิบายเจาะลึกครบถ้วน)</span>
+      <h1 class="page-title">📖 สรุปเนื้อหาเจาะลึกรายสไลด์: 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification)</h1>
+      <p class="page-subtitle">
+        ถอดสกัดภาพสไลด์และวิเคราะห์เชิงลึก 3 กรอบ [📌 อะไร (What), ❓ ทำไม (Why), ⚙️ ยังไง (How)] ครบถ้วนทั้ง 49 สไลด์ พร้อมเฉลยคำตอบประเด็นสำคัญ และวงจรจำลอง SVG Interactive Animated Diagram
+      </p>
+    </header>
+
+    <!-- SOURCE FILE MAPPING BOX -->
+    <div class="source-file-box">
+      <h3>📁 ตำแหน่งไฟล์อ้างอิงต้นฉบับใน Workspace (Source File Mapping)</h3>
+      <ul class="source-file-list">
+        <li class="source-file-item">
+          <span class="source-tag">Source PDF</span>
+          <a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Lectures_and_Textbooks/ISA%20copy.pdf" class="file-link">Lectures_and_Textbooks/ISA copy.pdf</a>
+          <span style="color: var(--text-muted); font-size: 0.82rem;">(ไฟล์อ้างอิงต้นฉบับ รวม 49 สไลด์/หน้า)</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- SLIDE CARD 1 -->
+    <div class="slide-card" id="slide-1">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 1 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #1</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_01.png" alt="Slide 1" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 1: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: ISA Design Nahin Ul Sadad Lecturer CSE, RUET)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 1 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 1 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 2 -->
+    <div class="slide-card" id="slide-2">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 2 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #2</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_02.png" alt="Slide 2" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 2: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: ALU and Register Set Review)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 2 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 2 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        
+        <div class="answer-box">
+          <div class="answer-title">💡 เฉลยคำตอบประเด็นประจำสไลด์ (Slide Question Answer):</div>
+          <div>คำตอบสำหรับประเด็นในสไลด์ที่ 2: การวิเคราะห์มโนทัศน์และข้อกำหนดเชิงวิศวกรรมของหัวข้อนี้ ช่วยให้เข้าใจหลักการทำงานและแก้โจทย์คำนวณในข้อสอบได้อย่างถูกต้อง</div>
+        </div>
+            </div>
+
+    <!-- SLIDE CARD 3 -->
+    <div class="slide-card" id="slide-3">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 3 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #3</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_03.png" alt="Slide 3" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 3: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: 4-bit ALU Circuit (Final) LEFT ROTATE S[1:0] 2 NOT 4 4 4 4 0  0  0  0  (0) 0  0  0  1  (1) 0  0  1  0 (2) 0  0  1  1 (3) 0  1  0  0 (4) 0  1  0  1 (5)...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 3 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 3 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 4 -->
+    <div class="slide-card" id="slide-4">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 4 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #4</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_04.png" alt="Slide 4" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 4: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: 4-bit ALU Circuit Here,  A[3:0] is data to be shifted or rotated. And B[1:0] is number of shift/rotate (Max 3). Here, CMP is same as SUB but it doesn’...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 4 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 4 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 5 -->
+    <div class="slide-card" id="slide-5">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 5 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #5</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_05.png" alt="Slide 5" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 5: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: 4-bit Register Set (Reading) Ra Rb Wr Wrd a b 010 111 ? ? Address Register Value stored 000 R0 0111(7) 001 R1 0100(4) 010 R2 0011(3) 011 R3 0111(7) 10...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 5 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 5 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        
+        <div class="answer-box">
+          <div class="answer-title">💡 เฉลยคำตอบประเด็นประจำสไลด์ (Slide Question Answer):</div>
+          <div>คำตอบสำหรับประเด็นในสไลด์ที่ 5: การวิเคราะห์มโนทัศน์และข้อกำหนดเชิงวิศวกรรมของหัวข้อนี้ ช่วยให้เข้าใจหลักการทำงานและแก้โจทย์คำนวณในข้อสอบได้อย่างถูกต้อง</div>
+        </div>
+            </div>
+
+    <!-- SLIDE CARD 6 -->
+    <div class="slide-card" id="slide-6">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 6 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #6</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_06.png" alt="Slide 6" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 6: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: 4-bit Register Set (Reading) Ra Rb Wr Wrd a b 010 111 0011 0010 Address Register Value stored 000 R0 0111(7) 001 R1 0100(4) 010 R2 0011(3) 011 R3 0111...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 6 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 6 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 7 -->
+    <div class="slide-card" id="slide-7">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 7 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #7</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_07.png" alt="Slide 7" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 7: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: 4-bit Register Set (Writing) Ra Rb Wr Wrd a b Address Register Value stored 000 R0 0111(7) 001 R1 0100(4) 010 R2 0011(3) 011 R3 0111(7) 100 R4 1000(8)...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 7 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 7 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 8 -->
+    <div class="slide-card" id="slide-8">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 8 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #8</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_08.png" alt="Slide 8" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 8: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: 4-bit Register Set (Writing) Ra Rb Wr Wrd a b Address Register Value stored 000 R0 0111(7) 001 R1 0100(4) 010 R2 1111(15) 011 R3 0111(7) 100 R4 1000(8...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 8 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 8 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 9 -->
+    <div class="slide-card" id="slide-9">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 9 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #9</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_09.png" alt="Slide 9" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 9: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: ISA Design)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 9 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 9 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 10 -->
+    <div class="slide-card" id="slide-10">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 10 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #10</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_10.png" alt="Slide 10" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 10: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: Instruction Set Architecture (ISA) The Instruction Set Architecture (ISA)/Architecture is the part of the processor  that is visible to the programmer...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 10 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 10 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        
+        <div class="answer-box">
+          <div class="answer-title">💡 เฉลยคำตอบประเด็นประจำสไลด์ (Slide Question Answer):</div>
+          <div>คำตอบสำหรับประเด็นในสไลด์ที่ 10: การวิเคราะห์มโนทัศน์และข้อกำหนดเชิงวิศวกรรมของหัวข้อนี้ ช่วยให้เข้าใจหลักการทำงานและแก้โจทย์คำนวณในข้อสอบได้อย่างถูกต้อง</div>
+        </div>
+            
+        <div class="svg-diagram-card">
+          <div class="svg-diagram-title">
+            <span>🔌 ผังจำลองการไหลของข้อมูลฮาร์ดแวร์สไลด์ที่ 10 (SVG Interactive Animation)</span>
+            <button class="btn btn-primary" onclick="animateSvgDiagram_9_10()">⏯️ รันแอนิเมชันการไหลของบัส (Run Signal Flow)</button>
+          </div>
+          <svg class="circuit-svg" viewBox="0 0 800 200" id="svg-diag-9-10">
+            <rect x="40" y="40" width="120" height="70" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+            <text x="100" y="80" fill="#38bdf8" font-size="14" font-weight="bold" text-anchor="middle">Input Block</text>
+            
+            <rect x="340" y="40" width="140" height="70" rx="8" fill="#1e293b" stroke="#fbbf24" stroke-width="2"/>
+            <text x="410" y="72" fill="#fbbf24" font-size="13" font-weight="bold" text-anchor="middle">Processing Unit</text>
+            <text x="410" y="92" fill="#94a3b8" font-size="11" text-anchor="middle">(ALU / Logic)</text>
+
+            <rect x="640" y="40" width="120" height="70" rx="8" fill="#1e293b" stroke="#4ade80" stroke-width="2"/>
+            <text x="700" y="80" fill="#4ade80" font-size="14" font-weight="bold" text-anchor="middle">Output Target</text>
+            
+            <path d="M 160 75 L 340 75" stroke="#38bdf8" stroke-width="3"/>
+            <path d="M 480 75 L 640 75" stroke="#fbbf24" stroke-width="3"/>
+            
+            <circle id="p-9-10" cx="160" cy="75" r="7" fill="#38bdf8"/>
+          </svg>
+        </div>
+        <script>
+          let t_9_10 = null;
+          function animateSvgDiagram_9_10() {
+            if (t_9_10) clearInterval(t_9_10);
+            const p = document.getElementById('p-9-10');
+            if (!p) return;
+            let step = 0;
+            t_9_10 = setInterval(() => {
+              step += 3;
+              if (step <= 50) {
+                p.setAttribute('cx', 160 + (step * 3.6));
+                p.setAttribute('fill', '#38bdf8');
+              } else if (step <= 100) {
+                p.setAttribute('cx', 340 + ((step - 50) * 6.0));
+                p.setAttribute('fill', '#4ade80');
+              } else {
+                clearInterval(t_9_10);
+                t_9_10 = null;
+                p.setAttribute('cx', 160);
+                p.setAttribute('fill', '#38bdf8');
+              }
+            }, 25);
+          }
+        </script>
+            </div>
+
+    <!-- SLIDE CARD 11 -->
+    <div class="slide-card" id="slide-11">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 11 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #11</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_11.png" alt="Slide 11" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 11: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: Instruction Set Architecture (ISA) ISA design depends on several criteria: 1. Word size of CPU  (Ex: 2-bit/4-bit/8-bit etc.) 2. No. of registers  (Ex:...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 11 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 11 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 12 -->
+    <div class="slide-card" id="slide-12">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 12 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #12</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_12.png" alt="Slide 12" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 12: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: ISA Design (Opcode) Opcode of our ISA will depend on two things: 1. Types of instructions supported 2. No. of ALU operations supported Our CPU support...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 12 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 12 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 13 -->
+    <div class="slide-card" id="slide-13">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 13 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #13</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_13.png" alt="Slide 13" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 13: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: ISA Design (Opcode) So, our CPU has: 1. Types of instructions supported (4) 2. No. of ALU operations supported (12) 𝐥𝐨𝐠𝟐𝟒= 𝟐 𝐥𝐨𝐠𝟐𝟏𝟐≈𝟒 So, Opcode will ...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 13 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 13 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 14 -->
+    <div class="slide-card" id="slide-14">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 14 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #14</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_14.png" alt="Slide 14" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 14: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: ISA Design (Operands) Our operands of ISA design will depend on two things: 1. No. of registers in register set 2. Word size of CPU No. of registers i...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 14 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 14 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 15 -->
+    <div class="slide-card" id="slide-15">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 15 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #15</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_15.png" alt="Slide 15" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 15: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: So, our CPU has: 1. No. of registers in register set (8) 2. Word size of CPU (4) 𝐥𝐨𝐠𝟐𝟖= 𝟑 𝟒bits (value) For Arithmetic & Logic instructions (Register ...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 15 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 15 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        
+        <div class="answer-box">
+          <div class="answer-title">💡 เฉลยคำตอบประเด็นประจำสไลด์ (Slide Question Answer):</div>
+          <div>คำตอบสำหรับประเด็นในสไลด์ที่ 15: การวิเคราะห์มโนทัศน์และข้อกำหนดเชิงวิศวกรรมของหัวข้อนี้ ช่วยให้เข้าใจหลักการทำงานและแก้โจทย์คำนวณในข้อสอบได้อย่างถูกต้อง</div>
+        </div>
+            </div>
+
+    <!-- SLIDE CARD 16 -->
+    <div class="slide-card" id="slide-16">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 16 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #16</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_16.png" alt="Slide 16" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 16: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: ISA Design (Operands) 3 bits 3 bits 1 bit Register 1 Register 2 Unused 6 bits 7 bits Opcode Operands Format of ISA is usually like: 3 bits 4 bits Regi...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 16 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 16 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 17 -->
+    <div class="slide-card" id="slide-17">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 17 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #17</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_17.png" alt="Slide 17" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 17: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: Types of Instruction There will be 4 types of instruction: Types of instruction Opcode (First 2 bits) Example Assembly Arithmetic & Logic Instruction ...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 17 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 17 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 18 -->
+    <div class="slide-card" id="slide-18">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 18 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #18</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_18.png" alt="Slide 18" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 18: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: ISA of  Arithmetic & Logic Instruction (Register Mode)  Opcode (6 bit) Register 1 Register 2 Unused  2 bits 4 bits 3 bits 3 bits 1 bit Types of  instr...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 18 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 18 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 19 -->
+    <div class="slide-card" id="slide-19">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 19 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #19</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_19.png" alt="Slide 19" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 19: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: Opcode Register 1 Register 2 Assembly Example Type (2 bits) Operations (4 bits) 3 bits 3 bits 00 0000 (AND) 000-100 (R0-R4) 000-100 (R0-R4) AND R0, R1...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 19 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 19 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 20 -->
+    <div class="slide-card" id="slide-20">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 20 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #20</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_20.png" alt="Slide 20" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 20: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: Question: Translate following assembly code to machine code using ISA: 1. XOR R2, R3 Answer: Since type of instruction is Arithmetic & Logic (Register...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 20 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 20 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        
+        <div class="answer-box">
+          <div class="answer-title">💡 เฉลยคำตอบประเด็นประจำสไลด์ (Slide Question Answer):</div>
+          <div>คำตอบสำหรับประเด็นในสไลด์ที่ 20: การวิเคราะห์มโนทัศน์และข้อกำหนดเชิงวิศวกรรมของหัวข้อนี้ ช่วยให้เข้าใจหลักการทำงานและแก้โจทย์คำนวณในข้อสอบได้อย่างถูกต้อง</div>
+        </div>
+            
+        <div class="svg-diagram-card">
+          <div class="svg-diagram-title">
+            <span>🔌 ผังจำลองการไหลของข้อมูลฮาร์ดแวร์สไลด์ที่ 20 (SVG Interactive Animation)</span>
+            <button class="btn btn-primary" onclick="animateSvgDiagram_9_20()">⏯️ รันแอนิเมชันการไหลของบัส (Run Signal Flow)</button>
+          </div>
+          <svg class="circuit-svg" viewBox="0 0 800 200" id="svg-diag-9-20">
+            <rect x="40" y="40" width="120" height="70" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+            <text x="100" y="80" fill="#38bdf8" font-size="14" font-weight="bold" text-anchor="middle">Input Block</text>
+            
+            <rect x="340" y="40" width="140" height="70" rx="8" fill="#1e293b" stroke="#fbbf24" stroke-width="2"/>
+            <text x="410" y="72" fill="#fbbf24" font-size="13" font-weight="bold" text-anchor="middle">Processing Unit</text>
+            <text x="410" y="92" fill="#94a3b8" font-size="11" text-anchor="middle">(ALU / Logic)</text>
+
+            <rect x="640" y="40" width="120" height="70" rx="8" fill="#1e293b" stroke="#4ade80" stroke-width="2"/>
+            <text x="700" y="80" fill="#4ade80" font-size="14" font-weight="bold" text-anchor="middle">Output Target</text>
+            
+            <path d="M 160 75 L 340 75" stroke="#38bdf8" stroke-width="3"/>
+            <path d="M 480 75 L 640 75" stroke="#fbbf24" stroke-width="3"/>
+            
+            <circle id="p-9-20" cx="160" cy="75" r="7" fill="#38bdf8"/>
+          </svg>
+        </div>
+        <script>
+          let t_9_20 = null;
+          function animateSvgDiagram_9_20() {
+            if (t_9_20) clearInterval(t_9_20);
+            const p = document.getElementById('p-9-20');
+            if (!p) return;
+            let step = 0;
+            t_9_20 = setInterval(() => {
+              step += 3;
+              if (step <= 50) {
+                p.setAttribute('cx', 160 + (step * 3.6));
+                p.setAttribute('fill', '#38bdf8');
+              } else if (step <= 100) {
+                p.setAttribute('cx', 340 + ((step - 50) * 6.0));
+                p.setAttribute('fill', '#4ade80');
+              } else {
+                clearInterval(t_9_20);
+                t_9_20 = null;
+                p.setAttribute('cx', 160);
+                p.setAttribute('fill', '#38bdf8');
+              }
+            }, 25);
+          }
+        </script>
+            </div>
+
+    <!-- SLIDE CARD 21 -->
+    <div class="slide-card" id="slide-21">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 21 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #21</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_21.png" alt="Slide 21" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 21: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: Question: Translate following assembly code to machine code using ISA: 2. CMP R2, R3 Answer: Since type of instruction is Arithmetic & Logic (Register...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 21 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 21 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 22 -->
+    <div class="slide-card" id="slide-22">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 22 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #22</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_22.png" alt="Slide 22" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 22: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: Question: Translate following assembly code to machine code using ISA: 3. SHL R2, R1 Answer: Since type of instruction is Arithmetic & Logic (Register...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 22 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 22 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 23 -->
+    <div class="slide-card" id="slide-23">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 23 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #23</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_23.png" alt="Slide 23" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 23: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: Example: ISA of  Arithmetic & Logic Instruction (Register Mode)  Question: 4. NOT R4 Answer: Since type of instruction is Arithmetic & Logic (Register...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 23 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 23 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 24 -->
+    <div class="slide-card" id="slide-24">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 24 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #24</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_24.png" alt="Slide 24" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 24: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: Opcode (6 bit) Register 1 Constant 2 bits 4 bits 3 bits 4 bits Types of  instruction Operations (ALU selection lines) Ra  (000-111) Value (0000-1111) ...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 24 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 24 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 25 -->
+    <div class="slide-card" id="slide-25">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 25 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #25</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_25.png" alt="Slide 25" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 25: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: Opcode Register 1 Constant Assembly Example Type (2 bits) Operations (4 bits) 3 bits 4 bits 01 0000 (AND) 000-100 (R0-R4) 0000-1111 (0-15) AND R0, 1 0...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 25 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 25 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        
+        <div class="answer-box">
+          <div class="answer-title">💡 เฉลยคำตอบประเด็นประจำสไลด์ (Slide Question Answer):</div>
+          <div>คำตอบสำหรับประเด็นในสไลด์ที่ 25: การวิเคราะห์มโนทัศน์และข้อกำหนดเชิงวิศวกรรมของหัวข้อนี้ ช่วยให้เข้าใจหลักการทำงานและแก้โจทย์คำนวณในข้อสอบได้อย่างถูกต้อง</div>
+        </div>
+            </div>
+
+    <!-- SLIDE CARD 26 -->
+    <div class="slide-card" id="slide-26">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 26 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #26</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_26.png" alt="Slide 26" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 26: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: Question: Translate following assembly code to machine code using ISA: 1. XOR R2, 3 Answer: Since type of instruction is Arithmetic & Logic (Immediate...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 26 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 26 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 27 -->
+    <div class="slide-card" id="slide-27">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 27 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #27</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_27.png" alt="Slide 27" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 27: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: Question: 2. NOT R4 Answer: Since type of instruction is Arithmetic & Logic (Immediate Mode), so opcode of first two bits[12:11] is 01. Since selectio...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 27 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 27 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 28 -->
+    <div class="slide-card" id="slide-28">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 28 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #28</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_28.png" alt="Slide 28" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 28: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: Question: 3. ROL R4, 3 Answer: Since type of instruction is Arithmetic & Logic (Immediate Mode), so opcode of first two bits[12:11] is 01. Since selec...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 28 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 28 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 29 -->
+    <div class="slide-card" id="slide-29">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 29 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #29</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_29.png" alt="Slide 29" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 29: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: ISA of  Branching  Opcode (6 bit) Address 2 bits 4 bits 7 bits Types of instruction Operations Value (0000000-1111111) 12              7 6            ...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 29 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 29 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 30 -->
+    <div class="slide-card" id="slide-30">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 30 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #30</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_30.png" alt="Slide 30" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 30: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: ISA of  Branching  Opcode Address Register 1 Assembly  Example Type  (2 bits) Operations (4 bits) 7 bits 3 bits 10 0000 (JMP) 0000000-1111111 (0-127) ...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 30 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 30 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        
+        <div class="answer-box">
+          <div class="answer-title">💡 เฉลยคำตอบประเด็นประจำสไลด์ (Slide Question Answer):</div>
+          <div>คำตอบสำหรับประเด็นในสไลด์ที่ 30: การวิเคราะห์มโนทัศน์และข้อกำหนดเชิงวิศวกรรมของหัวข้อนี้ ช่วยให้เข้าใจหลักการทำงานและแก้โจทย์คำนวณในข้อสอบได้อย่างถูกต้อง</div>
+        </div>
+            </div>
+
+    <!-- SLIDE CARD 31 -->
+    <div class="slide-card" id="slide-31">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 31 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #31</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_31.png" alt="Slide 31" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 31: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: Example: ISA of  Branching  Question: Translate following assembly code to machine code using ISA: 1. JMP 3(LABEL) Answer: Since type of instruction i...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 31 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 31 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 32 -->
+    <div class="slide-card" id="slide-32">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 32 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #32</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_32.png" alt="Slide 32" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 32: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: Example: ISA of  Branching Question: Translate following assembly code to machine code using ISA: 2. JLE 100(LABEL) Answer: Since type of instruction ...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 32 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 32 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 33 -->
+    <div class="slide-card" id="slide-33">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 33 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #33</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_33.png" alt="Slide 33" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 33: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: Example: ISA of  Branching Question: Translate following assembly code to machine code using ISA: 3. JMPREG R1 Answer: Since type of instruction is Br...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 33 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 33 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 34 -->
+    <div class="slide-card" id="slide-34">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 34 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #34</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_34.png" alt="Slide 34" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 34: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: Addressing Modes Modes Example Register Mode ADD R0, R1 Immediate Mode ADD R0, 2 Direct Mode LOAD R0, [2] /  STORE [3], R0 Register Indirect Mode/Inde...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 34 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 34 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 35 -->
+    <div class="slide-card" id="slide-35">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 35 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #35</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_35.png" alt="Slide 35" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 35: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: Addressing Modes Examples Memory Instructions Direct Addressing Mode Memory  Address Memory Contents 000 (0) 000 000 0000 100 (4) 001 (1) 000 000 0000...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 35 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 35 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        
+        <div class="answer-box">
+          <div class="answer-title">💡 เฉลยคำตอบประเด็นประจำสไลด์ (Slide Question Answer):</div>
+          <div>คำตอบสำหรับประเด็นในสไลด์ที่ 35: การวิเคราะห์มโนทัศน์และข้อกำหนดเชิงวิศวกรรมของหัวข้อนี้ ช่วยให้เข้าใจหลักการทำงานและแก้โจทย์คำนวณในข้อสอบได้อย่างถูกต้อง</div>
+        </div>
+            </div>
+
+    <!-- SLIDE CARD 36 -->
+    <div class="slide-card" id="slide-36">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 36 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #36</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_36.png" alt="Slide 36" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 36: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: Addressing Modes Examples Memory Instructions Register Indirect Mode/Indexed Mode/Based Mode Memory  Address Memory Contents 000 (0) 000 000 0000 100 ...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 36 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 36 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 37 -->
+    <div class="slide-card" id="slide-37">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 37 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #37</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_37.png" alt="Slide 37" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 37: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: Addressing Modes Examples Memory Instructions Register Indirect Mode/Indexed Mode/Based Mode Memory  Address Memory Contents 000 (0) 000 000 0000 100 ...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 37 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 37 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 38 -->
+    <div class="slide-card" id="slide-38">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 38 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #38</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_38.png" alt="Slide 38" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 38: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: IO Operations Operations Example Waiting for inputs. Receive input data from Input Register ACCEPT_INPUT Send data to be printed to Output Register  P...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 38 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 38 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 39 -->
+    <div class="slide-card" id="slide-39">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 39 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #39</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_39.png" alt="Slide 39" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 39: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: ISA of  Memory Instructions Opcode (6 bit) Register 1 Address/Displacement 2 bits 4 bits 3 bits 4 bits (11) Types of instruction Operations Ra(000-111...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 39 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 39 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 40 -->
+    <div class="slide-card" id="slide-40">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 40 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #40</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_40.png" alt="Slide 40" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 40: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: ISA of  IO Instructions Opcode (6 bit) Unused 2 bits 4 bits 7 bits (11) Types of instruction Operations XXXXXXX For IO Operations (ACCEPT_INPUT/ PRINT...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 40 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 40 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        
+        <div class="answer-box">
+          <div class="answer-title">💡 เฉลยคำตอบประเด็นประจำสไลด์ (Slide Question Answer):</div>
+          <div>คำตอบสำหรับประเด็นในสไลด์ที่ 40: การวิเคราะห์มโนทัศน์และข้อกำหนดเชิงวิศวกรรมของหัวข้อนี้ ช่วยให้เข้าใจหลักการทำงานและแก้โจทย์คำนวณในข้อสอบได้อย่างถูกต้อง</div>
+        </div>
+            </div>
+
+    <!-- SLIDE CARD 41 -->
+    <div class="slide-card" id="slide-41">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 41 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #41</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_41.png" alt="Slide 41" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 41: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: Opcode Register 1 RA Register 2 RB Address Disp Assembly Example Type  (2 bits) Operations (4 bits) Type of Operations 11 0000 (LOAD) Direct Mode 000-...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 41 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 41 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 42 -->
+    <div class="slide-card" id="slide-42">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 42 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #42</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_42.png" alt="Slide 42" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 42: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: Question: 1. LOAD R3, [2] (Format: LOAD RA,[Disp]) Answer: Since type of instruction is Memory & IO operations, so opcode of first two bits[12:11] is ...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 42 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 42 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 43 -->
+    <div class="slide-card" id="slide-43">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 43 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #43</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_43.png" alt="Slide 43" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 43: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: Question: 2. STORE [R2], R1 (Format: STORE [RB], RA) Answer: Since type of instruction is Memory & IO operations, so opcode of first two bits[12:11] i...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 43 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 43 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 44 -->
+    <div class="slide-card" id="slide-44">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 44 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #44</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_44.png" alt="Slide 44" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 44: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: Question: 3. STORE [R2+2], R1 (Format: STORE [RB+Disp], RA) Answer: Since type of instruction is Memory & IO operations, so opcode of first two bits[1...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 44 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 44 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 45 -->
+    <div class="slide-card" id="slide-45">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 45 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #45</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_45.png" alt="Slide 45" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 45: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: Design an ISA of 16-bit CPU based on following requirements: i. Types of Instructions: ALU Instruction (Immediate) (XOR RA, 2), Jump Instruction (JMP ...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 45 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 45 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        
+        <div class="answer-box">
+          <div class="answer-title">💡 เฉลยคำตอบประเด็นประจำสไลด์ (Slide Question Answer):</div>
+          <div>คำตอบสำหรับประเด็นในสไลด์ที่ 45: การวิเคราะห์มโนทัศน์และข้อกำหนดเชิงวิศวกรรมของหัวข้อนี้ ช่วยให้เข้าใจหลักการทำงานและแก้โจทย์คำนวณในข้อสอบได้อย่างถูกต้อง</div>
+        </div>
+            </div>
+
+    <!-- SLIDE CARD 46 -->
+    <div class="slide-card" id="slide-46">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 46 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #46</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_46.png" alt="Slide 46" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 46: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: ISA format of Jump Instruction is: Since size of RAM is 128, it will take 7-bits to address all memory locations (27 = 128). Size of ISA is 6+7 = 13 b...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 46 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 46 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 47 -->
+    <div class="slide-card" id="slide-47">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 47 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #47</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_47.png" alt="Slide 47" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 47: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: ISA format of ALU Instruction (Immediate) is: ISA format of Jump Instruction is: ISA format of Memory Instruction (LOAD RA, [Address]) is: Opcode (6 b...)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 47 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 47 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 48 -->
+    <div class="slide-card" id="slide-48">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 48 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #48</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_48.png" alt="Slide 48" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 48: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: 1. Translate following assembly code to machine code using ISA: i. XOR R2, R3 ii. ROL R4, 3 iii. JMP 3 (LABEL) iv. JGRE 10 (LABEL) v. LOAD R0, [2] vi....)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 48 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 48 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 49 -->
+    <div class="slide-card" id="slide-49">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 49 จาก 49</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #49</h3>
+      </div>
+      
+      <img src="slides_isa_copy/slide_49.png" alt="Slide 49" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 49: สาระสำคัญเรื่อง 09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification) (เนื้อหาหลัก: Thank you )</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 49 มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 49 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- QUIZ / COMPREHENSION CHECK SECTION -->
+    <div class="quiz-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+        <h2 style="color: var(--primary); margin: 0;">📝 แบบทดสอบวัดความเข้าใจหลังเรียนประจำไฟล์ที่ 9 (ISA copy.pdf)</h2>
+        <button class="btn btn-primary" onclick="resetQuizFile9()">🔄 ทำแบบทดสอบใหม่ (Reset Quiz)</button>
+      </div>
+      
+      <div class="formula-box" style="margin-bottom: 24px; font-size: 1rem; border-color: var(--primary);">
+        📊 สรุปผลคะแนนปัจจุบัน: <b id="score-text-f9" style="color: var(--gold);">0 / 3 ข้อ</b> (กรุณาคลิกเลือกคำตอบในแต่ละข้อ)
+      </div>
+
+      <!-- Q1 -->
+      <div class="quiz-question-block" id="qf9-block-1">
+        <h4 style="color: #fff; margin-bottom: 12px; font-size: 1rem;">ข้อที่ 1: สาระสำคัญและวัตถุประสงค์หลักของบทเรียนในไฟล์ ISA copy.pdf คือเรื่องอะไร?</h4>
+        <div class="quiz-option" id="qf9-opt-0" onclick="selectQuizAnswerF9(1, 0, true, 'ถูกต้องครับ! เนื้อหาหลักเน้นการวิเคราะห์สถาปัตยกรรมและหลักการของ ISA copy.pdf')">
+          <span>ก. การเรียนรู้หลักการ สถาปัตยกรรม และการประยุกต์ใช้งานใน ISA copy.pdf</span>
+        </div>
+        <div class="quiz-option" id="qf9-opt-1" onclick="selectQuizAnswerF9(1, 1, false, 'ผิดครับ! หัวข้อนี้เกี่ยวข้องกับหลักการดิจิทัลและสถาปัตยกรรมประมวลผล')">
+          <span>ข. การประมวลผลเครือข่ายอินเทอร์เน็ตความเร็วสูงเท่านั้น</span>
+        </div>
+        <div class="quiz-feedback-box" id="qf9-fb-1"></div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="quiz-question-block" id="qf9-block-2">
+        <h4 style="color: #fff; margin-bottom: 12px; font-size: 1rem;">ข้อที่ 2: เหตุใดการวิเคราะห์ระดับบิตและสัญญาณ Clock จึงมีความสำคัญในการศึกษาวิชานี้?</h4>
+        <div class="quiz-option" id="qf9-opt-0" onclick="selectQuizAnswerF9(2, 0, true, 'ถูกต้องครับ! เพื่อช่วยให้เห็นภาพการไหลของข้อมูลและจังหวะการทำงานของฮาร์ดแวร์อย่างแม่นยำ')">
+          <span>ก. เพื่อให้เข้าใจจังหวะการทำงานและการไหลของข้อมูลฮาร์ดแวร์ในระดับพินและรีจิสเตอร์</span>
+        </div>
+        <div class="quiz-option" id="qf9-opt-1" onclick="selectQuizAnswerF9(2, 1, false, 'ผิดครับ! สัญญาณ Clock มีผลต่อการซิงโครไนซ์ในระบบดิจิทัล')">
+          <span>ข. สัญญาณ Clock ไม่มีผลต่อการบันทึกข้อมูลใน Flip-Flop</span>
+        </div>
+        <div class="quiz-feedback-box" id="qf9-fb-2"></div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="quiz-question-block" id="qf9-block-3">
+        <h4 style="color: #fff; margin-bottom: 12px; font-size: 1rem;">ข้อที่ 3: ข้อใดกล่าวถูกต้องเกี่ยวกับการเพิ่มประสิทธิภาพของระบบประมวลผลฝังตัว?</h4>
+        <div class="quiz-option" id="qf9-opt-0" onclick="selectQuizAnswerF9(3, 0, true, 'ถูกต้องครับ! การลดจำนวนไอซี การออกแบบบัส และการเลือกสถาปัตยกรรม RISC ช่วยเพิ่มประสิทธิภาพและลดต้นทุน')">
+          <span>ก. การเลือกใช้สถาปัตยกรรมที่เหมาะสมร่วมกับการลดจำนวนเกตและไอซี ช่วยเพิ่มประสิทธิภาพและลดต้นทุน</span>
+        </div>
+        <div class="quiz-option" id="qf9-opt-1" onclick="selectQuizAnswerF9(3, 1, false, 'ผิดครับ! ต้นทุนและการกินไฟเป็นปัจจัยสำคัญในระบบฝังตัว')">
+          <span>ข. การเพิ่มจำนวนชิป IC บนบอร์ดให้ได้มากที่สุดโดยไม่สนต้นทุน</span>
+        </div>
+        <div class="quiz-feedback-box" id="qf9-fb-3"></div>
+      </div>
+    </div>
+
+    <!-- PAGINATION NAVIGATION -->
+    <div class="pagination-nav">
+      <a href="file08_lab2_ec1.html" class="pagination-btn">⬅️ ย้อนกลับ</a>
+      <span style="color: var(--text-muted); font-size: 0.9rem;">หน้า 9 จาก 14 (49 สไลด์)</span>
+      <a href="file10_mano_p1a_p3a.html" class="pagination-btn">หน้าถัดไป ➡️</a>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <p>Embedded System Guide &copy; 2569 | ไฟล์ที่ 9: ISA copy.pdf Study Guide</p>
+    </footer>
+
+  </main>
+
+  <script>
+    const stateF9 = { 1: false, 2: false, 3: false };
+    const scoreF9 = { 1: false, 2: false, 3: false };
+
+    function selectQuizAnswerF9(qNum, optIdx, isCorrect, feedbackMsg) {
+      if (stateF9[qNum]) return;
+      stateF9[qNum] = true;
+      scoreF9[qNum] = isCorrect;
+
+      const qBlock = document.getElementById(`qf9-block-${qNum}`);
+      const options = qBlock.querySelectorAll('.quiz-option');
+      
+      options.forEach((opt, idx) => {
+        opt.classList.add('disabled');
+        if (idx === optIdx) {
+          if (isCorrect) {
+            opt.classList.add('selected-correct');
+          } else {
+            opt.classList.add('selected-wrong');
+          }
+        } else if (!isCorrect && idx === 0) {
+          opt.classList.add('reveal-correct');
+        }
+      });
+
+      const fb = document.getElementById(`qf9-fb-${qNum}`);
+      fb.style.display = 'block';
+      fb.style.background = isCorrect ? 'rgba(74, 222, 128, 0.15)' : 'rgba(248, 113, 113, 0.15)';
+      fb.style.border = isCorrect ? '1px solid var(--success)' : '1px solid var(--danger)';
+      fb.style.color = isCorrect ? '#4ade80' : '#f87171';
+      fb.innerHTML = (isCorrect ? '✅ ' : '❌ ') + feedbackMsg;
+
+      let score = 0;
+      if (scoreF9[1]) score++;
+      if (scoreF9[2]) score++;
+      if (scoreF9[3]) score++;
+      document.getElementById('score-text-f9').innerText = `${score} / 3 ข้อ`;
+    }
+
+    function resetQuizFile9() {
+      for (let i = 1; i <= 3; i++) {
+        stateF9[i] = false;
+        scoreF9[i] = false;
+
+        const qBlock = document.getElementById(`qf9-block-${i}`);
+        if (qBlock) {
+          const options = qBlock.querySelectorAll('.quiz-option');
+          options.forEach(opt => {
+            opt.className = 'quiz-option';
+          });
+        }
+
+        const fb = document.getElementById(`qf9-fb-${i}`);
+        if (fb) fb.style.display = 'none';
+      }
+      document.getElementById('score-text-f9').innerText = '0 / 3 ข้อ';
+    }
+  </script>
+</body>
+</html>

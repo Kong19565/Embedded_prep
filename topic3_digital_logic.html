@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>หัวข้อที่ 3: Digital Logic, 4-bit ALU & Sequential Logisim Circuits</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .bitbtn { width: 38px; height: 40px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(9, 13, 22, 0.8); color: var(--text-muted); font-family: var(--font-code); font-size: 15px; cursor: pointer; transition: .14s; }
+    .bitbtn.one { background: var(--gold); color: #241802; border-color: var(--gold); font-weight: 600; }
+    .bitcol { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .bitcol small { font-family: var(--font-code); font-size: 10px; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">⚡ EMBEDDED EXAM HUB</a>
+    <ul class="nav-links">
+      <li><a href="index.html">หน้าหลัก</a></li>
+      <li><a href="topic1_rom_control.html">1. ROM Control Store</a></li>
+      <li><a href="topic2_ec1_cpu.html">2. EC-1 CPU</a></li>
+      <li><a href="topic3_digital_logic.html" class="active">3. Digital Logic & ALU</a></li>
+      <li><a href="topic4_avr_assembly.html">4. AVR Assembly</a></li>
+      <li><a href="topic5_cpu_architecture.html">5. CPU & Arithmetic</a></li>
+      <li><a href="topic6_io_interrupts_dma.html">6. I/O & DMA</a></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN CONTAINER -->
+  <main class="container">
+
+    <!-- PAGE BANNER -->
+    <header class="page-banner">
+      <h1 class="page-title">🔌 หัวข้อที่ 3: Digital Logic, 4-bit ALU & Sequential Logisim Circuits</h1>
+      <p class="page-subtitle">
+        ทบทวนลอจิกเกตพื้นฐาน (Gate Logic), Karnaugh Maps, การออกแบบวงจรคำนวณ 4-bit ALU, Flip-Flops (D, JK, T), วงจรนับสะสม (Counter/Accumulator) และกฎ Tri-State Bus
+      </p>
+    </header>
+
+    <!-- SOURCE FILE MAPPING BOX -->
+    <div class="source-file-box">
+      <h3>📁 ตำแหน่งไฟล์อ้างอิงบทเรียนนี้ใน Workspace (Source File Mapping)</h3>
+      <ul class="source-file-list">
+        <li class="source-file-item">
+          <span class="source-tag">Lecture PDF</span>
+          <a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Lectures_and_Textbooks/micro2_ALU.pdf" class="file-link">Lectures_and_Textbooks/micro2_ALU.pdf</a>
+          <span style="color: var(--text-muted); font-size: 0.82rem;">(สไลด์วงจรคณิตศาสตร์และตรรกะ ALU)</span>
+        </li>
+        <li class="source-file-item">
+          <span class="source-tag">Report HTML</span>
+          <a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Reports/Lab_ALU_4bit/%E0%B8%A3%E0%B8%B2%E0%B8%A2%E0%B8%87%E0%B8%B2%E0%B8%99_ALU_4bit_%E0%B8%89%E0%B8%B1%E0%B8%9A%E0%B8%B1%E0%B8%9A%E0%B8%AA%E0%B8%A1%E0%B8%9A%E0%B8%B5%E0%B8%A3%E0%B8%93%E0%B9%8C.html" class="file-link">Reports/Lab_ALU_4bit/รายงาน_ALU_4bit_ฉบับสมบูรณ์.html</a>
+          <span style="color: var(--text-muted); font-size: 0.82rem;">(รายงานวงจร 4-bit ALU ฉบับสมบูรณ์)</span>
+        </li>
+        <li class="source-file-item">
+          <span class="source-tag">Report HTML</span>
+          <a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Reports/Lab_2_Counting_1_to_10/Report_Counting_1_to_10.html" class="file-link">Reports/Lab_2_Counting_1_to_10/Report_Counting_1_to_10.html</a>
+          <span style="color: var(--text-muted); font-size: 0.82rem;">(รายงานวงจรนับเลข 1 ถึง 10)</span>
+        </li>
+        <li class="source-file-item">
+          <span class="source-tag">Report HTML</span>
+          <a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Reports/Lab_3_Sum_n_down_to_1/Report_Sum_n_down_to_1.html" class="file-link">Reports/Lab_3_Sum_n_down_to_1/Report_Sum_n_down_to_1.html</a>
+          <span style="color: var(--text-muted); font-size: 0.82rem;">(รายงานวงจรคำนวณผลรวมสะสม ∑k)</span>
+        </li>
+        <li class="source-file-item">
+          <span class="source-tag">Assignment File</span>
+          <a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Assignments/HomeWork.txt" class="file-link">Assignments/HomeWork.txt</a>
+          <span style="color: var(--text-muted); font-size: 0.82rem;">(ไฟล์ข้อกำหนดโจทย์การบ้าน)</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- SECTION 1: COMBINATIONAL LOGIC & ALU -->
+    <section class="section-block">
+      <h2 class="section-title">1. Combinational Logic & โครงสร้าง 4-bit ALU Architecture</h2>
+      <p>Arithmetic Logic Unit (ALU) ทำหน้าที่ประมวลผลคำนวณตัวเลขและตรรกะ โดยในระบบ 4-bit ALU จะรองรับการทำงานดังนี้:</p>
+      
+      <div class="grid-2">
+        <div class="card">
+          <h3 class="card-title">➕ การคำนวณทางคณิตศาสตร์ (Arithmetic Unit)</h3>
+          <ul style="padding-left: 18px; font-size: 0.9rem; color: var(--text-muted);">
+            <li><b>Full Adder (วงจรบวกเต็ม):</b> รับ A<sub>i</sub>, B<sub>i</sub>, C<sub>in</sub> แล้วคำนวณ Sum = A ⊕ B ⊕ C<sub>in</sub> และ C<sub>out</sub> = AB + C<sub>in</sub>(A ⊕ B)</li>
+            <li><b>Subtraction (การลบเลข):</b> ใช้หลักการ Two's Complement โดยนำข้อมูล B ผ่าน NOT Gate แล้วตั้งค่า C<sub>in</sub> = 1 &nbsp; (A - B = A + B̄ + 1)</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3 class="card-title">🔣 การประมวลผลทางตรรกะ (Logic Unit)</h3>
+          <ul style="padding-left: 18px; font-size: 0.9rem; color: var(--text-muted);">
+            <li><b>AND Operation:</b> ผลลัพธ์เป็น 1 เฉพาะเมื่อ A = 1 และ B = 1</li>
+            <li><b>OR Operation:</b> ผลลัพธ์เป็น 1 เมื่อมีอย่างน้อยตัวใดตัวหนึ่งเป็น 1</li>
+            <li><b>XOR Operation:</b> ผลลัพธ์เป็น 1 เมื่อข้อมูลอินพุตต่างกัน</li>
+            <li><b>NOT Operation:</b> กลับค่าบิตจาก 0 เป็น 1 และ 1 เป็น 0</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: SEQUENTIAL CIRCUITS & FLIP-FLOPS -->
+    <section class="section-block">
+      <h2 class="section-title">2. Sequential Logic Circuits & Flip-Flop Mechanics</h2>
+      <div class="grid-3">
+        <div class="card">
+          <h3 class="card-title">📌 D Flip-Flop</h3>
+          <p>หน่วยบันทึกข้อมูล 1 Bit พื้นฐาน เอาต์พุต Q จะรับค่าจาก D เมื่อขอบขาขึ้นของ Clock มาถึง (Q<sub>next</sub> = D)</p>
+        </div>
+        <div class="card">
+          <h3 class="card-title">🔄 JK Flip-Flop</h3>
+          <p>หน่วยบันทึกที่มีโหมด Toggle: หาก J=1, K=1 ค่าเอาต์พุต Q จะสลับเป็นตรงข้ามทุกครั้งที่มี Clock Pulse</p>
+        </div>
+        <div class="card">
+          <h3 class="card-title">⏱️ T Flip-Flop</h3>
+          <p>เมื่อ T=1 เอาต์พุต Q จะสลับค่าทันที เหมาะอย่างยิ่งสำหรับการสร้างวงจรนับเลข (Counter Circuits)</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: SHARED BUS & TRI-STATE BUFFERS -->
+    <section class="section-block">
+      <h2 class="section-title">3. สถาปัตยกรรม Shared Bus & Tri-State Buffer Protocol</h2>
+      <div class="card">
+        <h3 class="card-title">🔌 กฎสำคัญของ Tri-State Buffer ในระบบบัส</h3>
+        <div class="theory-box">
+          - Tri-State Buffer มี 3 สถานะ: <b>HIGH (1)</b>, <b>LOW (0)</b>, และ <b>HIGH-Z (High Impedance / ลอยสาย)</b><br>
+          - <b>ข้อห้ามเด็ดขาด (Bus Contention Avoidance):</b> ห้ามเปิดใช้งาน Enable (EN=1) ของอุปกรณ์เกิน 1 ตัวในเวลาเดียวกันบนสาย Bus เดียวกัน เพราะจะทำให้เกิดการชนของกระแสไฟ (Short Circuit / Contention)
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: FULL INTERACTIVE 4-BIT ALU TESTER & BIT PLAYGROUND -->
+    <section class="section-block">
+      <h2 class="section-title">4. Interactive 4-bit ALU Tester & Flag Monitor</h2>
+      <div class="sim-container">
+        <div class="sim-header">
+          <div>
+            <h3 style="color: var(--primary);">เครื่องมือทดสอบวงจร 4-bit ALU และ Status Flags</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">เลือกโหมด ALU, ปรับค่า Bit A, Bit B, C_in แล้วดูผลลัพธ์ Sum/Result, Carry Out, Overflow (V), Zero (Z), Negative (N)</p>
+          </div>
+          <div class="sim-controls">
+            <select class="btn btn-primary" id="aluOpSelect" onchange="calcAlu()" style="padding: 8px 12px;">
+              <option value="ADD">➕ ADD (A + B + Cin)</option>
+              <option value="SUB">➖ SUB (A - B)</option>
+              <option value="AND">🔣 AND (A & B)</option>
+              <option value="OR">🔣 OR (A | B)</option>
+              <option value="XOR">🔣 XOR (A ^ B)</option>
+              <option value="NOT">🔣 NOT (Ā)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px;">
+          <!-- INPUT A -->
+          <div class="card">
+            <h4 style="color: var(--accent); margin-bottom: 8px;">Input A (4-bit: Bit 3 → Bit 0)</h4>
+            <div style="display: flex; gap: 8px;" id="inputABox"></div>
+            <div class="formula-box" style="margin-top: 10px;" id="readoutA">Dec: 5 | Hex: 0x5 | Bin: 0b0101</div>
+          </div>
+          <!-- INPUT B -->
+          <div class="card">
+            <h4 style="color: var(--gold); margin-bottom: 8px;">Input B (4-bit: Bit 3 → Bit 0)</h4>
+            <div style="display: flex; gap: 8px;" id="inputBBox"></div>
+            <div class="formula-box" style="margin-top: 10px;" id="readoutB">Dec: 3 | Hex: 0x3 | Bin: 0b0011</div>
+          </div>
+        </div>
+
+        <!-- ALU OUTPUT RESULT & FLAGS -->
+        <div class="circuit-grid" style="margin-top: 16px;">
+          <div class="node-box active">
+            <div class="node-label">ALU Result (4-bit)</div>
+            <div class="node-val" id="val-alu-res">0x8 (8)</div>
+          </div>
+          <div class="node-box highlight">
+            <div class="node-label">Carry Out (C_out)</div>
+            <div class="node-val" id="val-alu-cout">0</div>
+          </div>
+          <div class="node-box">
+            <div class="node-label">Overflow Flag (V)</div>
+            <div class="node-val" id="val-alu-v">0</div>
+          </div>
+          <div class="node-box">
+            <div class="node-label">Zero Flag (Z)</div>
+            <div class="node-val" id="val-alu-z">0</div>
+          </div>
+          <div class="node-box highlight">
+            <div class="node-label">Negative Flag (N)</div>
+            <div class="node-val" id="val-alu-n">1</div>
+          </div>
+        </div>
+
+        <div class="theory-box" style="margin-top: 14px;" id="alu-explain">
+          <b>วิเคราะห์ผลลัพธ์ ALU:</b> 5 + 3 = 8 (Binary 0b1000) -> ผลลัพธ์ในระบบ Signed Two's Complement บิต MSB เป็น 1 (Negative Flag = 1)
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <p>Embedded System Exam Guide &copy; 2569 | หัวข้อที่ 3: Digital Logic & 4-bit ALU</p>
+    </footer>
+
+  </main>
+
+  <script>
+    let valA = 5, valB = 3, valCin = 0;
+
+    const boxA = document.getElementById('inputABox');
+    const boxB = document.getElementById('inputBBox');
+
+    for (let i = 3; i >= 0; i--) {
+      const colA = document.createElement('div'); colA.className = 'bitcol';
+      colA.innerHTML = `<button class="bitbtn ${(valA>>i&1)?'one':''}" id="btnA_${i}" onclick="toggleA(${i})">${valA>>i&1}</button><small>A${i}</small>`;
+      boxA.appendChild(colA);
+
+      const colB = document.createElement('div'); colB.className = 'bitcol';
+      colB.innerHTML = `<button class="bitbtn ${(valB>>i&1)?'one':''}" id="btnB_${i}" onclick="toggleB(${i})">${valB>>i&1}</button><small>B${i}</small>`;
+      boxB.appendChild(colB);
+    }
+
+    function toggleA(i) { valA ^= (1 << i); updateUI(); }
+    function toggleB(i) { valB ^= (1 << i); updateUI(); }
+
+    function updateUI() {
+      for (let i = 3; i >= 0; i--) {
+        const btnA = document.getElementById(`btnA_${i}`);
+        const onA = (valA >> i) & 1; btnA.innerText = onA; btnA.classList.toggle('one', !!onA);
+
+        const btnB = document.getElementById(`btnB_${i}`);
+        const onB = (valB >> i) & 1; btnB.innerText = onB; btnB.classList.toggle('one', !!onB);
+      }
+      document.getElementById('readoutA').innerText = `Dec: ${valA} | Hex: 0x${valA.toString(16).toUpperCase()} | Bin: 0b${valA.toString(2).padStart(4,'0')}`;
+      document.getElementById('readoutB').innerText = `Dec: ${valB} | Hex: 0x${valB.toString(16).toUpperCase()} | Bin: 0b${valB.toString(2).padStart(4,'0')}`;
+      calcAlu();
+    }
+
+    function calcAlu() {
+      const op = document.getElementById('aluOpSelect').value;
+      let res = 0, cout = 0, v = 0;
+
+      if (op === 'ADD') {
+        const sum = valA + valB + valCin;
+        res = sum & 0xF;
+        cout = (sum > 15) ? 1 : 0;
+        const msbA = (valA >> 3) & 1, msbB = (valB >> 3) & 1, msbR = (res >> 3) & 1;
+        v = (msbA === msbB && msbA !== msbR) ? 1 : 0;
+      } else if (op === 'SUB') {
+        const diff = valA - valB;
+        res = diff & 0xF;
+        cout = (valA >= valB) ? 1 : 0;
+        const msbA = (valA >> 3) & 1, msbB = (valB >> 3) & 1, msbR = (res >> 3) & 1;
+        v = (msbA !== msbB && msbA !== msbR) ? 1 : 0;
+      } else if (op === 'AND') { res = (valA & valB) & 0xF; }
+      else if (op === 'OR') { res = (valA | valB) & 0xF; }
+      else if (op === 'XOR') { res = (valA ^ valB) & 0xF; }
+      else if (op === 'NOT') { res = (~valA) & 0xF; }
+
+      const z = (res === 0) ? 1 : 0;
+      const n = (res >> 3) & 1;
+
+      document.getElementById('val-alu-res').innerText = `0x${res.toString(16).toUpperCase()} (${res})`;
+      document.getElementById('val-alu-cout').innerText = cout;
+      document.getElementById('val-alu-v').innerText = v;
+      document.getElementById('val-alu-z').innerText = z;
+      document.getElementById('val-alu-n').innerText = n;
+      document.getElementById('alu-explain').innerHTML = `<b>วิเคราะห์ผลลัพธ์ ALU (${op}):</b> Input A=${valA}, B=${valB} -> คำนวณได้ Result=0x${res.toString(16).toUpperCase()} (Binary 0b${res.toString(2).padStart(4,'0')}) | Flags: C_out=${cout}, V=${v}, Z=${z}, N=${n}`;
+    }
+
+    updateUI();
+  </script>
+</body>
+</html>

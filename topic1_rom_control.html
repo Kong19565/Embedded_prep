@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>หัวข้อที่ 1: ROM as Control Store & Microprogrammed Control Unit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .bitbtn { width: 36px; height: 38px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(9, 13, 22, 0.8); color: var(--text-muted); font-family: var(--font-code); font-size: 14px; cursor: pointer; transition: .14s; }
+    .bitbtn.one { background: var(--gold); color: #241802; border-color: var(--gold); font-weight: 600; }
+    .bitcol { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .bitcol small { font-family: var(--font-code); font-size: 9px; color: var(--text-muted); }
+    canvas#romWave { width: 100%; height: 120px; display: block; border-radius: 8px; background: #060911; border: 1px solid var(--border-color); margin-top: 12px; }
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">⚡ EMBEDDED EXAM HUB</a>
+    <ul class="nav-links">
+      <li><a href="index.html">หน้าหลัก</a></li>
+      <li><a href="topic1_rom_control.html" class="active">1. ROM Control Store</a></li>
+      <li><a href="topic2_ec1_cpu.html">2. EC-1 CPU</a></li>
+      <li><a href="topic3_digital_logic.html">3. Digital Logic & ALU</a></li>
+      <li><a href="topic4_avr_assembly.html">4. AVR Assembly</a></li>
+      <li><a href="topic5_cpu_architecture.html">5. CPU & Arithmetic</a></li>
+      <li><a href="topic6_io_interrupts_dma.html">6. I/O & DMA</a></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN CONTAINER -->
+  <main class="container">
+
+    <!-- PAGE BANNER -->
+    <header class="page-banner">
+      <h1 class="page-title">🧠 หัวข้อที่ 1: ROM as Control Store & Microprogrammed Control Unit</h1>
+      <p class="page-subtitle">
+        ศึกษาแนวคิดหน่วยควบคุมแบบ Microprogram การจัดโครงสร้าง Microinstruction ขนาด 8 Bit วงจรลำดับที่อยู่ Microsequencer สัญญาณตัดสินใจกระโดด SEL และการถอดรหัสโปรแกรมใน ROM
+      </p>
+    </header>
+
+    <!-- SOURCE FILE MAPPING BOX -->
+    <div class="source-file-box">
+      <h3>📁 ตำแหน่งไฟล์อ้างอิงบทเรียนนี้ใน Workspace (Source File Mapping)</h3>
+      <ul class="source-file-list">
+        <li class="source-file-item">
+          <span class="source-tag">Lecture PDF</span>
+          <a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Lectures_and_Textbooks/lab1_rom_as_control_store.pdf" class="file-link">Lectures_and_Textbooks/lab1_rom_as_control_store.pdf</a>
+          <span style="color: var(--text-muted); font-size: 0.82rem;">(สไลด์ทฤษฎี Microprogrammed Control Unit)</span>
+        </li>
+        <li class="source-file-item">
+          <span class="source-tag">Report HTML</span>
+          <a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Reports/Lab_1_ROM_as_Control_Store/Report_ROM_as_Control_Store.html" class="file-link">Reports/Lab_1_ROM_as_Control_Store/Report_ROM_as_Control_Store.html</a>
+          <span style="color: var(--text-muted); font-size: 0.82rem;">(รายงานฉบับเต็ม Lab 1 พร้อมตาราง 42 คาบ)</span>
+        </li>
+        <li class="source-file-item">
+          <span class="source-tag">Logisim Circuit</span>
+          <a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Circuits_and_Simulations/Lab_1_ROM_as_Control_Store.circ" class="file-link">Circuits_and_Simulations/Lab_1_ROM_as_Control_Store.circ</a>
+          <span style="color: var(--text-muted); font-size: 0.82rem;">(ไฟล์จำลองวงจรบน Logisim-Evolution)</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- SECTION 1: HARDWIRED VS MICROPROGRAMMED -->
+    <section class="section-block">
+      <h2 class="section-title">1. เปรียบเทียบหน่วยควบคุมแบบ Hardwired vs Microprogrammed</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3 class="card-title">⚡ Hardwired Control Unit</h3>
+          <p>สร้างจาก Combinational Logic Gates และ D Flip-Flops เพื่อสร้างสัญญาณควบคุมออกมาโดยตรง:</p>
+          <div class="theory-box">
+            - <b>ข้อดี:</b> ความเร็วสูงสุดในการประมวลผล ประหยัดพื้นที่ชิปฮาร์ดแวร์<br>
+            - <b>ข้อเสีย:</b> ไม่มีตารางข้อมูล ต้องออกแบบ Boolean Equations ใหม่ทั้งหมดหากเพิ่มหรือดัดแปลงชุดคำสั่ง
+          </div>
+        </div>
+        <div class="card">
+          <h3 class="card-title">💾 Microprogrammed Control Unit</h3>
+          <p>เปลี่ยนสัญญาณควบคุมให้อยู่ในรูปข้อมูลรหัส (Microinstruction) เก็บบันทึกไว้ใน ROM (Control Store):</p>
+          <div class="theory-box">
+            - <b>ข้อดี:</b> ยืดหยุ่นสูงมาก การแก้ไขหรือเพิ่มคำสั่งทำได้ง่ายเพียงแก้ไขค่า Hex ใน ROM โดยไม่ต้องแตะสายไฟแม้แต่เส้นเดียว<br>
+            - <b>ข้อเสีย:</b> ช้ากว่าเล็กน้อยเนื่องจากต้องใช้รอบเวลาอ่านหน่วยความจำ (Memory Access Time)
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: ARCHITECTURE DIAGRAM -->
+    <section class="section-block">
+      <h2 class="section-title">2. แผนภาพสถาปัตยกรรม Microsequencer และ Control Store (SVG Diagram)</h2>
+      <div class="svg-diagram-container">
+        <svg viewBox="0 0 900 380" xmlns="http://www.w3.org/2000/svg">
+          <!-- MUX -->
+          <rect x="40" y="140" width="80" height="100" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+          <text x="80" y="195" fill="#38bdf8" font-size="16" font-weight="bold" text-anchor="middle">MUX 2:1</text>
+          
+          <!-- uPC -->
+          <rect x="180" y="155" width="90" height="70" rx="8" fill="#1e293b" stroke="#818cf8" stroke-width="2"/>
+          <text x="225" y="195" fill="#818cf8" font-size="16" font-weight="bold" text-anchor="middle">μPC (Reg)</text>
+          
+          <!-- ROM -->
+          <rect x="340" y="140" width="130" height="100" rx="8" fill="#1e293b" stroke="#2dd4bf" stroke-width="2"/>
+          <text x="405" y="185" fill="#2dd4bf" font-size="16" font-weight="bold" text-anchor="middle">Control Store</text>
+          <text x="405" y="210" fill="#94a3b8" font-size="13" text-anchor="middle">ROM 16x8 Bit</text>
+          
+          <!-- Splitter -->
+          <rect x="520" y="160" width="70" height="60" rx="6" fill="#1e293b" stroke="#f472b6" stroke-width="2"/>
+          <text x="555" y="195" fill="#f472b6" font-size="14" font-weight="bold" text-anchor="middle">Splitter</text>
+          
+          <!-- Counter & Display -->
+          <rect x="650" y="80" width="110" height="70" rx="8" fill="#1e293b" stroke="#fbbf24" stroke-width="2"/>
+          <text x="705" y="120" fill="#fbbf24" font-size="15" font-weight="bold" text-anchor="middle">Counter (CNT)</text>
+          
+          <rect x="790" y="80" width="90" height="70" rx="8" fill="#1e293b" stroke="#f472b6" stroke-width="2"/>
+          <text x="835" y="120" fill="#f472b6" font-size="15" font-weight="bold" text-anchor="middle">Hex Display</text>
+
+          <!-- Branch Logic -->
+          <rect x="650" y="220" width="130" height="80" rx="8" fill="#1e293b" stroke="#4ade80" stroke-width="2"/>
+          <text x="715" y="255" fill="#4ade80" font-size="15" font-weight="bold" text-anchor="middle">Branch Logic</text>
+          <text x="715" y="280" fill="#94a3b8" font-size="12" text-anchor="middle">SEL Generator</text>
+          
+          <!-- Adder -->
+          <rect x="180" y="40" width="90" height="50" rx="8" fill="#1e293b" stroke="#fbbf24" stroke-width="1.5"/>
+          <text x="225" y="70" fill="#fbbf24" font-size="14" font-weight="bold" text-anchor="middle">Adder (+1)</text>
+
+          <!-- Connecting Arrows -->
+          <path d="M 120 190 L 180 190" stroke="#38bdf8" stroke-width="2"/>
+          <path d="M 270 190 L 340 190" stroke="#818cf8" stroke-width="2"/>
+          <path d="M 470 190 L 520 190" stroke="#2dd4bf" stroke-width="2"/>
+          <path d="M 300 190 L 300 65 L 270 65" stroke="#818cf8" stroke-width="1.5" fill="none"/>
+          <path d="M 180 65 L 80 65 L 80 140" stroke="#fbbf24" stroke-width="1.5" fill="none"/>
+          <path d="M 590 205 L 610 205 L 610 330 L 80 330 L 80 240" stroke="#f472b6" stroke-width="1.5" fill="none"/>
+          <path d="M 650 260 L 80 260 L 80 240" stroke="#4ade80" stroke-width="1.5" stroke-dasharray="4,4" fill="none"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- SECTION 3: MICROINSTRUCTION & BRANCH EQUATIONS -->
+    <section class="section-block">
+      <h2 class="section-title">3. โครงสร้าง Microinstruction และสมการ Branch Logic</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3 class="card-title">📐 รูปแบบ Microinstruction (8 Bit Specification)</h3>
+          <div class="formula-box">
+            Bit 7: CLR_CNT (1 = ล้างค่า Counter เป็น 0)<br>
+            Bit 6: INC_CNT (1 = เพิ่มค่า Counter ขึ้น +1)<br>
+            Bit 5: EN_DISP (1 = เปิด Tri-State แสดงผลออก Hex Display)<br>
+            Bit 4: JMP_EN  (1 = เปิดการกระโดดไปยังที่อยู่ปลาทาง)<br>
+            Bits 3..0: ADDR (ที่อยู่ ROM ปลายทางที่ต้องการกระโดดไป)
+          </div>
+        </div>
+        <div class="card">
+          <h3 class="card-title">⚡ สมการวงจรตัดสินใจกระโดด (Branch Logic)</h3>
+          <p>สัญญาณเลือก MUX (SEL) คำนวณจากสมการ Boolean เชิงผสม:</p>
+          <div class="formula-box">
+            <span style="font-size: 1.1rem; color: var(--primary);">SEL = JMP_EN · (EQ + NOT COMP_EN)</span><br><br>
+            • หาก SEL = 0 : เลือกที่อยู่ถัดไป (μPC + 1)<br>
+            • หาก SEL = 1 : เลือกที่อยู่กระโดด (ADDR<sub>3..0</sub>)
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: FULL INTERACTIVE ROM SIMULATOR -->
+    <section class="section-block">
+      <h2 class="section-title">4. Interactive ROM Control Store Stepper & Microinstruction Bit Playground</h2>
+      <div class="sim-container">
+        <div class="sim-header">
+          <div>
+            <h3 style="color: var(--primary);">จำลองการประมวลผล 42 คาบสัญญาณนาฬิกา (Lab 1 Simulator)</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">ทดสอบการเปลี่ยนสถานะของ μPC, ROM Data, Counter, SEL, Waveform Canvas และ Hex Display</p>
+          </div>
+          <div class="sim-controls">
+            <button class="btn btn-primary" onclick="stepRomSim()">⏯️ Clock Tick (+1)</button>
+            <button class="btn btn-danger" onclick="resetRomSim()">🔄 Reset System</button>
+          </div>
+        </div>
+
+        <div class="circuit-grid">
+          <div class="node-box active" id="node-clock">
+            <div class="node-label">Clock Cycle</div>
+            <div class="node-val" id="val-clock">0</div>
+          </div>
+          <div class="node-box" id="node-upc">
+            <div class="node-label">μPC (ROM Addr)</div>
+            <div class="node-val" id="val-upc">0x0</div>
+          </div>
+          <div class="node-box highlight" id="node-rom">
+            <div class="node-label">ROM Data (8-bit)</div>
+            <div class="node-val" id="val-rom">0x80</div>
+          </div>
+          <div class="node-box" id="node-cnt">
+            <div class="node-label">Counter (CNT)</div>
+            <div class="node-val" id="val-cnt">0</div>
+          </div>
+          <div class="node-box" id="node-sel">
+            <div class="node-label">Branch MUX SEL</div>
+            <div class="node-val" id="val-sel">0</div>
+          </div>
+          <div class="node-box highlight" id="node-disp">
+            <div class="node-label">Hex Display</div>
+            <div class="node-val" id="val-disp" style="color: var(--accent-pink);">0</div>
+          </div>
+        </div>
+
+        <div class="theory-box" id="rom-status-desc">
+          <b>สถานะปัจจุบัน:</b> Clock 0 - สั่ง Reset Counter (CLR_CNT = 1, Bit 7) เตรียมพร้อมก่อนเริ่มนับ
+        </div>
+
+        <!-- WAVEFORM CANVAS -->
+        <h4 style="color: var(--gold); margin: 16px 0 6px; font-size: 0.9rem;">รูปคลื่นสัญญาณดิจิทัล (Real-time Logic Waveform)</h4>
+        <canvas id="romWave"></canvas>
+
+        <!-- BIT PLAYGROUND -->
+        <h4 style="color: var(--accent); margin: 20px 0 8px; font-size: 0.95rem;">สนามทดลองกดบิต Microinstruction (Bit 7 → Bit 0)</h4>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;" id="microBitBox"></div>
+        <div class="formula-box" style="margin-top: 10px;" id="microBitReadout">
+          Bits [CLR_CNT: 1, INC_CNT: 0, EN_DISP: 0, JMP_EN: 0, ADDR: 0x0] &rightarrow; ROM Hex: <b>0x80</b>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <p>Embedded System Exam Guide &copy; 2569 | หัวข้อที่ 1: ROM Control Store</p>
+    </footer>
+
+  </main>
+
+  <script>
+    const romSequence = [
+      { clock: 0, upc: 0x0, rom: 0x80, cnt: 0, sel: 0, disp: '0', desc: 'Clock 0: CLR_CNT = 1 (Bit 7) ล้างค่า Counter เป็น 0' },
+      { clock: 1, upc: 0x1, rom: 0x60, cnt: 0, sel: 0, disp: '0', desc: 'Clock 1: INC_CNT=1, EN_DISP=1 แสดงผลเลข 0 ออก Hex Display' },
+      { clock: 2, upc: 0x2, rom: 0x60, cnt: 1, sel: 0, disp: '1', desc: 'Clock 2: Counter เพิ่มเป็น 1 แสดงผลเลข 1' },
+      { clock: 3, upc: 0x3, rom: 0x60, cnt: 2, sel: 0, disp: '2', desc: 'Clock 3: Counter เพิ่มเป็น 2 แสดงผลเลข 2' },
+      { clock: 4, upc: 0x4, rom: 0x60, cnt: 3, sel: 0, disp: '3', desc: 'Clock 4: Counter เพิ่มเป็น 3 แสดงผลเลข 3' },
+      { clock: 5, upc: 0x5, rom: 0x60, cnt: 4, sel: 0, disp: '4', desc: 'Clock 5: Counter เพิ่มเป็น 4 แสดงผลเลข 4' },
+      { clock: 6, upc: 0x6, rom: 0x10, cnt: 10, sel: 1, disp: 'A', desc: 'Clock 41: Counter นับถึง 10 (0xA) Comparator ส่ง EQ=1 เกิด Branch Jump ไป 0xF (Halt State)' }
+    ];
+    let romStepIndex = 0;
+    const waveSamples = [];
+
+    function stepRomSim() {
+      romStepIndex = (romStepIndex + 1) % romSequence.length;
+      const state = romSequence[romStepIndex];
+      document.getElementById('val-clock').innerText = state.clock;
+      document.getElementById('val-upc').innerText = '0x' + state.upc.toString(16).toUpperCase();
+      document.getElementById('val-rom').innerText = '0x' + state.rom.toString(16).toUpperCase();
+      document.getElementById('val-cnt').innerText = state.cnt;
+      document.getElementById('val-sel').innerText = state.sel;
+      document.getElementById('val-disp').innerText = state.disp;
+      document.getElementById('rom-status-desc').innerHTML = '<b>สถานะปัจจุบัน:</b> ' + state.desc;
+
+      waveSamples.push({ cnt: state.cnt, sel: state.sel });
+      if (waveSamples.length > 50) waveSamples.shift();
+      drawRomWave();
+    }
+
+    function resetRomSim() {
+      romStepIndex = 0;
+      waveSamples.length = 0;
+      const state = romSequence[0];
+      document.getElementById('val-clock').innerText = state.clock;
+      document.getElementById('val-upc').innerText = '0x0';
+      document.getElementById('val-rom').innerText = '0x80';
+      document.getElementById('val-cnt').innerText = '0';
+      document.getElementById('val-sel').innerText = '0';
+      document.getElementById('val-disp').innerText = '0';
+      document.getElementById('rom-status-desc').innerHTML = '<b>สถานะปัจจุบัน:</b> Clock 0 - สั่ง Reset Counter (CLR_CNT = 1, Bit 7) เตรียมพร้อมก่อนเริ่มนับ';
+      drawRomWave();
+    }
+
+    function drawRomWave() {
+      const cv = document.getElementById('romWave');
+      if (!cv) return;
+      const ctx = cv.getContext('2d');
+      cv.width = cv.clientWidth; cv.height = 120;
+      const w = cv.width, h = cv.height;
+      ctx.clearRect(0, 0, w, h);
+      ctx.strokeStyle = '#2e3c54'; ctx.lineWidth = 1;
+      for (let x = 0; x < w; x += 30) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+      
+      if (waveSamples.length < 2) return;
+      const step = w / 50;
+      ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2; ctx.beginPath();
+      waveSamples.forEach((s, i) => {
+        const x = i * step, y = h - 20 - (s.cnt * 7);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+    }
+
+    // Microinstruction Bit Playground
+    let microVal = 0x80;
+    const bitBox = document.getElementById('microBitBox');
+    const bitLabels = ['ADDR0', 'ADDR1', 'ADDR2', 'ADDR3', 'JMP_EN', 'EN_DISP', 'INC_CNT', 'CLR_CNT'];
+    for (let i = 7; i >= 0; i--) {
+      const col = document.createElement('div'); col.className = 'bitcol';
+      col.innerHTML = `<button class="bitbtn ${(microVal>>i&1)?'one':''}" onclick="toggleMicroBit(${i})">${microVal>>i&1}</button><small>${bitLabels[i]}</small>`;
+      bitBox.appendChild(col);
+    }
+
+    function toggleMicroBit(b) {
+      microVal ^= (1 << b);
+      const btns = bitBox.querySelectorAll('.bitbtn');
+      btns.forEach((btn, idx) => {
+        const bitIdx = 7 - idx;
+        const on = (microVal >> bitIdx) & 1;
+        btn.innerText = on;
+        btn.classList.toggle('one', !!on);
+      });
+      const clr = (microVal >> 7) & 1, inc = (microVal >> 6) & 1, disp = (microVal >> 5) & 1, jmp = (microVal >> 4) & 1, addr = microVal & 0xF;
+      document.getElementById('microBitReadout').innerHTML = `Bits [CLR_CNT: ${clr}, INC_CNT: ${inc}, EN_DISP: ${disp}, JMP_EN: ${jmp}, ADDR: 0x${addr.toString(16).toUpperCase()}] &rightarrow; ROM Hex: <b>0x${microVal.toString(16).padStart(2,'0').toUpperCase()}</b>`;
+    }
+  </script>
+</body>
+</html>
