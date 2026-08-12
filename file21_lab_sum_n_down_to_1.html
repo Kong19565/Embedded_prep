@@ -33,7 +33,35 @@
     </header>
 
     <!-- REPORT LINK & DOWNLOAD BOX -->
-    <div class="source-file-box" style="border-color: #a855f7;">
+    
+    <!-- DEEP EXTRACTED CONTENT FROM SUM N DOWN TO 1 REPORT -->
+    <section class="section-block" style="margin-top: 30px;">
+      <h2 style="color: var(--primary); border-bottom: 2px solid var(--border-color); padding-bottom: 10px;">
+        📖 ถอดสกัดโครงสร้าง Datapath และโค้ดบวกลูปรายงานผลการทดลอง Sum N down to 1
+      </h2>
+
+      <div class="slide-card">
+        <div class="slide-header">
+          <span class="slide-num-badge">ส่วนที่ 1: สมการคณิตศาสตร์และโครงสร้างทางเดินข้อมูล</span>
+          <h3 style="color: #fff;">1. อัลกอริทึมผลรวมสะสม $S = \sum_{i=1}^{n} i$</h3>
+        </div>
+        <p style="font-size: 0.92rem; line-height: 1.75; color: #cbd5e1;">
+          การทดลองนี้เป็นการหาผลบวกสะสมตั้งแต่ค่า $n$ ลงมาถึง 1 เช่น ถ้า $n=5$ ผลบวกคือ $5+4+3+2+1 = 15$ ($0x0F$) โดยใช้วงจร Datapath ร่วมกับ ALU และ Control Unit:
+        </p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px;">
+          <div style="background: #060b19; padding: 10px; border-radius: 10px; text-align: center;">
+            <img src="reports_assets/Lab_3_Sum_n_down_to_1/report_img/main_circuit_sum.jpg" alt="Sum Main Circuit" style="width: 100%; border-radius: 6px; border: 1px solid var(--border-color);">
+            <div style="color: var(--text-muted); font-size: 0.85rem; margin-top: 6px;">รูปที่ 1: ผังวงจรฮาร์ดแวร์บวกสะสม Sum N down to 1 บน Proteus VSM</div>
+          </div>
+          <div style="background: #060b19; padding: 10px; border-radius: 10px; text-align: center;">
+            <img src="reports_assets/Lab_3_Sum_n_down_to_1/report_img/sum_chronogram.png" alt="Sum Chronogram" style="width: 100%; border-radius: 6px; border: 1px solid var(--border-color);">
+            <div style="color: var(--text-muted); font-size: 0.85rem; margin-top: 6px;">รูปที่ 2: รูปคลื่นสัญญาณ Chronogram แสดงจังหวะวนลูปสะสมค่าใน Accumulator</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+<div class="source-file-box" style="border-color: #a855f7;">
       <h3 style="color: #c084fc;">📁 เอกสารรายงานผลการทดลองจริง (Student Lab Report Assets)</h3>
       <div style="display: flex; gap: 14px; flex-wrap: wrap; margin-top: 12px;">
         <a href="reports_assets/Lab_3_Sum_n_down_to_1/Report_Sum_n_down_to_1.html" target="_blank" class="btn btn-primary" style="background: #a855f7; border-color: #a855f7;">

@@ -33,7 +33,35 @@
     </header>
 
     <!-- REPORT LINK & DOWNLOAD BOX -->
-    <div class="source-file-box" style="border-color: #a855f7;">
+    
+    <!-- DEEP EXTRACTED CONTENT FROM COUNTING 1 TO 10 REPORT -->
+    <section class="section-block" style="margin-top: 30px;">
+      <h2 style="color: var(--primary); border-bottom: 2px solid var(--border-color); padding-bottom: 10px;">
+        📖 ถอดสกัดวงจรและแผนผังเวลารายงานผลการทดลองวงจรนับ 1 ถึง 10
+      </h2>
+
+      <div class="slide-card">
+        <div class="slide-header">
+          <span class="slide-num-badge">ส่วนที่ 1: แนวคิดการออกแบบวงจรนับและรีเซ็ต</span>
+          <h3 style="color: #fff;">1. หลักการทำงานของ Counter Circuit (1 to 10)</h3>
+        </div>
+        <p style="font-size: 0.92rem; line-height: 1.75; color: #cbd5e1;">
+          การทดลองนี้เป็นการสร้างวงจรนับไบนารีขนาด 4 บิตที่เพิ่มค่าจาก 1 ($0001_2$) ไปถึง 10 ($1010_2$) เมื่อนับถึง 10 วงจร Comparator ตรวจจับจะส่งสัญญาณ Reset ให้กลับไปเริ่มต้นนับ 1 ใหม่ทันที:
+        </p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px;">
+          <div style="background: #060b19; padding: 10px; border-radius: 10px; text-align: center;">
+            <img src="reports_assets/Lab_2_Counting_1_to_10/report_img/main_circuit.png" alt="Main Circuit" style="width: 100%; border-radius: 6px; border: 1px solid var(--border-color);">
+            <div style="color: var(--text-muted); font-size: 0.85rem; margin-top: 6px;">รูปที่ 1: ผังวงจรสมบูรณ์แสดงตัวนับ Register, Adder และ Comparator บน Proteus</div>
+          </div>
+          <div style="background: #060b19; padding: 10px; border-radius: 10px; text-align: center;">
+            <img src="reports_assets/Lab_2_Counting_1_to_10/report_img/chronogram.png" alt="Chronogram" style="width: 100%; border-radius: 6px; border: 1px solid var(--border-color);">
+            <div style="color: var(--text-muted); font-size: 0.85rem; margin-top: 6px;">รูปที่ 2: รูปคลื่นสัญญาณ Chronogram แสดงจังหวะการเปลี่ยนค่า 1 -> 10 และ Reset</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+<div class="source-file-box" style="border-color: #a855f7;">
       <h3 style="color: #c084fc;">📁 เอกสารรายงานผลการทดลองจริง (Student Lab Report Assets)</h3>
       <div style="display: flex; gap: 14px; flex-wrap: wrap; margin-top: 12px;">
         <a href="reports_assets/Lab_2_Counting_1_to_10/Report_Counting_1_to_10.html" target="_blank" class="btn btn-primary" style="background: #a855f7; border-color: #a855f7;">

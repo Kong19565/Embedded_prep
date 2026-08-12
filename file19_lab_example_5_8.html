@@ -33,7 +33,86 @@
     </header>
 
     <!-- REPORT LINK & DOWNLOAD BOX -->
-    <div class="source-file-box" style="border-color: #a855f7;">
+    
+    <!-- DEEP EXTRACTED CONTENT FROM EXERCISE 5-8 REPORT -->
+    <section class="section-block" style="margin-top: 30px;">
+      <h2 style="color: var(--primary); border-bottom: 2px solid var(--border-color); padding-bottom: 10px;">
+        📖 ถอดสกัดโค้ดและผลการวิเคราะห์จากรายงานการทดลอง Exercise 5-8
+      </h2>
+
+      <!-- Program Logic Analysis -->
+      <div class="slide-card">
+        <div class="slide-header">
+          <span class="slide-num-badge">ส่วนที่ 1: อัลกอริทึมการแปลงเลขฐานสิบหกเป็นทศนิยม</span>
+          <h3 style="color: #fff;">1. อัลกอริทึมลบซ้ำด้วย 10 (Repeated Subtraction Algorithm)</h3>
+        </div>
+        <p style="font-size: 0.92rem; line-height: 1.75; color: #cbd5e1;">
+          การทดลองนี้โจทย์กำหนดให้แปลงค่าตัวเลข 8 บิตช่วง 0x00 ถึง 0x63 (0 ถึง 99 ทศนิยม) เป็นรหัส BCD สองหลักเพื่อแสดงผลออกพอร์ต B (PORTB) โดยใช้อัลกอริทึมลบซ้ำด้วย 10:
+        </p>
+        <ol style="line-height: 1.8; color: #38bdf8; font-size: 0.9rem; padding-left: 20px;">
+          <li>นำค่าอินพุตตั้งไว้ในรีจิสเตอร์ R16 และเคลียร์ตัวนับหลักสิบ R17 ให้เป็น 0</li>
+          <li>วนลูปเปรียบเทียบคำสั่ง <code>CPI R16, 10</code> หากค่ายังมากกว่าหรือเท่ากับ 10 ให้ทำการลบออกด้วย 10 (<code>SUBI R16, 10</code>) แล้วบวกเพิ่มตัวนับหลักสิบ (<code>INC R17</code>)</li>
+          <li>เมื่อค่าใน R16 น้อยกว่า 10 ลูปจะจบลง ผลลัพธ์ใน R16 คือหลักหน่วย (Units) และ R17 คือหลักสิบ (Tens)</li>
+          <li>รวมผลลัพธ์เข้าด้วยกันด้วยการเลื่อนบิต <code>SWAP R17</code> แล้วรวมเป็น <code>OR R17, R16</code> ก่อนส่งออกไปที่ <code>OUT PORTB, R17</code></li>
+        </ol>
+      </div>
+
+      <!-- Assembly Code Block -->
+      <div class="slide-card">
+        <div class="slide-header">
+          <span class="slide-num-badge">ส่วนที่ 2: ซอร์สโค้ดภาษาแอสเซมบลีสมบูรณ์</span>
+          <h3 style="color: #fff;">2. AVR Assembly Source Code (Example 5-8)</h3>
+        </div>
+        <pre style="background: #060b19; color: #38bdf8; padding: 16px; border-radius: 10px; border: 1px solid var(--border-color); font-family: var(--font-code); font-size: 0.9rem; line-height: 1.6; overflow-x: auto;">
+.INCLUDE "M328PDEF.INC"
+.ORG 0x0000
+
+LDI R16, HIGH(RAMEND)
+OUT SPH, R16
+LDI R16, LOW(RAMEND)
+OUT SPL, R16
+
+LDI R16, 0xFF
+OUT DDRB, R16       ; ตั้งค่า PORTB เป็นเอาต์พุต
+
+LDI R16, 0x37       ; อินพุตทดสอบ 0x37 = 55 ในฐานสิบ
+CLR R17             ; R17 เก็บหลักสิบ (Tens digit)
+
+CONVERT_LOOP:
+    CPI R16, 10     ; เปรียบเทียบค่า R16 กับ 10
+    BRLO CONVERT_DONE ; ถ้า R16 < 10 ให้จบการลบซ้ำ
+    SUBI R16, 10    ; R16 = R16 - 10
+    INC R17         ; R17 = R17 + 1
+    RJMP CONVERT_LOOP
+
+CONVERT_DONE:
+    SWAP R17        ; สลับ 4 บิตสูงต่ำเพื่อย้ายหลักสิบขึ้น MSB
+    OR R17, R16     ; รวมหลักสิบและหลักหน่วยเข้าเป็น BCD
+    OUT PORTB, R17  ; ส่งผลลัพธ์ BCD ออก PORTB
+HERE: RJMP HERE
+        </pre>
+      </div>
+
+      <!-- Screenshot Grid -->
+      <div class="slide-card">
+        <div class="slide-header">
+          <span class="slide-num-badge">ส่วนที่ 3: ภาพถ่ายการดีบักหน่วยความจำ SRAM ใน Atmel Studio</span>
+          <h3 style="color: #fff;">3. ผลการจำลองใน Memory Window (SRAM Address 0x0315 - 0x0324)</h3>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px;">
+          <div style="background: #060b19; padding: 10px; border-radius: 10px; text-align: center;">
+            <img src="reports_assets/Exercise_5_8/report_img/memory_0x0315.png" alt="SRAM 0x0315" style="width: 100%; border-radius: 6px; border: 1px solid var(--border-color);">
+            <div style="color: var(--text-muted); font-size: 0.85rem; margin-top: 6px;">รูปที่ 1: ตรวจสอบการบันทึกค่าผลลัพธ์ใน SRAM แอดเดรส 0x0315</div>
+          </div>
+          <div style="background: #060b19; padding: 10px; border-radius: 10px; text-align: center;">
+            <img src="reports_assets/Exercise_5_8/report_img/memory_0x0322.png" alt="SRAM 0x0322" style="width: 100%; border-radius: 6px; border: 1px solid var(--border-color);">
+            <div style="color: var(--text-muted); font-size: 0.85rem; margin-top: 6px;">รูปที่ 2: ตรวจสอบการเปลี่ยนค่าบิตใน SRAM แอดเดรส 0x0322</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+<div class="source-file-box" style="border-color: #a855f7;">
       <h3 style="color: #c084fc;">📁 เอกสารรายงานผลการทดลองจริง (Student Lab Report Assets)</h3>
       <div style="display: flex; gap: 14px; flex-wrap: wrap; margin-top: 12px;">
         <a href="reports_assets/Exercise_5_8/Report_Example_5_8_Formal.html" target="_blank" class="btn btn-primary" style="background: #a855f7; border-color: #a855f7;">

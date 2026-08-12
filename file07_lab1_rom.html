@@ -204,7 +204,82 @@
     </div>
 
     <!-- SLIDE CARD 1 -->
-    <div class="slide-card" id="slide-1">
+    
+    <!-- DEEP EXTRACTED CONTENT FROM LAB 1 REPORT -->
+    <section class="section-block" style="margin-top: 30px;">
+      <h2 style="color: var(--primary); border-bottom: 2px solid var(--border-color); padding-bottom: 10px;">
+        📖 สรุปและถอดสกัดเนื้อหาเจาะลึกจากรายงานผลการทดลองที่ 1 (ROM as Control Store Report Extraction)
+      </h2>
+      
+      <!-- 1. Objectives & Concept -->
+      <div class="slide-card">
+        <div class="slide-header">
+          <span class="slide-num-badge">ส่วนที่ 1: หลักการและวัตถุประสงค์การทดลอง</span>
+          <h3 style="color: #fff;">1. หลักการของ Microprogrammed Control Unit</h3>
+        </div>
+        <div class="wwh-box what-box" style="margin-bottom: 12px;">
+          <div class="wwh-title" style="color: var(--primary);">📌 หลักการทำงาน (What):</div>
+          <div>การทดลองนี้เป็นการแทนที่วงจรสร้างสัญญาณควบคุมแบบดั้งเดิม (Hardwired Logic) ด้วยหน่วยความจำ **ROM (Read-Only Memory) ขนาด 32x8 bits** ทำหน้าที่เป็น <b>Control Store</b> โดยเก็บรหัสสัญญาณควบคุม 8-bit Control Word สำหรับควบคุมบัส สัญญาณ Clock และการคำนวณของ ALU ในแต่ละจังหวะเวลา</div>
+        </div>
+        <div class="wwh-box why-box" style="margin-bottom: 12px;">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไมต้องใช้ ROM ควบคุม (Why):</div>
+          <div>วงจร Hardwired Logic มีความซับซ้อนสูง ดัดแปลงชุดคำสั่งแก้ไขยาก แต่การใช้ Microprogrammed ROM ช่วยให้ผู้ใช้วิศวกรสามารถแก้ไขพฤติกรรมของ CPU ทั้งหมดได้ง่ายๆ เพียงแก้ไขข้อมูลไบนารีภายใน ROM โดยไม่ต้องเดินสายไอซีใหม่</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ กลไกระดับวงจร (How):</div>
+          <div>สเต็ปเปอร์ (Stepper Machine) จะกำเนิดแอดเดรส 5 บิต ($A_0 - A_4$) ส่งเข้าพินแอดเดรสของ ROM จากนั้น ROM จะส่งเอาต์พุต 8 บิต ควบคุมรีจิสเตอร์ $R_1, R_2$, ALU, และเงื่อนไขการกระโดดข้ามลำดับ (Branching Logic)</div>
+        </div>
+      </div>
+
+      <!-- 2. Microinstruction Control Word Specification Table -->
+      <div class="slide-card">
+        <div class="slide-header">
+          <span class="slide-num-badge">ส่วนที่ 2: ตารางโครงสร้างสัญญาณควบคุม Control Word 8 บิต</span>
+          <h3 style="color: #fff;">2. โครงสร้างของ Microinstruction 8 บิต</h3>
+        </div>
+        <div style="overflow-x: auto; margin-top: 14px;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>บิต (Bit Position)</th>
+                <th>ชื่อสัญญาณควบคุม (Control Signal)</th>
+                <th>คำอธิบายหน้าที่การทำงานในฮาร์ดแวร์ (Hardware Function)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><b>Bit 7</b></td><td><code>LOAD_ACC</code></td><td>เปิดสัญญาณโหลดข้อมูลจากบัสลงใน Accumulator (1 = Load, 0 = Hold)</td></tr>
+              <tr><td><b>Bit 6</b></td><td><code>OE_ALU</code></td><td>เปิด Output Enable ของ ALU ให้ปล่อยผลลัพธ์ลงบนบัสร่วม (Common Data Bus)</td></tr>
+              <tr><td><b>Bit 5</b></td><td><code>ALU_OP1</code></td><td>บิตเลือกฟังก์ชั่นคำนวณ ALU บิตที่ 1 (0 = ADD, 1 = SUB)</td></tr>
+              <tr><td><b>Bit 4</b></td><td><code>ALU_OP0</code></td><td>บิตเลือกฟังก์ชั่นคำนวณ ALU บิตที่ 0 (0 = Logic, 1 = Arithmetic)</td></tr>
+              <tr><td><b>Bit 3</b></td><td><code>LOAD_MAR</code></td><td>โหลดค่าจากบัสเข้า Memory Address Register (MAR)</td></tr>
+              <tr><td><b>Bit 2</b></td><td><code>READ_MEM</code></td><td>อ่านข้อมูลจากหน่วยความจำ RAM ตามตำแหน่งแอดเดรสใน MAR</td></tr>
+              <tr><td><b>Bit 1</b></td><td><code>WRITE_MEM</code></td><td>เขียนข้อมูลจากบัสลงหน่วยความจำ RAM</td></tr>
+              <tr><td><b>Bit 0</b></td><td><code>BRANCH_SEL</code></td><td>สัญญาณควบคุม MUX เลือกถัดไป (0 = Next Address +1, 1 = Jump to Branch Target 0x1A)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 3. Experimental Screenshots Grid -->
+      <div class="slide-card">
+        <div class="slide-header">
+          <span class="slide-num-badge">ส่วนที่ 3: ภาพถ่ายผลการจำลองในโปรแกรม Proteus VSM</span>
+          <h3 style="color: #fff;">3. ผลการทดลองจริงและรูปคลื่น Chronogram</h3>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px;">
+          <div style="background: #060b19; padding: 10px; border-radius: 10px; text-align: center;">
+            <img src="reports_assets/Lab_1_ROM_as_Control_Store/report_img/rom_main_circuit.png" alt="ROM Circuit" style="width: 100%; border-radius: 6px; border: 1px solid var(--border-color);">
+            <div style="color: var(--text-muted); font-size: 0.85rem; margin-top: 6px;">รูปที่ 1: วงจรสมบูรณ์ ROM Control Store ร่วมกับ Stepper และ MUX ใน Proteus</div>
+          </div>
+          <div style="background: #060b19; padding: 10px; border-radius: 10px; text-align: center;">
+            <img src="reports_assets/Lab_1_ROM_as_Control_Store/report_img/rom_simulation.png" alt="ROM Sim" style="width: 100%; border-radius: 6px; border: 1px solid var(--border-color);">
+            <div style="color: var(--text-muted); font-size: 0.85rem; margin-top: 6px;">รูปที่ 2: การจำลองการทำงาน 42 สเต็ป สังเกตการสว่างของหลอด LED บนพอร์ตบัส</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+<div class="slide-card" id="slide-1">
       <div class="slide-header">
         <span class="slide-num-badge">สไลด์ที่ 1 จาก 5</span>
         <h3 style="color: #fff; font-size: 1.15rem;">Slide #1</h3>
