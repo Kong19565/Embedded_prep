@@ -21,9 +21,9 @@
     <a href="index.html" class="nav-brand">⚡ EMBEDDED EXAM HUB</a>
     <ul class="nav-links">
       <li><a href="index.html">หน้าหลัก</a></li>
-      <li><a href="topic1_rom_control.html">1. ROM Control Store</a></li>
+      <li><a href="topic1_rom_control.html">1. ROM <span class="tooltip-term">Control Store<span class="tooltip-box">💡 <b>Control Store:</b> หน่วยความจำควบคุม (ROM): หน่วยความจำสำหรับเก็บ Microprograms ควบคุมจังหวะสัญญาณใน Microprogrammed Control Unit</span></span></a></li>
       <li><a href="topic2_ec1_cpu.html">2. EC-1 CPU</a></li>
-      <li><a href="topic3_digital_logic.html">3. Digital Logic & ALU</a></li>
+      <li><a href="topic3_digital_logic.html">3. Digital Logic & <span class="tooltip-term">ALU<span class="tooltip-box">💡 <b>ALU:</b> Arithmetic Logic Unit (หน่วยคำนวณและลอจิก): หัวใจของ CPU ทำหน้าที่บวก ลบ และเปรียบเทียบลอจิก AND/OR/XOR</span></span></a></li>
       <li><a href="topic4_avr_assembly.html">4. AVR Assembly</a></li>
       <li><a href="topic5_cpu_architecture.html" class="active">5. CPU & Arithmetic</a></li>
       <li><a href="topic6_io_interrupts_dma.html">6. I/O & DMA</a></li>
@@ -69,7 +69,7 @@
       <div class="grid-2">
         <div class="card">
           <h3 class="card-title">📦 General Register Organization</h3>
-          <p>หน่วยประมวลผลใช้ชุด Register สองฝั่งเชื่อมเข้าสู่ ALU ทางอินพุต A และ B แล้วส่งผลลัพธ์ผ่าน Bus กลับสู่ Register ปลายทาง:</p>
+          <p>หน่วยประมวลผลใช้ชุด Register สองฝั่งเชื่อมเข้าสู่ <span class="tooltip-term">ALU<span class="tooltip-box">💡 <b>ALU:</b> Arithmetic Logic Unit (หน่วยคำนวณและลอจิก): หัวใจของ CPU ทำหน้าที่บวก ลบ และเปรียบเทียบลอจิก AND/OR/XOR</span></span> ทางอินพุต A และ B แล้วส่งผลลัพธ์ผ่าน Bus กลับสู่ Register ปลายทาง:</p>
           <div class="theory-box">
             • <b>Bus Selector (SELA / SELB):</b> เลือกตัวแปรอินพุตสำหรับ ALU<br>
             • <b>Operation Selector (OPR):</b> กำหนดหน้าที่ ALU (ADD, SUB, AND, SHIFT)<br>
@@ -103,7 +103,7 @@
         <tbody>
           <tr>
             <td><b>1. Implied Mode</b></td>
-            <td>ไม่ต้องระบุ EA (อยู่ใน Opcode)</td>
+            <td>ไม่ต้องระบุ EA (อยู่ใน <span class="tooltip-term">Opcode<span class="tooltip-box">💡 <b>Opcode:</b> Operation Code (รหัสคำสั่ง): รหัสฐานสองส่วนแรกของชุดคำสั่งที่ระบุให้ CPU รู้ว่าต้องทำคำสั่งอะไร เช่น ADD, SUB</span></span>)</td>
             <td>ระบุตำแหน่งจากคำสั่งโดยตรง เช่น <code>CLC</code> (Clear Carry), <code>NOP</code></td>
           </tr>
           <tr>

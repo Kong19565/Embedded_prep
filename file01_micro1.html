@@ -644,7 +644,7 @@
         </div>
         <div class="wwh-box why-box">
           <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
-          <div>ลอจิกเกตคือบล็อกก่อสร้างพื้นฐานในการสร้าง ALU, MUX, Decoder และ CPU</div>
+          <div>ลอจิกเกตคือบล็อกก่อสร้างพื้นฐานในการสร้าง <span class="tooltip-term">ALU<span class="tooltip-box">💡 <b>ALU:</b> Arithmetic Logic Unit (หน่วยคำนวณและลอจิก): หัวใจของ CPU ทำหน้าที่บวก ลบ และเปรียบเทียบลอจิก AND/OR/XOR</span></span>, <span class="tooltip-term">MUX<span class="tooltip-box">💡 <b>MUX:</b> Multiplexer (วงจรเลือกข้อมูล): วงจรดิจิทัลที่เลือกนำข้อมูลจากหลายอินพุตออกสู่เอาต์พุตเดียวตามสัญญาณ Select Lines</span></span>, <span class="tooltip-term">Decoder<span class="tooltip-box">💡 <b>Decoder:</b> วงจรถอดรหัส: วงจรแปลงรหัสอินพุต n บิต ออกเป็นเอาต์พุต $2^n$ เส้น มีประโยชน์ในการถอดรหัสแอดเดรสและชุดคำสั่ง</span></span> และ CPU</div>
         </div>
         <div class="wwh-box how-box">
           <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
@@ -670,7 +670,7 @@
       <div class="explain-block">
         <div class="wwh-box what-box">
           <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
-          <div>การสังเคราะห์วงจรจากตารางความจริงด้วยรูปแบบ Sum of Products (SOP)</div>
+          <div>การสังเคราะห์วงจรจากตารางความจริงด้วยรูปแบบ Sum of Products (<span class="tooltip-term">SOP<span class="tooltip-box">💡 <b>SOP:</b> Sum of Products (รูปผลบวกของผลคูณ): การเขียนสมการลอจิกจาก Minterm (ค่า 1 ในตารางความจริง) นำมา OR รวมกัน</span></span>)</div>
         </div>
         <div class="wwh-box why-box">
           <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
@@ -684,7 +684,7 @@
     
         <div class="answer-box">
           <div class="answer-title">💡 เฉลยคำตอบประเด็นประจำสไลด์ (Slide Answer):</div>
-          <div>SOP เหมาะสำหรับการสังเคราะห์วงจรเมื่อกรณีเอาต์พุตเป็น 1 มีจำนวนน้อยกว่า</div>
+          <div><span class="tooltip-term">SOP<span class="tooltip-box">💡 <b>SOP:</b> Sum of Products (รูปผลบวกของผลคูณ): การเขียนสมการลอจิกจาก Minterm (ค่า 1 ในตารางความจริง) นำมา OR รวมกัน</span></span> เหมาะสำหรับการสังเคราะห์วงจรเมื่อกรณีเอาต์พุตเป็น 1 มีจำนวนน้อยกว่า</div>
         </div>
         </div>
 
@@ -700,7 +700,7 @@
       <div class="explain-block">
         <div class="wwh-box what-box">
           <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
-          <div>การสังเคราะห์วงจรด้วยรูปแบบ Product of Sums (POS)</div>
+          <div>การสังเคราะห์วงจรด้วยรูปแบบ Product of Sums (<span class="tooltip-term">POS<span class="tooltip-box">💡 <b>POS:</b> Product of Sums (รูปผลคูณของผลบวก): การเขียนสมการลอจิกจาก Maxterm (ค่า 0 ในตารางความจริง) นำมา AND รวมกัน</span></span>)</div>
         </div>
         <div class="wwh-box why-box">
           <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
@@ -714,7 +714,7 @@
     
         <div class="answer-box">
           <div class="answer-title">💡 เฉลยคำตอบประเด็นประจำสไลด์ (Slide Answer):</div>
-          <div>POS และ SOP สามารถแปลงสลับกันได้ตามกฎของ DeMorgan</div>
+          <div><span class="tooltip-term">POS<span class="tooltip-box">💡 <b>POS:</b> Product of Sums (รูปผลคูณของผลบวก): การเขียนสมการลอจิกจาก Maxterm (ค่า 0 ในตารางความจริง) นำมา AND รวมกัน</span></span> และ SOP สามารถแปลงสลับกันได้ตามกฎของ DeMorgan</div>
         </div>
         </div>
 
@@ -1170,11 +1170,11 @@
       <div class="explain-block">
         <div class="wwh-box what-box">
           <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
-          <div>หลักการทำงานของ Basic D Flip-Flop</div>
+          <div>หลักการทำงานของ Basic D <span class="tooltip-term">Flip-Flop<span class="tooltip-box">💡 <b>Flip-Flop:</b> ฟลิปฟลอป: วงจรลอจิกแบบลำดับ (Sequential Circuit) ทำหน้าที่จำข้อมูลดิจิทัล 1 บิต ทำงานตามขอบสัญญาณ Clock</span></span></div>
         </div>
         <div class="wwh-box why-box">
           <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
-          <div>D Flip-Flop คือหน่วยบันทึกข้อมูล 1 บิตพื้นฐานใน CPU</div>
+          <div>D <span class="tooltip-term">Flip-Flop<span class="tooltip-box">💡 <b>Flip-Flop:</b> ฟลิปฟลอป: วงจรลอจิกแบบลำดับ (Sequential Circuit) ทำหน้าที่จำข้อมูลดิจิทัล 1 บิต ทำงานตามขอบสัญญาณ Clock</span></span> คือหน่วยบันทึกข้อมูล 1 บิตพื้นฐานใน CPU</div>
         </div>
         <div class="wwh-box how-box">
           <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
@@ -1260,7 +1260,7 @@
       <div class="explain-block">
         <div class="wwh-box what-box">
           <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
-          <div>นิยามของ Multiplexer (MUX)</div>
+          <div>นิยามของ Multiplexer (<span class="tooltip-term">MUX<span class="tooltip-box">💡 <b>MUX:</b> Multiplexer (วงจรเลือกข้อมูล): วงจรดิจิทัลที่เลือกนำข้อมูลจากหลายอินพุตออกสู่เอาต์พุตเดียวตามสัญญาณ Select Lines</span></span>)</div>
         </div>
         <div class="wwh-box why-box">
           <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
@@ -1380,7 +1380,7 @@
       <div class="explain-block">
         <div class="wwh-box what-box">
           <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
-          <div>วงจร Binary to Unary Converter (Decoder)</div>
+          <div>วงจร Binary to Unary Converter (<span class="tooltip-term">Decoder<span class="tooltip-box">💡 <b>Decoder:</b> วงจรถอดรหัส: วงจรแปลงรหัสอินพุต n บิต ออกเป็นเอาต์พุต $2^n$ เส้น มีประโยชน์ในการถอดรหัสแอดเดรสและชุดคำสั่ง</span></span>)</div>
         </div>
         <div class="wwh-box why-box">
           <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
@@ -1884,7 +1884,7 @@
         </div>
         <div class="wwh-box how-box">
           <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
-          <div>ใน Part II จะนำวงจร MUX, Decoder, Register ไปสร้างเป็น FSM, ALU และ 8-bit Microprocessor</div>
+          <div>ใน Part II จะนำวงจร MUX, Decoder, Register ไปสร้างเป็น <span class="tooltip-term">FSM<span class="tooltip-box">💡 <b>FSM:</b> Finite State Machine (เครื่องสถานะจำกัด): วงจรที่เปลี่ยนสถานะไปตามจังหวะสัญญาณนาฬิกา ควบคุมการทำงานของ CPU</span></span>, <span class="tooltip-term">ALU<span class="tooltip-box">💡 <b>ALU:</b> Arithmetic Logic Unit (หน่วยคำนวณและลอจิก): หัวใจของ CPU ทำหน้าที่บวก ลบ และเปรียบเทียบลอจิก AND/OR/XOR</span></span> และ 8-bit Microprocessor</div>
         </div>
       </div>
     

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>หัวข้อที่ 3: Digital Logic, 4-bit ALU & Sequential Logisim Circuits</title>
+  <title>หัวข้อที่ 3: Digital Logic, 4-bit <span class="tooltip-term">ALU<span class="tooltip-box">💡 <b>ALU:</b> Arithmetic Logic Unit (หน่วยคำนวณและลอจิก): หัวใจของ CPU ทำหน้าที่บวก ลบ และเปรียบเทียบลอจิก AND/OR/XOR</span></span> & Sequential Logisim Circuits</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
@@ -22,9 +22,9 @@
     <a href="index.html" class="nav-brand">⚡ EMBEDDED EXAM HUB</a>
     <ul class="nav-links">
       <li><a href="index.html">หน้าหลัก</a></li>
-      <li><a href="topic1_rom_control.html">1. ROM Control Store</a></li>
+      <li><a href="topic1_rom_control.html">1. ROM <span class="tooltip-term">Control Store<span class="tooltip-box">💡 <b>Control Store:</b> หน่วยความจำควบคุม (ROM): หน่วยความจำสำหรับเก็บ Microprograms ควบคุมจังหวะสัญญาณใน Microprogrammed Control Unit</span></span></a></li>
       <li><a href="topic2_ec1_cpu.html">2. EC-1 CPU</a></li>
-      <li><a href="topic3_digital_logic.html" class="active">3. Digital Logic & ALU</a></li>
+      <li><a href="topic3_digital_logic.html" class="active">3. Digital Logic & <span class="tooltip-term">ALU<span class="tooltip-box">💡 <b>ALU:</b> Arithmetic Logic Unit (หน่วยคำนวณและลอจิก): หัวใจของ CPU ทำหน้าที่บวก ลบ และเปรียบเทียบลอจิก AND/OR/XOR</span></span></a></li>
       <li><a href="topic4_avr_assembly.html">4. AVR Assembly</a></li>
       <li><a href="topic5_cpu_architecture.html">5. CPU & Arithmetic</a></li>
       <li><a href="topic6_io_interrupts_dma.html">6. I/O & DMA</a></li>
@@ -38,7 +38,7 @@
     <header class="page-banner">
       <h1 class="page-title">🔌 หัวข้อที่ 3: Digital Logic, 4-bit ALU & Sequential Logisim Circuits</h1>
       <p class="page-subtitle">
-        ทบทวนลอจิกเกตพื้นฐาน (Gate Logic), Karnaugh Maps, การออกแบบวงจรคำนวณ 4-bit ALU, Flip-Flops (D, JK, T), วงจรนับสะสม (Counter/Accumulator) และกฎ Tri-State Bus
+        ทบทวนลอจิกเกตพื้นฐาน (Gate Logic), Karnaugh Maps, การออกแบบวงจรคำนวณ 4-bit ALU, Flip-Flops (D, JK, T), วงจรนับสะสม (Counter/<span class="tooltip-term">Accumulator<span class="tooltip-box">💡 <b>Accumulator:</b> รีจิสเตอร์สะสม (ACC): รีจิสเตอร์หลักใน CPU สำหรับเก็บผลลัพธ์การคำนวณจาก ALU ชั่วคราว</span></span>) และกฎ Tri-State Bus
       </p>
     </header>
 
@@ -101,10 +101,10 @@
 
     <!-- SECTION 2: SEQUENTIAL CIRCUITS & FLIP-FLOPS -->
     <section class="section-block">
-      <h2 class="section-title">2. Sequential Logic Circuits & Flip-Flop Mechanics</h2>
+      <h2 class="section-title">2. Sequential Logic Circuits & <span class="tooltip-term">Flip-Flop<span class="tooltip-box">💡 <b>Flip-Flop:</b> ฟลิปฟลอป: วงจรลอจิกแบบลำดับ (Sequential Circuit) ทำหน้าที่จำข้อมูลดิจิทัล 1 บิต ทำงานตามขอบสัญญาณ Clock</span></span> Mechanics</h2>
       <div class="grid-3">
         <div class="card">
-          <h3 class="card-title">📌 D Flip-Flop</h3>
+          <h3 class="card-title">📌 D <span class="tooltip-term">Flip-Flop<span class="tooltip-box">💡 <b>Flip-Flop:</b> ฟลิปฟลอป: วงจรลอจิกแบบลำดับ (Sequential Circuit) ทำหน้าที่จำข้อมูลดิจิทัล 1 บิต ทำงานตามขอบสัญญาณ Clock</span></span></h3>
           <p>หน่วยบันทึกข้อมูล 1 Bit พื้นฐาน เอาต์พุต Q จะรับค่าจาก D เมื่อขอบขาขึ้นของ Clock มาถึง (Q<sub>next</sub> = D)</p>
         </div>
         <div class="card">

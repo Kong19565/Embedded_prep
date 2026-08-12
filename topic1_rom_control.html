@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>หัวข้อที่ 1: ROM as Control Store & Microprogrammed Control Unit</title>
+  <title>หัวข้อที่ 1: ROM as <span class="tooltip-term">Control Store<span class="tooltip-box">💡 <b>Control Store:</b> หน่วยความจำควบคุม (ROM): หน่วยความจำสำหรับเก็บ Microprograms ควบคุมจังหวะสัญญาณใน Microprogrammed Control Unit</span></span> & Microprogrammed Control Unit</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
@@ -23,9 +23,9 @@
     <a href="index.html" class="nav-brand">⚡ EMBEDDED EXAM HUB</a>
     <ul class="nav-links">
       <li><a href="index.html">หน้าหลัก</a></li>
-      <li><a href="topic1_rom_control.html" class="active">1. ROM Control Store</a></li>
+      <li><a href="topic1_rom_control.html" class="active">1. ROM <span class="tooltip-term">Control Store<span class="tooltip-box">💡 <b>Control Store:</b> หน่วยความจำควบคุม (ROM): หน่วยความจำสำหรับเก็บ Microprograms ควบคุมจังหวะสัญญาณใน Microprogrammed Control Unit</span></span></a></li>
       <li><a href="topic2_ec1_cpu.html">2. EC-1 CPU</a></li>
-      <li><a href="topic3_digital_logic.html">3. Digital Logic & ALU</a></li>
+      <li><a href="topic3_digital_logic.html">3. Digital Logic & <span class="tooltip-term">ALU<span class="tooltip-box">💡 <b>ALU:</b> Arithmetic Logic Unit (หน่วยคำนวณและลอจิก): หัวใจของ CPU ทำหน้าที่บวก ลบ และเปรียบเทียบลอจิก AND/OR/XOR</span></span></a></li>
       <li><a href="topic4_avr_assembly.html">4. AVR Assembly</a></li>
       <li><a href="topic5_cpu_architecture.html">5. CPU & Arithmetic</a></li>
       <li><a href="topic6_io_interrupts_dma.html">6. I/O & DMA</a></li>
@@ -95,7 +95,7 @@
         <svg viewBox="0 0 900 380" xmlns="http://www.w3.org/2000/svg">
           <!-- MUX -->
           <rect x="40" y="140" width="80" height="100" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
-          <text x="80" y="195" fill="#38bdf8" font-size="16" font-weight="bold" text-anchor="middle">MUX 2:1</text>
+          <text x="80" y="195" fill="#38bdf8" font-size="16" font-weight="bold" text-anchor="middle"><span class="tooltip-term">MUX<span class="tooltip-box">💡 <b>MUX:</b> Multiplexer (วงจรเลือกข้อมูล): วงจรดิจิทัลที่เลือกนำข้อมูลจากหลายอินพุตออกสู่เอาต์พุตเดียวตามสัญญาณ Select Lines</span></span> 2:1</text>
           
           <!-- uPC -->
           <rect x="180" y="155" width="90" height="70" rx="8" fill="#1e293b" stroke="#818cf8" stroke-width="2"/>
@@ -154,7 +154,7 @@
         </div>
         <div class="card">
           <h3 class="card-title">⚡ สมการวงจรตัดสินใจกระโดด (Branch Logic)</h3>
-          <p>สัญญาณเลือก MUX (SEL) คำนวณจากสมการ Boolean เชิงผสม:</p>
+          <p>สัญญาณเลือก <span class="tooltip-term">MUX<span class="tooltip-box">💡 <b>MUX:</b> Multiplexer (วงจรเลือกข้อมูล): วงจรดิจิทัลที่เลือกนำข้อมูลจากหลายอินพุตออกสู่เอาต์พุตเดียวตามสัญญาณ Select Lines</span></span> (SEL) คำนวณจากสมการ Boolean เชิงผสม:</p>
           <div class="formula-box">
             <span style="font-size: 1.1rem; color: var(--primary);">SEL = JMP_EN · (EQ + NOT COMP_EN)</span><br><br>
             • หาก SEL = 0 : เลือกที่อยู่ถัดไป (μPC + 1)<br>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>หัวข้อที่ 2: Microprocessor EC-1 Architecture & Hardwired FSM</title>
+  <title>หัวข้อที่ 2: Microprocessor EC-1 Architecture & Hardwired <span class="tooltip-term">FSM<span class="tooltip-box">💡 <b>FSM:</b> Finite State Machine (เครื่องสถานะจำกัด): วงจรที่เปลี่ยนสถานะไปตามจังหวะสัญญาณนาฬิกา ควบคุมการทำงานของ CPU</span></span></title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
@@ -22,9 +22,9 @@
     <a href="index.html" class="nav-brand">⚡ EMBEDDED EXAM HUB</a>
     <ul class="nav-links">
       <li><a href="index.html">หน้าหลัก</a></li>
-      <li><a href="topic1_rom_control.html">1. ROM Control Store</a></li>
+      <li><a href="topic1_rom_control.html">1. ROM <span class="tooltip-term">Control Store<span class="tooltip-box">💡 <b>Control Store:</b> หน่วยความจำควบคุม (ROM): หน่วยความจำสำหรับเก็บ Microprograms ควบคุมจังหวะสัญญาณใน Microprogrammed Control Unit</span></span></a></li>
       <li><a href="topic2_ec1_cpu.html" class="active">2. EC-1 CPU</a></li>
-      <li><a href="topic3_digital_logic.html">3. Digital Logic & ALU</a></li>
+      <li><a href="topic3_digital_logic.html">3. Digital Logic & <span class="tooltip-term">ALU<span class="tooltip-box">💡 <b>ALU:</b> Arithmetic Logic Unit (หน่วยคำนวณและลอจิก): หัวใจของ CPU ทำหน้าที่บวก ลบ และเปรียบเทียบลอจิก AND/OR/XOR</span></span></a></li>
       <li><a href="topic4_avr_assembly.html">4. AVR Assembly</a></li>
       <li><a href="topic5_cpu_architecture.html">5. CPU & Arithmetic</a></li>
       <li><a href="topic6_io_interrupts_dma.html">6. I/O & DMA</a></li>
@@ -36,7 +36,7 @@
 
     <!-- PAGE BANNER -->
     <header class="page-banner">
-      <h1 class="page-title">⚙️ หัวข้อที่ 2: Microprocessor EC-1 Architecture & Hardwired FSM</h1>
+      <h1 class="page-title">⚙️ หัวข้อที่ 2: Microprocessor EC-1 Architecture & Hardwired <span class="tooltip-term">FSM<span class="tooltip-box">💡 <b>FSM:</b> Finite State Machine (เครื่องสถานะจำกัด): วงจรที่เปลี่ยนสถานะไปตามจังหวะสัญญาณนาฬิกา ควบคุมการทำงานของ CPU</span></span></h1>
       <p class="page-subtitle">
         เจาะลึกสถาปัตยกรรม Microprocessor EC-1 ขนาด 8 Bit โครงสร้างเส้นทางข้อมูล Datapath สภาพลอจิก Hardwired FSM วงรอบ 3 ขั้นตอน (3-Stage Cycle) ตารางชุดคำสั่ง และการต่อขยายคำสั่งใหม่
       </p>
@@ -96,10 +96,10 @@
 
           <!-- ACC & ALU -->
           <rect x="630" y="60" width="110" height="60" rx="8" fill="#1e293b" stroke="#fbbf24" stroke-width="2"/>
-          <text x="685" y="95" fill="#fbbf24" font-size="15" font-weight="bold" text-anchor="middle">Accumulator</text>
+          <text x="685" y="95" fill="#fbbf24" font-size="15" font-weight="bold" text-anchor="middle"><span class="tooltip-term">Accumulator<span class="tooltip-box">💡 <b>Accumulator:</b> รีจิสเตอร์สะสม (ACC): รีจิสเตอร์หลักใน CPU สำหรับเก็บผลลัพธ์การคำนวณจาก ALU ชั่วคราว</span></span></text>
 
           <rect x="780" y="60" width="90" height="180" rx="8" fill="#1e293b" stroke="#818cf8" stroke-width="2"/>
-          <text x="825" y="150" fill="#818cf8" font-size="16" font-weight="bold" text-anchor="middle">ALU</text>
+          <text x="825" y="150" fill="#818cf8" font-size="16" font-weight="bold" text-anchor="middle"><span class="tooltip-term">ALU<span class="tooltip-box">💡 <b>ALU:</b> Arithmetic Logic Unit (หน่วยคำนวณและลอจิก): หัวใจของ CPU ทำหน้าที่บวก ลบ และเปรียบเทียบลอจิก AND/OR/XOR</span></span></text>
 
           <!-- Interconnect Buses -->
           <path d="M 140 90 L 200 90" stroke="#38bdf8" stroke-width="2"/>
@@ -126,15 +126,15 @@
         </div>
         <div class="card">
           <h3 class="card-title">2️⃣ Stage 1: S1 (Decode)</h3>
-          <p>ถอดรหัส Opcode จาก Bit 7..4 ของ IR เพื่อส่งสัญญาณให้ Control Unit เตรียมเส้นทางข้อมูล</p>
+          <p>ถอดรหัส <span class="tooltip-term">Opcode<span class="tooltip-box">💡 <b>Opcode:</b> Operation Code (รหัสคำสั่ง): รหัสฐานสองส่วนแรกของชุดคำสั่งที่ระบุให้ CPU รู้ว่าต้องทำคำสั่งอะไร เช่น ADD, SUB</span></span> จาก Bit 7..4 ของ IR เพื่อส่งสัญญาณให้ Control Unit เตรียมเส้นทางข้อมูล</p>
           <div class="formula-box">
-            Opcode ← IR[7..4]<br>
+            <span class="tooltip-term">Opcode<span class="tooltip-box">💡 <b>Opcode:</b> Operation Code (รหัสคำสั่ง): รหัสฐานสองส่วนแรกของชุดคำสั่งที่ระบุให้ CPU รู้ว่าต้องทำคำสั่งอะไร เช่น ADD, SUB</span></span> ← IR[7..4]<br>
             Operand ← IR[3..0]
           </div>
         </div>
         <div class="card">
           <h3 class="card-title">3️⃣ Stage 2: S2 (Execute)</h3>
-          <p>ALU ดำเนินการประมวลผลคำนวณ บวกลบ หรือย้ายข้อมูล แล้วบันทึกผลลัพธ์ลง Accumulator</p>
+          <p>ALU ดำเนินการประมวลผลคำนวณ บวกลบ หรือย้ายข้อมูล แล้วบันทึกผลลัพธ์ลง <span class="tooltip-term">Accumulator<span class="tooltip-box">💡 <b>Accumulator:</b> รีจิสเตอร์สะสม (ACC): รีจิสเตอร์หลักใน CPU สำหรับเก็บผลลัพธ์การคำนวณจาก ALU ชั่วคราว</span></span></p>
           <div class="formula-box">
             ACC ← ALU_Out<br>
             (หรือ Memory[addr] ← ACC)

@@ -16,9 +16,9 @@
     <a href="index.html" class="nav-brand">⚡ EMBEDDED EXAM HUB</a>
     <ul class="nav-links">
       <li><a href="index.html">หน้าหลัก</a></li>
-      <li><a href="topic1_rom_control.html">1. ROM Control Store</a></li>
+      <li><a href="topic1_rom_control.html">1. ROM <span class="tooltip-term">Control Store<span class="tooltip-box">💡 <b>Control Store:</b> หน่วยความจำควบคุม (ROM): หน่วยความจำสำหรับเก็บ Microprograms ควบคุมจังหวะสัญญาณใน Microprogrammed Control Unit</span></span></a></li>
       <li><a href="topic2_ec1_cpu.html">2. EC-1 CPU</a></li>
-      <li><a href="topic3_digital_logic.html">3. Digital Logic & ALU</a></li>
+      <li><a href="topic3_digital_logic.html">3. Digital Logic & <span class="tooltip-term">ALU<span class="tooltip-box">💡 <b>ALU:</b> Arithmetic Logic Unit (หน่วยคำนวณและลอจิก): หัวใจของ CPU ทำหน้าที่บวก ลบ และเปรียบเทียบลอจิก AND/OR/XOR</span></span></a></li>
       <li><a href="topic4_avr_assembly.html" class="active">4. AVR Assembly</a></li>
       <li><a href="topic5_cpu_architecture.html">5. CPU & Arithmetic</a></li>
       <li><a href="topic6_io_interrupts_dma.html">6. I/O & DMA</a></li>
@@ -32,7 +32,7 @@
     <header class="page-banner">
       <h1 class="page-title">🕹️ หัวข้อที่ 4: AVR ATmega328P Architecture, Assembly & C</h1>
       <p class="page-subtitle">
-        สรุปสถาปัตยกรรม AVR RISC 8-bit, Status Register (SREG), การจัดการพอร์ต I/O (DDRx, PORTx, PINx), ชุดคำสั่งภาษา Assembly, การเขียนภาษา C ระดับ Bitwise และการจำลองบน Proteus VSM
+        สรุปสถาปัตยกรรม AVR RISC 8-bit, Status Register (<span class="tooltip-term">SREG<span class="tooltip-box">💡 <b>SREG:</b> Status Register: รีจิสเตอร์เก็บธงสถานะการคำนวณใน AVR เช่น Zero (Z), Carry (C), Overflow (V), Negative (N)</span></span>), การจัดการพอร์ต I/O (DDRx, PORTx, PINx), ชุดคำสั่งภาษา Assembly, การเขียนภาษา C ระดับ Bitwise และการจำลองบน <span class="tooltip-term">Proteus VSM<span class="tooltip-box">💡 <b>Proteus VSM:</b> โปรแกรมจำลองวงจรอิเล็กทรอนิกส์และไมโครคอนโทรลเลอร์แบบเรียลไทม์ ช่วยทดสอบการทำงานของบอร์ดเสมือนจริง</span></span>
       </p>
       <div style="margin-top: 16px;">
         <a href="topic4_lab3_interactive.html" class="btn btn-primary" style="display: inline-flex; font-size: 1rem; padding: 10px 20px;">🕹️ เปิดใช้งานห้องปฏิบัติการจำลองฉบับเต็ม (Full Interactive Simulator Template) &rarr;</a>
@@ -68,7 +68,7 @@
 
     <!-- SECTION 1: AVR ARCHITECTURE & SREG -->
     <section class="section-block">
-      <h2 class="section-title">1. สถาปัตยกรรม AVR RISC 8-bit & Status Register (SREG)</h2>
+      <h2 class="section-title">1. สถาปัตยกรรม AVR RISC 8-bit & Status Register (<span class="tooltip-term">SREG<span class="tooltip-box">💡 <b>SREG:</b> Status Register: รีจิสเตอร์เก็บธงสถานะการคำนวณใน AVR เช่น Zero (Z), Carry (C), Overflow (V), Negative (N)</span></span>)</h2>
       <div class="grid-2">
         <div class="card">
           <h3 class="card-title">🏗️ Harvard Architecture & Register File</h3>

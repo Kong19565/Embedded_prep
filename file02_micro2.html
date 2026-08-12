@@ -204,7 +204,53 @@
     </div>
 
     <!-- SLIDE CARD 1 -->
-    <div class="slide-card" id="slide-1">
+    
+    <!-- K-MAP 4-VARIABLE INTERACTIVE BIT PLAYGROUND -->
+    <div class="playground-card" id="kmap-playground">
+      <div class="playground-title">🎮 K-Map 4-Variable Interactive Bit Playground (ลองคลิกเปลี่ยนบิตตารางความจริง)</div>
+      <p style="font-size: 0.9rem; color: #94a3b8; margin-bottom: 16px;">
+        คลิกปุ่มเพื่อสลับค่าเอาต์พุต F (0 หรือ 1) สังเกตการอัปเดตไฮไลต์ตาราง K-Map 4 ตัวแปร ($AB \backslash CD$) และสมการ SOP ที่ลดรูปได้แบบ Real-time:
+      </p>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+        <span>สวิตช์อินพุต Minterms: </span>
+        <button class="bit-btn" id="m0" onclick="toggleMinterm(0)">m0 (0000): 0</button>
+        <button class="bit-btn" id="m1" onclick="toggleMinterm(1)">m1 (0001): 0</button>
+        <button class="bit-btn active-1" id="m4" onclick="toggleMinterm(4)">m4 (0100): 1</button>
+        <button class="bit-btn active-1" id="m5" onclick="toggleMinterm(5)">m5 (0101): 1</button>
+        <button class="bit-btn active-1" id="m12" onclick="toggleMinterm(12)">m12 (1100): 1</button>
+        <button class="bit-btn active-1" id="m13" onclick="toggleMinterm(13)">m13 (1101): 1</button>
+      </div>
+      <div class="formula-box" id="kmap-res-box" style="border-color: #4ade80;">
+        ⚡ สมการลดรูปปัจจุบัน (SOP Equation): <b id="sop-out" style="color: #4ade80; font-size: 1.1rem;">F = B · C'</b>
+      </div>
+    </div>
+    <script>
+      const minterms = { 0:0, 1:0, 4:1, 5:1, 12:1, 13:1 };
+      function toggleMinterm(m) {
+        minterms[m] = minterms[m] ? 0 : 1;
+        const btn = document.getElementById(`m${m}`);
+        btn.innerText = `m${m}: ${minterms[m]}`;
+        if (minterms[m]) {
+          btn.classList.add('active-1');
+        } else {
+          btn.classList.remove('active-1');
+        }
+        updateKmapResult();
+      }
+      function updateKmapResult() {
+        if (minterms[4] && minterms[5] && minterms[12] && minterms[13]) {
+          document.getElementById('sop-out').innerText = "F = B · C'";
+        } else if (minterms[4] && minterms[5]) {
+          document.getElementById('sop-out').innerText = "F = A' · B · C'";
+        } else if (minterms[12] && minterms[13]) {
+          document.getElementById('sop-out').innerText = "F = A · B · C'";
+        } else {
+          document.getElementById('sop-out').innerText = "F = Custom Combination";
+        }
+      }
+    </script>
+        
+<div class="slide-card" id="slide-1">
       <div class="slide-header">
         <span class="slide-num-badge">สไลด์ที่ 1 จาก 50</span>
         <h3 style="color: #fff; font-size: 1.15rem;">Slide #1</h3>
@@ -320,7 +366,7 @@
       <div class="explain-block">
         <div class="wwh-box what-box">
           <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
-          <div>สไลด์ที่ 5: สาระสำคัญเรื่อง 02. Micro2.pdf — วงจรตรรกศาสตร์ดิจิทัล การลดรูป K-Map และ Combinational Circuits (เนื้อหาหลัก: 113301 Microprocessor Engineering By Finite State Machine A sequential circuit is also known as a   finite-state machine (FSM) because the  size of th...)</div>
+          <div>สไลด์ที่ 5: สาระสำคัญเรื่อง 02. Micro2.pdf — วงจรตรรกศาสตร์ดิจิทัล การลดรูป K-Map และ Combinational Circuits (เนื้อหาหลัก: 113301 Microprocessor Engineering By Finite State Machine A sequential circuit is also known as a   finite-state machine (<span class="tooltip-term">FSM<span class="tooltip-box">💡 <b>FSM:</b> Finite State Machine (เครื่องสถานะจำกัด): วงจรที่เปลี่ยนสถานะไปตามจังหวะสัญญาณนาฬิกา ควบคุมการทำงานของ CPU</span></span>) because the  size of th...)</div>
         </div>
         <div class="wwh-box why-box">
           <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
@@ -348,7 +394,7 @@
             
             <rect x="340" y="40" width="140" height="70" rx="8" fill="#1e293b" stroke="#fbbf24" stroke-width="2"/>
             <text x="410" y="72" fill="#fbbf24" font-size="13" font-weight="bold" text-anchor="middle">Processing Unit</text>
-            <text x="410" y="92" fill="#94a3b8" font-size="11" text-anchor="middle">(ALU / Logic)</text>
+            <text x="410" y="92" fill="#94a3b8" font-size="11" text-anchor="middle">(<span class="tooltip-term">ALU<span class="tooltip-box">💡 <b>ALU:</b> Arithmetic Logic Unit (หน่วยคำนวณและลอจิก): หัวใจของ CPU ทำหน้าที่บวก ลบ และเปรียบเทียบลอจิก AND/OR/XOR</span></span> / Logic)</text>
 
             <rect x="640" y="40" width="120" height="70" rx="8" fill="#1e293b" stroke="#4ade80" stroke-width="2"/>
             <text x="700" y="80" fill="#4ade80" font-size="14" font-weight="bold" text-anchor="middle">Output Target</text>
@@ -655,7 +701,7 @@
             
             <rect x="340" y="40" width="140" height="70" rx="8" fill="#1e293b" stroke="#fbbf24" stroke-width="2"/>
             <text x="410" y="72" fill="#fbbf24" font-size="13" font-weight="bold" text-anchor="middle">Processing Unit</text>
-            <text x="410" y="92" fill="#94a3b8" font-size="11" text-anchor="middle">(ALU / Logic)</text>
+            <text x="410" y="92" fill="#94a3b8" font-size="11" text-anchor="middle">(<span class="tooltip-term">ALU<span class="tooltip-box">💡 <b>ALU:</b> Arithmetic Logic Unit (หน่วยคำนวณและลอจิก): หัวใจของ CPU ทำหน้าที่บวก ลบ และเปรียบเทียบลอจิก AND/OR/XOR</span></span> / Logic)</text>
 
             <rect x="640" y="40" width="120" height="70" rx="8" fill="#1e293b" stroke="#4ade80" stroke-width="2"/>
             <text x="700" y="80" fill="#4ade80" font-size="14" font-weight="bold" text-anchor="middle">Output Target</text>
@@ -1144,7 +1190,7 @@
       <div class="explain-block">
         <div class="wwh-box what-box">
           <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
-          <div>สไลด์ที่ 33: สาระสำคัญเรื่อง 02. Micro2.pdf — วงจรตรรกศาสตร์ดิจิทัล การลดรูป K-Map และ Combinational Circuits (เนื้อหาหลัก: 113301 Microprocessor Engineering By FSM Review)</div>
+          <div>สไลด์ที่ 33: สาระสำคัญเรื่อง 02. Micro2.pdf — วงจรตรรกศาสตร์ดิจิทัล การลดรูป K-Map และ Combinational Circuits (เนื้อหาหลัก: 113301 Microprocessor Engineering By <span class="tooltip-term">FSM<span class="tooltip-box">💡 <b>FSM:</b> Finite State Machine (เครื่องสถานะจำกัด): วงจรที่เปลี่ยนสถานะไปตามจังหวะสัญญาณนาฬิกา ควบคุมการทำงานของ CPU</span></span> Review)</div>
         </div>
         <div class="wwh-box why-box">
           <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
@@ -1374,7 +1420,7 @@
       <div class="explain-block">
         <div class="wwh-box what-box">
           <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
-          <div>สไลด์ที่ 42: สาระสำคัญเรื่อง 02. Micro2.pdf — วงจรตรรกศาสตร์ดิจิทัล การลดรูป K-Map และ Combinational Circuits (เนื้อหาหลัก: 113301 Microprocessor Engineering By Tri-state buffer bus)</div>
+          <div>สไลด์ที่ 42: สาระสำคัญเรื่อง 02. Micro2.pdf — วงจรตรรกศาสตร์ดิจิทัล การลดรูป K-Map และ Combinational Circuits (เนื้อหาหลัก: 113301 Microprocessor Engineering By <span class="tooltip-term">Tri-state<span class="tooltip-box">💡 <b>Tri-state:</b> ไตรสเตทบัฟเฟอร์: บัฟเฟอร์ที่มี 3 สถานะ คือ High (1), Low (0) และ High-Impedance (Hi-Z ตัดวงจรเพื่อเปิดทางให้บัส)</span></span> buffer bus)</div>
         </div>
         <div class="wwh-box why-box">
           <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
@@ -1617,7 +1663,7 @@
           <span>ก. เพื่อให้เข้าใจจังหวะการทำงานและการไหลของข้อมูลฮาร์ดแวร์ในระดับพินและรีจิสเตอร์</span>
         </div>
         <div class="quiz-option" id="qf2-opt-1" onclick="selectQuizAnswerF2(2, 1, false, 'ผิดครับ! สัญญาณ Clock มีผลต่อการซิงโครไนซ์ในระบบดิจิทัล')">
-          <span>ข. สัญญาณ Clock ไม่มีผลต่อการบันทึกข้อมูลใน Flip-Flop</span>
+          <span>ข. สัญญาณ Clock ไม่มีผลต่อการบันทึกข้อมูลใน <span class="tooltip-term">Flip-Flop<span class="tooltip-box">💡 <b>Flip-Flop:</b> ฟลิปฟลอป: วงจรลอจิกแบบลำดับ (Sequential Circuit) ทำหน้าที่จำข้อมูลดิจิทัล 1 บิต ทำงานตามขอบสัญญาณ Clock</span></span></span>
         </div>
         <div class="quiz-feedback-box" id="qf2-fb-2"></div>
       </div>

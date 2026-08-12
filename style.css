@@ -415,3 +415,117 @@ pre {
 }
 
 
+
+
+/* === INTERACTIVE HOVER TOOLTIP SYSTEM === */
+.tooltip-term {
+  position: relative;
+  color: #38bdf8;
+  font-weight: 700;
+  border-bottom: 2px dashed rgba(56, 189, 248, 0.6);
+  cursor: help;
+  display: inline-block;
+  padding: 0 3px;
+  transition: all 0.2s ease;
+}
+
+.tooltip-term:hover {
+  color: #fbbf24;
+  border-bottom-color: #fbbf24;
+  background: rgba(251, 191, 36, 0.12);
+  border-radius: 4px;
+}
+
+.tooltip-term .tooltip-box {
+  visibility: hidden;
+  opacity: 0;
+  width: 280px;
+  background: #0f172a;
+  color: #f8fafc;
+  text-align: left;
+  border-radius: 10px;
+  padding: 12px 14px;
+  position: absolute;
+  z-index: 1000;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 15px rgba(56, 189, 248, 0.4);
+  border: 1px solid #38bdf8;
+  font-size: 0.85rem;
+  font-weight: 400;
+  line-height: 1.6;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  pointer-events: none;
+}
+
+.tooltip-term .tooltip-box::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -6px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: #38bdf8 transparent transparent transparent;
+}
+
+.tooltip-term:hover .tooltip-box {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* === PLAYGROUND INTERACTIVE COMPONENTS === */
+.playground-card {
+  background: linear-gradient(145deg, #090f20, #0d172e);
+  border: 1px solid var(--accent);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 30px 0;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+
+.playground-title {
+  color: #fbbf24;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bit-btn {
+  background: #1e293b;
+  color: #38bdf8;
+  border: 2px solid #38bdf8;
+  font-family: var(--font-code);
+  font-size: 1.1rem;
+  font-weight: 800;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.bit-btn.active-1 {
+  background: #4ade80;
+  color: #052e16;
+  border-color: #4ade80;
+  box-shadow: 0 0 12px rgba(74, 222, 128, 0.6);
+}
+
+.trouble-wiki-box {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: 14px;
+  padding: 20px;
+  margin-top: 24px;
+}
+
+.trouble-title {
+  color: #f87171;
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 12px;
+}

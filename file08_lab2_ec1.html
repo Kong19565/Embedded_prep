@@ -348,7 +348,7 @@
             
             <rect x="340" y="40" width="140" height="70" rx="8" fill="#1e293b" stroke="#fbbf24" stroke-width="2"/>
             <text x="410" y="72" fill="#fbbf24" font-size="13" font-weight="bold" text-anchor="middle">Processing Unit</text>
-            <text x="410" y="92" fill="#94a3b8" font-size="11" text-anchor="middle">(ALU / Logic)</text>
+            <text x="410" y="92" fill="#94a3b8" font-size="11" text-anchor="middle">(<span class="tooltip-term">ALU<span class="tooltip-box">💡 <b>ALU:</b> Arithmetic Logic Unit (หน่วยคำนวณและลอจิก): หัวใจของ CPU ทำหน้าที่บวก ลบ และเปรียบเทียบลอจิก AND/OR/XOR</span></span> / Logic)</text>
 
             <rect x="640" y="40" width="120" height="70" rx="8" fill="#1e293b" stroke="#4ade80" stroke-width="2"/>
             <text x="700" y="80" fill="#4ade80" font-size="14" font-weight="bold" text-anchor="middle">Output Target</text>
@@ -515,7 +515,7 @@
           <span>ก. เพื่อให้เข้าใจจังหวะการทำงานและการไหลของข้อมูลฮาร์ดแวร์ในระดับพินและรีจิสเตอร์</span>
         </div>
         <div class="quiz-option" id="qf8-opt-1" onclick="selectQuizAnswerF8(2, 1, false, 'ผิดครับ! สัญญาณ Clock มีผลต่อการซิงโครไนซ์ในระบบดิจิทัล')">
-          <span>ข. สัญญาณ Clock ไม่มีผลต่อการบันทึกข้อมูลใน Flip-Flop</span>
+          <span>ข. สัญญาณ Clock ไม่มีผลต่อการบันทึกข้อมูลใน <span class="tooltip-term">Flip-Flop<span class="tooltip-box">💡 <b>Flip-Flop:</b> ฟลิปฟลอป: วงจรลอจิกแบบลำดับ (Sequential Circuit) ทำหน้าที่จำข้อมูลดิจิทัล 1 บิต ทำงานตามขอบสัญญาณ Clock</span></span></span>
         </div>
         <div class="quiz-feedback-box" id="qf8-fb-2"></div>
       </div>
@@ -545,7 +545,18 @@
       <p>Embedded System Guide &copy; 2569 | ไฟล์ที่ 8: lab2_ec1_microprocessor.pdf Study Guide</p>
     </footer>
 
-  </main>
+  
+    <!-- VIRTUAL LAB TROUBLESHOOTING & DEBUGGING WIKI -->
+    <div class="trouble-wiki-box">
+      <div class="trouble-title">🔧 ไกด์ซ่อมบั๊กแล็บและการแก้ไขข้อผิดพลาดพบบ่อย (Virtual Lab Troubleshooting Wiki)</div>
+      <ul style="line-height: 1.8; color: #f1f5f9; font-size: 0.92rem; padding-left: 20px;">
+        <li><b>❌ Error: 'avr/io.h: No such file or directory' ใน Atmel Studio:</b> แก้ไขโดยตรวจเช็ค Toolchain ใน Device Pack คุณยังไม่ได้ตั้งค่า Include Path หรือกดสร้าง Project เป็น C Executable ให้ไปที่ Project Properties -> Toolchain -> Directories</li>
+        <li><b>❌ Proteus VSM ซิมเปิดไม่ติด/ค้างที่ 0.00s:</b> เกิดจากไฟล์เฟิร์มแวร์ .HEX/.ELF ที่คอมไพล์จาก Atmel Studio อยู่คนละไดเรกทอรี หรือตั้งค่าสเกล Clock Frequency ในชิป ATmega328P ไม่ตรงกัน (แนะนำตั้งเป็น Internal 8MHz หรือ External 16MHz)</li>
+        <li><b>❌ สัญญาณควบคุม Control Store ผิดพลาด (Lab 1 & 2):</b> ตรวจสอบการ Map บิตของ Multiplexer และ Tri-state Buffer ว่ามีขาใดลอยอยู่ (Floating Pin) หรือไม่ ให้ต่อ Pull-down Resistor 10kΩ กำกับไว้เสมอ</li>
+      </ul>
+    </div>
+        
+</main>
 
   <script>
     const stateF8 = { 1: false, 2: false, 3: false };
