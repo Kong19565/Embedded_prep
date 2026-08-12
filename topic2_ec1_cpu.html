@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>หัวข้อที่ 2: Microprocessor EC-1 Architecture & Hardwired FSM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    canvas#ec1Wave { width: 100%; height: 120px; display: block; border-radius: 8px; background: #060911; border: 1px solid var(--border-color); margin-top: 12px; }
+    .mem-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; margin-top: 10px; }
+    .mem-cell { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; padding: 6px 4px; text-align: center; font-family: var(--font-code); font-size: 11px; }
+    .mem-cell.hot { border-color: var(--primary); background: rgba(56, 189, 248, 0.18); color: #fff; font-weight: 700; }
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">⚡ EMBEDDED EXAM HUB</a>
+    <ul class="nav-links">
+      <li><a href="index.html">หน้าหลัก</a></li>
+      <li><a href="topic1_rom_control.html">1. ROM Control Store</a></li>
+      <li><a href="topic2_ec1_cpu.html" class="active">2. EC-1 CPU</a></li>
+      <li><a href="topic3_digital_logic.html">3. Digital Logic & ALU</a></li>
+      <li><a href="topic4_avr_assembly.html">4. AVR Assembly</a></li>
+      <li><a href="topic5_cpu_architecture.html">5. CPU & Arithmetic</a></li>
+      <li><a href="topic6_io_interrupts_dma.html">6. I/O & DMA</a></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN CONTAINER -->
+  <main class="container">
+
+    <!-- PAGE BANNER -->
+    <header class="page-banner">
+      <h1 class="page-title">⚙️ หัวข้อที่ 2: Microprocessor EC-1 Architecture & Hardwired FSM</h1>
+      <p class="page-subtitle">
+        เจาะลึกสถาปัตยกรรม Microprocessor EC-1 ขนาด 8 Bit โครงสร้างเส้นทางข้อมูล Datapath สภาพลอจิก Hardwired FSM วงรอบ 3 ขั้นตอน (3-Stage Cycle) ตารางชุดคำสั่ง และการต่อขยายคำสั่งใหม่
+      </p>
+    </header>
+
+    <!-- SOURCE FILE MAPPING BOX -->
+    <div class="source-file-box">
+      <h3>📁 ตำแหน่งไฟล์อ้างอิงบทเรียนนี้ใน Workspace (Source File Mapping)</h3>
+      <ul class="source-file-list">
+        <li class="source-file-item">
+          <span class="source-tag">Lecture PDF</span>
+          <a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Lectures_and_Textbooks/lab2_ec1_microprocessor.pdf" class="file-link">Lectures_and_Textbooks/lab2_ec1_microprocessor.pdf</a>
+          <span style="color: var(--text-muted); font-size: 0.82rem;">(สไลด์คำสอนสถาปัตยกรรม EC-1)</span>
+        </li>
+        <li class="source-file-item">
+          <span class="source-tag">Report HTML</span>
+          <a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Reports/Lab_2_EC1_Microprocessor/Report_EC1_Microprocessor.html" class="file-link">Reports/Lab_2_EC1_Microprocessor/Report_EC1_Microprocessor.html</a>
+          <span style="color: var(--text-muted); font-size: 0.82rem;">(รายงานฉบับเต็ม Lab 2 พร้อมสมการ Boolean FSM)</span>
+        </li>
+        <li class="source-file-item">
+          <span class="source-tag">Logisim Circuit</span>
+          <a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Circuits_and_Simulations/Lab2_ec1_microprocessor.circ" class="file-link">Circuits_and_Simulations/Lab2_ec1_microprocessor.circ</a>
+          <span style="color: var(--text-muted); font-size: 0.82rem;">(ไฟล์จำลอง CPU EC-1 บน Logisim)</span>
+        </li>
+        <li class="source-file-item">
+          <span class="source-tag">Textbook PDF</span>
+          <a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Lectures_and_Textbooks/0132539977_p1a.pdf" class="file-link">Lectures_and_Textbooks/0132539977_p1a.pdf</a>
+          <span style="color: var(--text-muted); font-size: 0.82rem;">(หนังสือ M. Morris Mano Computer Architecture)</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- SECTION 1: DATAPATH & VON NEUMANN -->
+    <section class="section-block">
+      <h2 class="section-title">1. สถาปัตยกรรม Von Neumann & โครงสร้าง Datapath ของ EC-1</h2>
+      <p>Microprocessor EC-1 เป็นระบบประมวลผลขนาด 8 Bit ที่มีโครงสร้าง Datapath และหน่วยควบคุมเชื่อมต่อกันอย่างเป็นระบบ:</p>
+
+      <div class="svg-diagram-container">
+        <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg">
+          <!-- PC -->
+          <rect x="40" y="60" width="100" height="60" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+          <text x="90" y="95" fill="#38bdf8" font-size="15" font-weight="bold" text-anchor="middle">PC (Reg)</text>
+          
+          <!-- MAR / Memory -->
+          <rect x="200" y="60" width="130" height="180" rx="8" fill="#1e293b" stroke="#2dd4bf" stroke-width="2"/>
+          <text x="265" y="100" fill="#2dd4bf" font-size="16" font-weight="bold" text-anchor="middle">ROM / RAM</text>
+          <text x="265" y="125" fill="#94a3b8" font-size="12" text-anchor="middle">Memory (16x8)</text>
+
+          <!-- IR -->
+          <rect x="390" y="60" width="110" height="60" rx="8" fill="#1e293b" stroke="#f472b6" stroke-width="2"/>
+          <text x="445" y="95" fill="#f472b6" font-size="15" font-weight="bold" text-anchor="middle">IR (Inst Reg)</text>
+
+          <!-- Control Unit (FSM) -->
+          <rect x="390" y="180" width="180" height="100" rx="8" fill="#1e293b" stroke="#4ade80" stroke-width="2"/>
+          <text x="480" y="220" fill="#4ade80" font-size="16" font-weight="bold" text-anchor="middle">Control Unit</text>
+          <text x="480" y="245" fill="#94a3b8" font-size="12" text-anchor="middle">Hardwired FSM (S0..S2)</text>
+
+          <!-- ACC & ALU -->
+          <rect x="630" y="60" width="110" height="60" rx="8" fill="#1e293b" stroke="#fbbf24" stroke-width="2"/>
+          <text x="685" y="95" fill="#fbbf24" font-size="15" font-weight="bold" text-anchor="middle">Accumulator</text>
+
+          <rect x="780" y="60" width="90" height="180" rx="8" fill="#1e293b" stroke="#818cf8" stroke-width="2"/>
+          <text x="825" y="150" fill="#818cf8" font-size="16" font-weight="bold" text-anchor="middle">ALU</text>
+
+          <!-- Interconnect Buses -->
+          <path d="M 140 90 L 200 90" stroke="#38bdf8" stroke-width="2"/>
+          <path d="M 330 90 L 390 90" stroke="#2dd4bf" stroke-width="2"/>
+          <path d="M 500 90 L 630 90" stroke="#f472b6" stroke-width="2"/>
+          <path d="M 445 120 L 445 180" stroke="#f472b6" stroke-width="2"/>
+          <path d="M 740 90 L 780 90" stroke="#fbbf24" stroke-width="2"/>
+          <path d="M 825 240 L 685 240 L 685 120" stroke="#818cf8" stroke-width="2" fill="none"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- SECTION 2: 3-STAGE INSTRUCTION CYCLE -->
+    <section class="section-block">
+      <h2 class="section-title">2. วงรอบการประมวลผล 3 ขั้นตอน (3-Stage Instruction Cycle)</h2>
+      <div class="grid-3">
+        <div class="card">
+          <h3 class="card-title">1️⃣ Stage 0: S0 (Fetch)</h3>
+          <p>ดึงคำสั่งจากหน่วยความจำ ROM ณ ที่อยู่ Program Counter (PC) มาเก็บไว้ใน Instruction Register (IR)</p>
+          <div class="formula-box">
+            IR ← Memory[PC]<br>
+            PC ← PC + 1
+          </div>
+        </div>
+        <div class="card">
+          <h3 class="card-title">2️⃣ Stage 1: S1 (Decode)</h3>
+          <p>ถอดรหัส Opcode จาก Bit 7..4 ของ IR เพื่อส่งสัญญาณให้ Control Unit เตรียมเส้นทางข้อมูล</p>
+          <div class="formula-box">
+            Opcode ← IR[7..4]<br>
+            Operand ← IR[3..0]
+          </div>
+        </div>
+        <div class="card">
+          <h3 class="card-title">3️⃣ Stage 2: S2 (Execute)</h3>
+          <p>ALU ดำเนินการประมวลผลคำนวณ บวกลบ หรือย้ายข้อมูล แล้วบันทึกผลลัพธ์ลง Accumulator</p>
+          <div class="formula-box">
+            ACC ← ALU_Out<br>
+            (หรือ Memory[addr] ← ACC)
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: INSTRUCTION SET SPECIFICATION -->
+    <section class="section-block">
+      <h2 class="section-title">3. ตารางชุดคำสั่งของ EC-1 Microprocessor (Instruction Set Spec)</h2>
+      <table class="data-tbl">
+        <thead>
+          <tr>
+            <th>Opcode (Hex)</th>
+            <th>Mnemonic</th>
+            <th>รูปแบบ Operand</th>
+            <th>การทำงานทางคณิตศาสตร์/ตรรกะ</th>
+            <th>ผลกระทบต่อ Register</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>0x1</code></td>
+            <td><code>LDA addr</code></td>
+            <td>Memory Address (4-bit)</td>
+            <td>อ่านข้อมูลจาก <code>Memory[addr]</code> โหลดเข้า Accumulator</td>
+            <td>ACC ← Memory[addr]</td>
+          </tr>
+          <tr>
+            <td><code>0x2</code></td>
+            <td><code>ADD addr</code></td>
+            <td>Memory Address (4-bit)</td>
+            <td>นำค่าใน Accumulator บวกกับข้อมูลใน <code>Memory[addr]</code></td>
+            <td>ACC ← ACC + Memory[addr]</td>
+          </tr>
+          <tr>
+            <td><code>0x3</code></td>
+            <td><code>SUB addr</code></td>
+            <td>Memory Address (4-bit)</td>
+            <td>นำค่าใน Accumulator ลบด้วยข้อมูลใน <code>Memory[addr]</code></td>
+            <td>ACC ← ACC - Memory[addr]</td>
+          </tr>
+          <tr>
+            <td><code>0x4</code></td>
+            <td><code>STA addr</code></td>
+            <td>Memory Address (4-bit)</td>
+            <td>เขียนบันทึกข้อมูลจาก Accumulator ลงใน <code>Memory[addr]</code></td>
+            <td>Memory[addr] ← ACC</td>
+          </tr>
+          <tr>
+            <td><code>0x5</code></td>
+            <td><code>JMP addr</code></td>
+            <td>Target Address (4-bit)</td>
+            <td>กระโดดข้ามไปยังที่อยู่คำสั่งปลายทางโดยไม่มีเงื่อนไข</td>
+            <td>PC ← addr</td>
+          </tr>
+          <tr>
+            <td><code>0x6</code></td>
+            <td><code>JNZ addr</code></td>
+            <td>Target Address (4-bit)</td>
+            <td>กระโดดไปยังที่อยู่ปลายทาง เฉพาะเมื่อ Accumulator ≠ 0</td>
+            <td>If ACC ≠ 0 Then PC ← addr</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- SECTION 4: INTERACTIVE EC-1 FULL CPU SIMULATOR -->
+    <section class="section-block">
+      <h2 class="section-title">4. Interactive EC-1 CPU Stepper & 16-Byte Memory Inspector</h2>
+      <div class="sim-container">
+        <div class="sim-header">
+          <div>
+            <h3 style="color: var(--accent);">จำลองวงรอบการทำงานของ EC-1 CPU (S0 → S1 → S2)</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">ทดสอบการเปลี่ยนสถานะ FSM และการอัปเดต PC, IR, ACC, Memory Space และ Logic Waveform</p>
+          </div>
+          <div class="sim-controls">
+            <button class="btn btn-primary" onclick="stepEc1Sim()">⏯️ Clock Tick (+1)</button>
+            <button class="btn btn-danger" onclick="resetEc1Sim()">🔄 Reset CPU</button>
+          </div>
+        </div>
+
+        <div class="circuit-grid">
+          <div class="node-box active" id="node-ec1-state">
+            <div class="node-label">FSM State</div>
+            <div class="node-val" id="val-ec1-state">S0 (Fetch)</div>
+          </div>
+          <div class="node-box" id="node-ec1-pc">
+            <div class="node-label">PC</div>
+            <div class="node-val" id="val-ec1-pc">0x0</div>
+          </div>
+          <div class="node-box highlight" id="node-ec1-ir">
+            <div class="node-label">IR (Instruction)</div>
+            <div class="node-val" id="val-ec1-ir">0x15</div>
+          </div>
+          <div class="node-box" id="node-ec1-acc">
+            <div class="node-label">Accumulator (ACC)</div>
+            <div class="node-val" id="val-ec1-acc">0x00</div>
+          </div>
+          <div class="node-box" id="node-ec1-alu">
+            <div class="node-label">ALU Operation</div>
+            <div class="node-val" id="val-ec1-alu">NOP</div>
+          </div>
+        </div>
+
+        <div class="theory-box" id="ec1-status-desc">
+          <b>ขั้นตอนปัจจุบัน:</b> S0 (Fetch) - ดึงคำสั่งจาก ROM ที่อยู่ PC=0x0 (LDA 0x5) มาเก็บใน IR
+        </div>
+
+        <!-- MEMORY INSPECTOR -->
+        <h4 style="color: var(--gold); margin: 18px 0 6px; font-size: 0.9rem;">ตารางตรวจสอบหน่วยความจำ Memory Space (0x0 → 0xF)</h4>
+        <div class="mem-grid" id="memGrid"></div>
+
+        <!-- WAVEFORM CANVAS -->
+        <h4 style="color: var(--cyan); margin: 20px 0 6px; font-size: 0.9rem;">รูปคลื่นการประมวลผล Accumulator & PC (Logic Timing Waveform)</h4>
+        <canvas id="ec1Wave"></canvas>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <p>Embedded System Exam Guide &copy; 2569 | หัวข้อที่ 2: Microprocessor EC-1</p>
+    </footer>
+
+  </main>
+
+  <script>
+    const memData = [0x15, 0x26, 0x00, 0x00, 0x00, 0x07, 0x05, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00];
+    const ec1Sequence = [
+      { state: 'S0 (Fetch)', pc: 0x0, ir: 0x15, acc: 0x00, alu: 'NOP', desc: 'S0: ดึงคำสั่งจาก Memory [0x0] (ค่า 0x15: LDA 0x5) เก็บใส่ IR' },
+      { state: 'S1 (Decode)', pc: 0x1, ir: 0x15, acc: 0x00, alu: 'READ MEM[5]', desc: 'S1: ถอดรหัส Opcode 1 (LDA) อ่านที่อยู่ 0x5 เตรียมโหลดข้อมูล' },
+      { state: 'S2 (Execute)', pc: 0x1, ir: 0x15, acc: 0x07, alu: 'ACC <- 0x07', desc: 'S2: โหลดค่า 0x07 จาก Memory[5] เข้า Accumulator สำเร็จ!' },
+      { state: 'S0 (Fetch)', pc: 0x1, ir: 0x26, acc: 0x07, alu: 'NOP', desc: 'S0: ดึงคำสั่งถัดไป Memory [0x1] (ค่า 0x26: ADD 0x6) เข้า IR' },
+      { state: 'S1 (Decode)', pc: 0x2, ir: 0x26, acc: 0x07, alu: 'ALU ADD PREP', desc: 'S1: ถอดรหัส Opcode 2 (ADD) เตรียมนำ ACC + Memory[6]' },
+      { state: 'S2 (Execute)', pc: 0x2, ir: 0x26, acc: 0x0C, alu: 'ACC (7+5 = 12)', desc: 'S2: ALU บวกค่า 0x07 + 0x05 ได้ผลลัพธ์ 0x0C (12 ในฐานสิบ) บันทึกลง ACC' }
+    ];
+    let ec1StepIndex = 0;
+    const ec1Samples = [];
+
+    function paintMem() {
+      const grid = document.getElementById('memGrid');
+      grid.innerHTML = '';
+      memData.forEach((v, i) => {
+        const cell = document.createElement('div');
+        cell.className = `mem-cell ${i === ec1Sequence[ec1StepIndex].pc ? 'hot' : ''}`;
+        cell.innerHTML = `[0x${i.toString(16).toUpperCase()}]<br><b>0x${v.toString(16).padStart(2,'0').toUpperCase()}</b>`;
+        grid.appendChild(cell);
+      });
+    }
+
+    function stepEc1Sim() {
+      ec1StepIndex = (ec1StepIndex + 1) % ec1Sequence.length;
+      const cur = ec1Sequence[ec1StepIndex];
+      document.getElementById('val-ec1-state').innerText = cur.state;
+      document.getElementById('val-ec1-pc').innerText = '0x' + cur.pc.toString(16).toUpperCase();
+      document.getElementById('val-ec1-ir').innerText = '0x' + cur.ir.toString(16).toUpperCase();
+      document.getElementById('val-ec1-acc').innerText = '0x' + cur.acc.toString(16).padStart(2, '0').toUpperCase();
+      document.getElementById('val-ec1-alu').innerText = cur.alu;
+      document.getElementById('ec1-status-desc').innerHTML = '<b>ขั้นตอนปัจจุบัน:</b> ' + cur.desc;
+
+      ec1Samples.push({ acc: cur.acc, pc: cur.pc });
+      if (ec1Samples.length > 50) ec1Samples.shift();
+      paintMem();
+      drawEc1Wave();
+    }
+
+    function resetEc1Sim() {
+      ec1StepIndex = 0;
+      ec1Samples.length = 0;
+      const cur = ec1Sequence[0];
+      document.getElementById('val-ec1-state').innerText = cur.state;
+      document.getElementById('val-ec1-pc').innerText = '0x0';
+      document.getElementById('val-ec1-ir').innerText = '0x15';
+      document.getElementById('val-ec1-acc').innerText = '0x00';
+      document.getElementById('val-ec1-alu').innerText = 'NOP';
+      document.getElementById('ec1-status-desc').innerHTML = '<b>ขั้นตอนปัจจุบัน:</b> S0 (Fetch) - ดึงคำสั่งจาก ROM ที่อยู่ PC=0x0 (LDA 0x5) มาเก็บใน IR';
+      paintMem();
+      drawEc1Wave();
+    }
+
+    function drawEc1Wave() {
+      const cv = document.getElementById('ec1Wave');
+      if (!cv) return;
+      const ctx = cv.getContext('2d');
+      cv.width = cv.clientWidth; cv.height = 120;
+      const w = cv.width, h = cv.height;
+      ctx.clearRect(0, 0, w, h);
+      ctx.strokeStyle = '#2e3c54'; ctx.lineWidth = 1;
+      for (let x = 0; x < w; x += 30) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+
+      if (ec1Samples.length < 2) return;
+      const step = w / 50;
+      ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2; ctx.beginPath();
+      ec1Samples.forEach((s, i) => {
+        const x = i * step, y = h - 20 - (s.acc * 6);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+    }
+
+    paintMem();
+  </script>
+</body>
+</html>

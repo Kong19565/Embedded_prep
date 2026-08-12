@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>หัวข้อที่ 5: CPU Architecture, Addressing Modes & Computer Arithmetic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .stack-box { display: flex; flex-direction: column-reverse; gap: 4px; border: 2px stroke var(--border-color); padding: 8px; border-radius: 8px; background: rgba(9,13,22,0.8); width: 140px; margin: 0 auto; }
+    .stack-cell { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 4px; padding: 6px; text-align: center; font-family: var(--font-code); font-size: 12px; }
+    .stack-cell.top { border-color: var(--gold); background: rgba(219,169,47,0.2); color: #fff; font-weight: 700; }
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">⚡ EMBEDDED EXAM HUB</a>
+    <ul class="nav-links">
+      <li><a href="index.html">หน้าหลัก</a></li>
+      <li><a href="topic1_rom_control.html">1. ROM Control Store</a></li>
+      <li><a href="topic2_ec1_cpu.html">2. EC-1 CPU</a></li>
+      <li><a href="topic3_digital_logic.html">3. Digital Logic & ALU</a></li>
+      <li><a href="topic4_avr_assembly.html">4. AVR Assembly</a></li>
+      <li><a href="topic5_cpu_architecture.html" class="active">5. CPU & Arithmetic</a></li>
+      <li><a href="topic6_io_interrupts_dma.html">6. I/O & DMA</a></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN CONTAINER -->
+  <main class="container">
+
+    <!-- PAGE BANNER -->
+    <header class="page-banner">
+      <h1 class="page-title">🏗️ หัวข้อที่ 5: CPU Architecture, Addressing Modes & Computer Arithmetic</h1>
+      <p class="page-subtitle">
+        สรุปโครงสร้างหน่วยประมวลผลกลาง (General Register & Stack Organization), โหมดการระบุตำแหน่งข้อมูลทั้ง 7 (Addressing Modes), RISC vs CISC และวงจรคำนวณตัวเลข (Fixed-Point Two's Complement & IEEE 754 Floating-Point)
+      </p>
+    </header>
+
+    <!-- SOURCE FILE MAPPING BOX -->
+    <div class="source-file-box">
+      <h3>📁 ตำแหน่งไฟล์อ้างอิงบทเรียนนี้ใน Workspace (Source File Mapping)</h3>
+      <ul class="source-file-list">
+        <li class="source-file-item">
+          <span class="source-tag">Lecture PDF</span>
+          <a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Lectures_and_Textbooks/Micro1.pdf" class="file-link">Lectures_and_Textbooks/Micro1.pdf</a>
+          <span style="color: var(--text-muted); font-size: 0.82rem;">(สไลด์สถาปัตยกรรม CPU และ Addressing Modes)</span>
+        </li>
+        <li class="source-file-item">
+          <span class="source-tag">Textbook PDF</span>
+          <a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Lectures_and_Textbooks/0132539977_p4a.pdf" class="file-link">Lectures_and_Textbooks/0132539977_p4a.pdf</a>
+          <span style="color: var(--text-muted); font-size: 0.82rem;">(หนังสือ Mano บทที่ 8: Central Processing Unit)</span>
+        </li>
+        <li class="source-file-item">
+          <span class="source-tag">Textbook PDF</span>
+          <a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Lectures_and_Textbooks/0132539977_p5a.pdf" class="file-link">Lectures_and_Textbooks/0132539977_p5a.pdf</a>
+          <span style="color: var(--text-muted); font-size: 0.82rem;">(หนังสือ Mano บทที่ 10: Computer Arithmetic)</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- SECTION 1: REGISTER & STACK ORGANIZATION -->
+    <section class="section-block">
+      <h2 class="section-title">1. โครงสร้างภายใน CPU (Register & Stack Organization)</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3 class="card-title">📦 General Register Organization</h3>
+          <p>หน่วยประมวลผลใช้ชุด Register สองฝั่งเชื่อมเข้าสู่ ALU ทางอินพุต A และ B แล้วส่งผลลัพธ์ผ่าน Bus กลับสู่ Register ปลายทาง:</p>
+          <div class="theory-box">
+            • <b>Bus Selector (SELA / SELB):</b> เลือกตัวแปรอินพุตสำหรับ ALU<br>
+            • <b>Operation Selector (OPR):</b> กำหนดหน้าที่ ALU (ADD, SUB, AND, SHIFT)<br>
+            • <b>Destination Selector (SELD):</b> เลือก Register ที่รับผลลัพธ์การคำนวณ
+          </div>
+        </div>
+        <div class="card">
+          <h3 class="card-title">🥞 Stack Organization (LIFO Memory)</h3>
+          <p>โครงสร้างข้อมูลแบบ Last-In, First-Out ควบคุมด้วย Stack Pointer (SP):</p>
+          <div class="theory-box">
+            • <b>PUSH Operation (เก็บข้อมูลลงสแต็ก):</b><br>
+            &nbsp;&nbsp; SP ← SP - 1 &nbsp; แล้วบันทึกข้อมูล &nbsp; Memory[SP] ← Data<br>
+            • <b>POP Operation (ดึงข้อมูลออกจากสแต็ก):</b><br>
+            &nbsp;&nbsp; Data ← Memory[SP] &nbsp; แล้วคืนค่า &nbsp; SP ← SP + 1
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: 7 ADDRESSING MODES -->
+    <section class="section-block">
+      <h2 class="section-title">2. สรุปโหมดการระบุตำแหน่งข้อมูล 7 รูปแบบ (7 Addressing Modes)</h2>
+      <table class="data-tbl">
+        <thead>
+          <tr>
+            <th>Addressing Mode</th>
+            <th>สูตรการคำนวณ Effective Address (EA)</th>
+            <th>ลักษณะการทำงานและตัวอย่าง</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>1. Implied Mode</b></td>
+            <td>ไม่ต้องระบุ EA (อยู่ใน Opcode)</td>
+            <td>ระบุตำแหน่งจากคำสั่งโดยตรง เช่น <code>CLC</code> (Clear Carry), <code>NOP</code></td>
+          </tr>
+          <tr>
+            <td><b>2. Immediate Mode</b></td>
+            <td>Operand อยู่ในคำสั่งโดยตรง</td>
+            <td>ระบุค่าคงที่โดยตรง เช่น <code>LDI R16, 0xFF</code> (ข้อมูลคือ 0xFF)</td>
+          </tr>
+          <tr>
+            <td><b>3. Register Direct</b></td>
+            <td>Operand อยู่ใน Register</td>
+            <td>ข้อมูลอยู่ใน Register ที่ระบุ เช่น <code>MOV R1, R2</code></td>
+          </tr>
+          <tr>
+            <td><b>4. Register Indirect</b></td>
+            <td>EA = [Register Pointer]</td>
+            <td>Register เก็บที่อยู่ Memory เช่น <code>LD R0, Z</code> (EA = ค่าในคู่ Z)</td>
+          </tr>
+          <tr>
+            <td><b>5. Direct Address</b></td>
+            <td>EA = Address Field</td>
+            <td>ระบุที่อยู่ Memory ตรงๆ ในคำสั่ง เช่น <code>LDS R16, 0x0100</code></td>
+          </tr>
+          <tr>
+            <td><b>6. Relative Address</b></td>
+            <td>EA = PC + Address Field</td>
+            <td>ใช้ที่อยู่สัมพัทธ์กับ PC สำหรับคำสั่งกระโดด เช่น <code>RJMP +5</code></td>
+          </tr>
+          <tr>
+            <td><b>7. Indexed Mode</b></td>
+            <td>EA = Index Register + Offset</td>
+            <td>นำค่าใน Index Register บวกกับค่า Offset เพื่อเข้าถึงข้อมูลตาราง array</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- SECTION 3: COMPUTER ARITHMETIC -->
+    <section class="section-block">
+      <h2 class="section-title">3. คณิตศาสตร์คอมพิวเตอร์ (Fixed-Point & Floating-Point IEEE 754)</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3 class="card-title">🔢 Fixed-Point Two's Complement & Overflow</h3>
+          <p>การคำนวณเลขมีเครื่องหมาย (Signed Integers) จะใช้ 2's Complement โดยการตรวจจับ Overflow เกิดจาก:</p>
+          <div class="formula-box">
+            <span style="font-size: 1.1rem; color: var(--primary);">V = C<sub>in</sub> ⊕ C<sub>out</sub></span><br><br>
+            • หาก V = 1 : เกิด Overflow ผลลัพธ์ผิดพลาดเนื่องจากล้นหลัก MSB
+          </div>
+        </div>
+        <div class="card">
+          <h3 class="card-title">🌐 IEEE 754 Floating-Point Standard (32-bit Single Precision)</h3>
+          <p>การจัดเก็บเลขทศนิยมประกอบด้วย 3 ส่วน:</p>
+          <div class="formula-box">
+            Bit 31: Sign Bit (S) | Bits 30..23: Exponent (E, Bias=127) | Bits 22..0: Mantissa (M)<br><br>
+            <span style="font-size: 1.1rem; color: var(--accent);">Value = (-1)<sup>S</sup> × 1.M × 2<sup>(E - Bias)</sup></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: INTERACTIVE ADDRESSING MODE CALCULATOR & STACK SIMULATOR -->
+    <section class="section-block">
+      <h2 class="section-title">4. Interactive Addressing Mode Calculator & LIFO Stack Inspector</h2>
+      <div class="sim-container">
+        <div class="sim-header">
+          <div>
+            <h3 style="color: var(--primary);">เครื่องมือคำนวณ Effective Address (EA) & จำลอง Stack</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">เลือกโหมดการระบุตำแหน่ง หรือทดสอบกด PUSH/POP ข้อมูลลง LIFO Stack</p>
+          </div>
+          <div class="sim-controls">
+            <button class="btn btn-primary" onclick="pushStack()">📥 PUSH Data</button>
+            <button class="btn btn-danger" onclick="popStack()">📤 POP Data</button>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 16px; margin-top: 14px;">
+          <!-- ADDRESSING CALCULATOR -->
+          <div class="card">
+            <h4 style="color: var(--accent); margin-bottom: 8px;"> Addressing Mode Calculator</h4>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;">
+              <button class="btn" onclick="calcEA('DIR')">Direct Address</button>
+              <button class="btn" onclick="calcEA('REL')">Relative (PC + Offset)</button>
+              <button class="btn" onclick="calcEA('IND')">Indexed (Index + Offset)</button>
+            </div>
+            <div class="formula-box" id="eaReadout">
+              โหมดที่เลือก: <b>Relative Address</b><br>
+              สมการ: EA = PC (0x0100) + Offset (0x0005) = <b>0x0105</b>
+            </div>
+          </div>
+
+          <!-- LIFO STACK INSPECTOR -->
+          <div class="card" style="text-align: center;">
+            <h4 style="color: var(--gold); margin-bottom: 8px;">LIFO Stack (SP: <span id="spVal">0x08</span>)</h4>
+            <div class="stack-box" id="stackBox"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <p>Embedded System Exam Guide &copy; 2569 | หัวข้อที่ 5: CPU Architecture & Computer Arithmetic</p>
+    </footer>
+
+  </main>
+
+  <script>
+    const stackData = [0xAA, 0xBB, 0xCC];
+    let sp = 8 - stackData.length;
+
+    function renderStack() {
+      const box = document.getElementById('stackBox');
+      box.innerHTML = '';
+      stackData.forEach((val, i) => {
+        const cell = document.createElement('div');
+        cell.className = `stack-cell ${i === stackData.length - 1 ? 'top' : ''}`;
+        cell.innerText = `[0x0${8-i}] : 0x${val.toString(16).toUpperCase()}`;
+        box.appendChild(cell);
+      });
+      document.getElementById('spVal').innerText = `0x0${sp}`;
+    }
+
+    function pushStack() {
+      if (stackData.length >= 6) return;
+      const newVal = Math.floor(Math.random() * 255);
+      stackData.push(newVal);
+      sp--;
+      renderStack();
+    }
+
+    function popStack() {
+      if (stackData.length === 0) return;
+      stackData.pop();
+      sp++;
+      renderStack();
+    }
+
+    function calcEA(mode) {
+      const box = document.getElementById('eaReadout');
+      if (mode === 'DIR') {
+        box.innerHTML = `โหมดที่เลือก: <b>Direct Address Mode</b><br>สมการ: EA = Address Field (0x0200) = <b>0x0200</b> (อ่านค่าตรงจาก Memory Address 0x0200)`;
+      } else if (mode === 'REL') {
+        box.innerHTML = `โหมดที่เลือก: <b>Relative Addressing Mode</b><br>สมการ: EA = PC (0x0100) + Offset (+5) = <b>0x0105</b>`;
+      } else if (mode === 'IND') {
+        box.innerHTML = `โหมดที่เลือก: <b>Indexed Addressing Mode</b><br>สมการ: EA = Index Register X (0x0150) + Offset (+10) = <b>0x015A</b>`;
+      }
+    }
+
+    renderStack();
+  </script>
+</body>
+</html>

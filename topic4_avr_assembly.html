@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>หัวข้อที่ 4: AVR ATmega328P Architecture, Assembly & C</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- TOP NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">⚡ EMBEDDED EXAM HUB</a>
+    <ul class="nav-links">
+      <li><a href="index.html">หน้าหลัก</a></li>
+      <li><a href="topic1_rom_control.html">1. ROM Control Store</a></li>
+      <li><a href="topic2_ec1_cpu.html">2. EC-1 CPU</a></li>
+      <li><a href="topic3_digital_logic.html">3. Digital Logic & ALU</a></li>
+      <li><a href="topic4_avr_assembly.html" class="active">4. AVR Assembly</a></li>
+      <li><a href="topic5_cpu_architecture.html">5. CPU & Arithmetic</a></li>
+      <li><a href="topic6_io_interrupts_dma.html">6. I/O & DMA</a></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN CONTAINER -->
+  <main class="container">
+
+    <!-- PAGE BANNER -->
+    <header class="page-banner">
+      <h1 class="page-title">🕹️ หัวข้อที่ 4: AVR ATmega328P Architecture, Assembly & C</h1>
+      <p class="page-subtitle">
+        สรุปสถาปัตยกรรม AVR RISC 8-bit, Status Register (SREG), การจัดการพอร์ต I/O (DDRx, PORTx, PINx), ชุดคำสั่งภาษา Assembly, การเขียนภาษา C ระดับ Bitwise และการจำลองบน Proteus VSM
+      </p>
+      <div style="margin-top: 16px;">
+        <a href="topic4_lab3_interactive.html" class="btn btn-primary" style="display: inline-flex; font-size: 1rem; padding: 10px 20px;">🕹️ เปิดใช้งานห้องปฏิบัติการจำลองฉบับเต็ม (Full Interactive Simulator Template) &rarr;</a>
+      </div>
+    </header>
+
+    <!-- SOURCE FILE MAPPING BOX -->
+    <div class="source-file-box">
+      <h3>📁 ตำแหน่งไฟล์อ้างอิงบทเรียนนี้ใน Workspace (Source File Mapping)</h3>
+      <ul class="source-file-list">
+        <li class="source-file-item">
+          <span class="source-tag">Lecture PDF</span>
+          <a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Lectures_and_Textbooks/Lab3%20Proteus%20and%20AVR%20Microcontroller.pdf" class="file-link">Lectures_and_Textbooks/Lab3 Proteus and AVR Microcontroller.pdf</a>
+          <span style="color: var(--text-muted); font-size: 0.82rem;">(สไลด์ Proteus & AVR Tutorial)</span>
+        </li>
+        <li class="source-file-item">
+          <span class="source-tag">Textbook PDF</span>
+          <a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Lectures_and_Textbooks/AVR%20Microcontroller%20and%20Embedded%20Systems.pdf" class="file-link">Lectures_and_Textbooks/AVR Microcontroller and Embedded Systems.pdf</a>
+          <span style="color: var(--text-muted); font-size: 0.82rem;">(หนังสือ Mazidi AVR Architecture)</span>
+        </li>
+        <li class="source-file-item">
+          <span class="source-tag">Report HTML</span>
+          <a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Reports/Lab_3_Proteus_and_AVR_Microcontroller/Report_Lab3_Proteus_AVR.html" class="file-link">Reports/Lab_3_Proteus_and_AVR_Microcontroller/Report_Lab3_Proteus_AVR.html</a>
+          <span style="color: var(--text-muted); font-size: 0.82rem;">(รายงานฉบับเต็ม Lab 3 โค้ด Assembly & C)</span>
+        </li>
+        <li class="source-file-item">
+          <span class="source-tag">Proteus Project</span>
+          <a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Circuits_and_Simulations/plus_mins_number.pdsprj" class="file-link">Circuits_and_Simulations/plus_mins_number.pdsprj</a>
+          <span style="color: var(--text-muted); font-size: 0.82rem;">(ไฟล์วงจรจำลอง Proteus)</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- SECTION 1: AVR ARCHITECTURE & SREG -->
+    <section class="section-block">
+      <h2 class="section-title">1. สถาปัตยกรรม AVR RISC 8-bit & Status Register (SREG)</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3 class="card-title">🏗️ Harvard Architecture & Register File</h3>
+          <ul style="padding-left: 18px; font-size: 0.9rem; color: var(--text-muted);">
+            <li><b>Harvard Architecture:</b> แยกหน่วยความจำ Flash Program (32 KB) และ SRAM Data (2 KB) ออกจากกัน</li>
+            <li><b>Register File (R0..R31):</b> มี Register ขนาด 8 Bit จำนวน 32 ตัว โดยมีคู่พิเศษใช้เป็น 16-bit Pointers:
+              <br>• X = R<sub>27</sub>:R<sub>26</sub>
+              <br>• Y = R<sub>29</sub>:R<sub>28</sub>
+              <br>• Z = R<sub>31</sub>:R<sub>30</sub>
+            </li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3 class="card-title">🚩 Status Register (SREG Flags)</h3>
+          <div class="formula-box">
+            Bit 7: I (Global Interrupt Enable)<br>
+            Bit 6: T (Bit Copy Storage)<br>
+            Bit 5: H (Half Carry Flag)<br>
+            Bit 4: S (Sign Bit = N ⊕ V)<br>
+            Bit 3: V (Overflow Flag)<br>
+            Bit 2: N (Negative Flag)<br>
+            Bit 1: Z (Zero Flag)<br>
+            Bit 0: C (Carry Flag)
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: I/O PORTS & BITWISE OPERATIONS -->
+    <section class="section-block">
+      <h2 class="section-title">2. การจัดการพอร์ต I/O ในภาษา C และ Assembly</h2>
+      <table class="data-tbl">
+        <thead>
+          <tr>
+            <th>การทำงานกับพอร์ต I/O</th>
+            <th>โค้ดภาษา C (Bitwise Manipulations)</th>
+            <th>โค้ดภาษา AVR Assembly</th>
+            <th>คำอธิบายกระบวนการในฮาร์ดแวร์</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>ตั้งขา PB5 เป็น Output</b></td>
+            <td><code>DDRB |= (1 &lt;&lt; PB5);</code></td>
+            <td><code>SBI DDRB, 5</code></td>
+            <td>เขียนค่า 1 ลงในบิต 5 ของ Data Direction Register</td>
+          </tr>
+          <tr>
+            <td><b>สั่งเปิดไฟ (HIGH)</b></td>
+            <td><code>PORTB |= (1 &lt;&lt; PB5);</code></td>
+            <td><code>SBI PORTB, 5</code></td>
+            <td>ส่งแรงดันไฟฟ้า 5V ออกขาทรงพลังงานเปิดไฟ LED</td>
+          </tr>
+          <tr>
+            <td><b>สั่งปิดไฟ (LOW)</b></td>
+            <td><code>PORTB &amp;= ~(1 &lt;&lt; PB5);</code></td>
+            <td><code>CBI PORTB, 5</code></td>
+            <td>ส่งแรงดันไฟฟ้า 0V ตัดกระแสไฟ LED</td>
+          </tr>
+          <tr>
+            <td><b>สลับสถานะไฟ (Toggle)</b></td>
+            <td><code>PORTB ^= (1 &lt;&lt; PB5);</code></td>
+            <td><code>IN R16, PORTB</code><br><code>LDI R17, (1&lt;&lt;5)</code><br><code>EOR R16, R17</code><br><code>OUT PORTB, R16</code></td>
+            <td>ทำการ Exclusive-OR สลับบิตจาก 0 เป็น 1 หรือ 1 เป็น 0</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- SECTION 3: ASSEMBLY INSTRUCTION SET -->
+    <section class="section-block">
+      <h2 class="section-title">3. สรุปชุดคำสั่ง AVR Assembly ที่ออกสอบบ่อย</h2>
+      <div class="grid-3">
+        <div class="card">
+          <h3 class="card-title">📦 Data Transfer</h3>
+          <ul style="padding-left: 18px; font-size: 0.88rem; color: var(--text-muted);">
+            <li><code>LDI R16, K</code>: โหลดค่าคงที่ K เข้า R16</li>
+            <li><code>MOV Rd, Rr</code>: ก๊อปปี้ค่าจาก Rr ไป Rd</li>
+            <li><code>IN Rd, P</code>: อ่านค่าจาก I/O Port P</li>
+            <li><code>OUT P, Rr</code>: ส่งค่าออก I/O Port P</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3 class="card-title">➕ Arithmetic & Logic</h3>
+          <ul style="padding-left: 18px; font-size: 0.88rem; color: var(--text-muted);">
+            <li><code>ADD Rd, Rr</code>: นำ Rd + Rr</li>
+            <li><code>SUB Rd, Rr</code>: นำ Rd - Rr</li>
+            <li><code>CPI Rd, K</code>: เปรียบเทียบ Rd กับค่า K</li>
+            <li><code>INC / DEC Rd</code>: เพิ่ม/ลดค่าขึ้นลง 1</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3 class="card-title">🔀 Branching & Control</h3>
+          <ul style="padding-left: 18px; font-size: 0.88rem; color: var(--text-muted);">
+            <li><code>RJMP Label</code>: กระโดดไปยัง Label</li>
+            <li><code>BREQ Label</code>: กระโดดหากเท่ากัน (Z=1)</li>
+            <li><code>BRNE Label</code>: กระโดดหากไม่เท่ากัน (Z=0)</li>
+            <li><code>SBI / CBI</code>: ตั้งค่า/ล้างค่าบิต I/O</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: INTERACTIVE AVR STEPPER -->
+    <section class="section-block">
+      <h2 class="section-title">4. Interactive AVR Assembly Line-by-Line Stepper</h2>
+      <div class="sim-container">
+        <div class="sim-header">
+          <div>
+            <h3 style="color: var(--secondary);">จำลองการรัน AVR Assembly โค้ดไฟกระพริบ</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">ดูการทำงานของ R16, R17, DDRB, PORTB และสถานะ LED จริง</p>
+          </div>
+          <div class="sim-controls">
+            <button class="btn btn-primary" onclick="stepAvrSim()">⏯️ Execute Next Line</button>
+            <button class="btn btn-danger" onclick="resetAvrSim()">🔄 Reset Program</button>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px;">
+          <div>
+            <pre id="avr-code-view">
+ 1:  <span class="kw">LDI</span>  <span class="reg">R16</span>, <span class="num">0b00100000</span>  <span class="cmt">; เตรียม Mask บิต 5</span>
+ 2:  <span class="kw">OUT</span>  <span class="reg">DDRB</span>, <span class="reg">R16</span>        <span class="cmt">; ตั้ง PB5 เป็น Output</span>
+ 3:  <span class="kw">LDI</span>  <span class="reg">R17</span>, <span class="num">0b00100000</span>  <span class="cmt">; เตรียมค่า HIGH</span>
+ 4:  <span class="kw">OUT</span>  <span class="reg">PORTB</span>, <span class="reg">R17</span>       <span class="cmt">; สั่งเปิดไฟ LED</span>
+ 5:  <span class="kw">CLR</span>  <span class="reg">R17</span>              <span class="cmt">; เตรียมค่า LOW (0)</span>
+ 6:  <span class="kw">OUT</span>  <span class="reg">PORTB</span>, <span class="reg">R17</span>       <span class="cmt">; สั่งปิดไฟ LED</span>
+ 7:  <span class="kw">RJMP</span> <span class="num">3</span>                <span class="cmt">; วนลูปกลับบรรทัด 3</span></pre>
+          </div>
+          <div class="circuit-grid" style="grid-template-columns: 1fr 1fr;">
+            <div class="node-box" id="node-avr-pc">
+              <div class="node-label">Line Pointer</div>
+              <div class="node-val" id="val-avr-pc">Line 1</div>
+            </div>
+            <div class="node-box" id="node-avr-r16">
+              <div class="node-label">Register R16</div>
+              <div class="node-val" id="val-avr-r16">0x00</div>
+            </div>
+            <div class="node-box" id="node-avr-portb">
+              <div class="node-label">PORTB Reg</div>
+              <div class="node-val" id="val-avr-portb">0x00</div>
+            </div>
+            <div class="node-box highlight" id="node-avr-led">
+              <div class="node-label">LED (PB5) State</div>
+              <div class="node-val" id="val-avr-led" style="color: var(--danger);">OFF 🔴</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <p>Embedded System Exam Guide &copy; 2569 | หัวข้อที่ 4: AVR Assembly & Proteus</p>
+    </footer>
+
+  </main>
+
+  <script>
+    const avrSequence = [
+      { line: 1, r16: '0b00100000', portb: '0x00', led: 'OFF 🔴', desc: 'Line 1: LDI R16, 0b00100000 โหลด Bitmask บิต 5 เข้า R16' },
+      { line: 2, r16: '0b00100000', portb: '0x00', led: 'OFF 🔴', desc: 'Line 2: OUT DDRB, R16 กำหนดขา PB5 ของ PORTB ให้ทำหน้าที่เป็น Output' },
+      { line: 3, r16: '0b00100000', portb: '0x00', led: 'OFF 🔴', desc: 'Line 3: LDI R17, 0b00100000 โหลดค่าบิต 5 HIGH เข้า R17' },
+      { line: 4, r16: '0b00100000', portb: '0b00100000', led: 'ON 🟢', desc: 'Line 4: OUT PORTB, R17 ส่งสัญญาณ HIGH ออก PB5 ไฟ LED สว่าง!' },
+      { line: 5, r16: '0b00100000', portb: '0b00100000', led: 'ON 🟢', desc: 'Line 5: CLR R17 ล้างค่า R17 เป็น 0x00 เตรียมปิดไฟ' },
+      { line: 6, r16: '0b00100000', portb: '0x00', led: 'OFF 🔴', desc: 'Line 6: OUT PORTB, R17 ส่งสัญญาณ LOW ออก PB5 ไฟ LED ดับ' }
+    ];
+    let avrStepIndex = 0;
+
+    function stepAvrSim() {
+      avrStepIndex = (avrStepIndex + 1) % avrSequence.length;
+      const st = avrSequence[avrStepIndex];
+      document.getElementById('val-avr-pc').innerText = 'Line ' + st.line;
+      document.getElementById('val-avr-r16').innerText = st.r16;
+      document.getElementById('val-avr-portb').innerText = st.portb;
+      document.getElementById('val-avr-led').innerText = st.led;
+      document.getElementById('val-avr-led').style.color = st.led.includes('ON') ? 'var(--success)' : 'var(--danger)';
+    }
+
+    function resetAvrSim() {
+      avrStepIndex = 0;
+      const st = avrSequence[0];
+      document.getElementById('val-avr-pc').innerText = 'Line 1';
+      document.getElementById('val-avr-r16').innerText = '0x00';
+      document.getElementById('val-avr-portb').innerText = '0x00';
+      document.getElementById('val-avr-led').innerText = 'OFF 🔴';
+      document.getElementById('val-avr-led').style.color = 'var(--danger)';
+    }
+  </script>
+</body>
+</html>

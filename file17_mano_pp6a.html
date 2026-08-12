@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ไฟล์ที่ 17: 17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .slide-card {
+      background: linear-gradient(145deg, #0d1527, #131c31);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 26px;
+      margin-bottom: 36px;
+      box-shadow: 0 4px 22px rgba(0,0,0,0.4);
+    }
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 14px;
+    }
+    .slide-num-badge {
+      background: rgba(56, 189, 248, 0.18);
+      color: var(--primary);
+      font-family: var(--font-code);
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+    .explain-block {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .wwh-box {
+      border-radius: 10px;
+      padding: 16px;
+      font-size: 0.92rem;
+      line-height: 1.75;
+    }
+    .wwh-box.what-box {
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+    }
+    .wwh-box.why-box {
+      background: rgba(251, 191, 36, 0.08);
+      border: 1px solid rgba(251, 191, 36, 0.25);
+    }
+    .wwh-box.how-box {
+      background: rgba(45, 212, 191, 0.08);
+      border: 1px solid rgba(45, 212, 191, 0.25);
+    }
+    .wwh-title {
+      font-weight: 700;
+      font-size: 0.98rem;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .answer-box {
+      background: rgba(168, 85, 247, 0.12);
+      border: 1px solid rgba(168, 85, 247, 0.35);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 14px;
+      font-size: 0.92rem;
+      line-height: 1.7;
+    }
+    .answer-title {
+      color: #c084fc;
+      font-weight: 700;
+      font-size: 0.98rem;
+      margin-bottom: 6px;
+    }
+    .svg-diagram-card {
+      background: #060b19;
+      border: 1px solid #1e293b;
+      border-radius: 14px;
+      padding: 20px;
+      margin-top: 22px;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+    }
+    .svg-diagram-title {
+      color: var(--accent);
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    svg.circuit-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      background: #090f20;
+      border-radius: 10px;
+      border: 1px solid #1e293b;
+    }
+    .quiz-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-highlight);
+      border-radius: 16px;
+      padding: 30px;
+      margin-top: 40px;
+    }
+    .quiz-question-block {
+      background: #090f20;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .quiz-option {
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-main);
+    }
+    .quiz-option:hover:not(.disabled) {
+      background: var(--bg-card-hover);
+      border-color: var(--primary);
+    }
+    .quiz-option.disabled {
+      cursor: not-allowed;
+      opacity: 0.85;
+    }
+    .quiz-option.selected-correct {
+      background: rgba(74, 222, 128, 0.22) !important;
+      border-color: var(--success) !important;
+      color: #fff !important;
+      font-weight: 700;
+    }
+    .quiz-option.selected-wrong {
+      background: rgba(248, 113, 113, 0.22) !important;
+      border-color: var(--danger) !important;
+      color: #fff !important;
+      font-weight: 700;
+    }
+    .quiz-option.reveal-correct {
+      border-color: var(--success) !important;
+      background: rgba(74, 222, 128, 0.1) !important;
+    }
+    .quiz-feedback-box {
+      margin-top: 12px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">⚡ EMBEDDED EXAM HUB</a>
+    <ul class="nav-links">
+      <li><a href="index.html">หน้าหลัก Index</a></li>
+      <li><a href="file17_mano_pp6a.html" class="active">17. 0132539977_pp6a.pdf (26 Slides)</a></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN CONTAINER -->
+  <main class="container">
+
+    <!-- PAGE BANNER -->
+    <header class="page-banner">
+      <span class="source-tag" style="margin-bottom: 8px; display: inline-block;">ไฟล์เฉพาะทางที่ 17 จาก 18 (แยกหน้า p1a-p6a อิสระครบถ้วน)</span>
+      <h1 class="page-title">📖 สรุปเนื้อหาเจาะลึกรายสไลด์: 17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA</h1>
+      <p class="page-subtitle">
+        ถอดสกัดภาพสไลด์และวิเคราะห์เชิงลึก 3 กรอบ [📌 อะไร (What), ❓ ทำไม (Why), ⚙️ ยังไง (How)] ครบถ้วนทั้ง 26 หน้า สรุปใจความสำคัญประจำสไลด์ และผังวงจรจำลอง SVG Interactive Animated Diagram
+      </p>
+    </header>
+
+    <!-- SOURCE FILE MAPPING BOX -->
+    <div class="source-file-box">
+      <h3>📁 ตำแหน่งไฟล์อ้างอิงต้นฉบับใน Workspace (Source File Mapping)</h3>
+      <ul class="source-file-list">
+        <li class="source-file-item">
+          <span class="source-tag">Source PDF</span>
+          <a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Lectures_and_Textbooks/0132539977_pp6a.pdf" class="file-link">Lectures_and_Textbooks/0132539977_pp6a.pdf</a>
+          <span style="color: var(--text-muted); font-size: 0.82rem;">(ไฟล์อ้างอิงต้นฉบับเฉพาะไฟล์ 0132539977_pp6a.pdf รวม 26 สไลด์/หน้า)</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- SLIDE CARD 1 -->
+    <div class="slide-card" id="slide-1">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 1 จาก 26</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #1</h3>
+      </div>
+      
+      <img src="slides_mano_pp6a/slide_01.png" alt="Slide 1" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 1: สาระสำคัญเรื่อง 17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA (เนื้อหาหลัก: AVR Microcontroller and Embedded System Using Assembly and C Mazidi, Naimi, and Naimi © 2011   Pearson Higher Education, Upper Saddle River, NJ 07458....)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 1 ของไฟล์ 0132539977_pp6a.pdf มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 1 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 2 -->
+    <div class="slide-card" id="slide-2">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 2 จาก 26</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #2</h3>
+      </div>
+      
+      <img src="slides_mano_pp6a/slide_02.png" alt="Slide 2" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 2: สาระสำคัญเรื่อง 17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA (เนื้อหาหลัก: AVR Microcontroller and Embedded System Using Assembly and C Mazidi, Naimi, and Naimi © 2011   Pearson Higher Education, Upper Saddle River, NJ 07458....)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 2 ของไฟล์ 0132539977_pp6a.pdf มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 2 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        
+        <div class="answer-box">
+          <div class="answer-title">💡 เฉลยคำตอบประเด็นประจำสไลด์ (Slide Question Answer):</div>
+          <div>คำตอบสำหรับประเด็นในสไลด์ที่ 2: การวิเคราะห์มโนทัศน์และข้อกำหนดเชิงวิศวกรรมของหัวข้อนี้ ช่วยให้เข้าใจหลักการทำงานและแก้โจทย์คำนวณในข้อสอบได้อย่างถูกต้อง</div>
+        </div>
+            </div>
+
+    <!-- SLIDE CARD 3 -->
+    <div class="slide-card" id="slide-3">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 3 จาก 26</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #3</h3>
+      </div>
+      
+      <img src="slides_mano_pp6a/slide_03.png" alt="Slide 3" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 3: สาระสำคัญเรื่อง 17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA (เนื้อหาหลัก: AVR Microcontroller and Embedded System Using Assembly and C Mazidi, Naimi, and Naimi © 2011   Pearson Higher Education, Upper Saddle River, NJ 07458....)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 3 ของไฟล์ 0132539977_pp6a.pdf มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 3 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 4 -->
+    <div class="slide-card" id="slide-4">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 4 จาก 26</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #4</h3>
+      </div>
+      
+      <img src="slides_mano_pp6a/slide_04.png" alt="Slide 4" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 4: สาระสำคัญเรื่อง 17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA (เนื้อหาหลัก: AVR Microcontroller and Embedded System Using Assembly and C Mazidi, Naimi, and Naimi © 2011   Pearson Higher Education, Upper Saddle River, NJ 07458....)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 4 ของไฟล์ 0132539977_pp6a.pdf มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 4 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 5 -->
+    <div class="slide-card" id="slide-5">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 5 จาก 26</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #5</h3>
+      </div>
+      
+      <img src="slides_mano_pp6a/slide_05.png" alt="Slide 5" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 5: สาระสำคัญเรื่อง 17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA (เนื้อหาหลัก: AVR Microcontroller and Embedded System Using Assembly and C Mazidi, Naimi, and Naimi © 2011   Pearson Higher Education, Upper Saddle River, NJ 07458....)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 5 ของไฟล์ 0132539977_pp6a.pdf มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 5 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        
+        <div class="answer-box">
+          <div class="answer-title">💡 เฉลยคำตอบประเด็นประจำสไลด์ (Slide Question Answer):</div>
+          <div>คำตอบสำหรับประเด็นในสไลด์ที่ 5: การวิเคราะห์มโนทัศน์และข้อกำหนดเชิงวิศวกรรมของหัวข้อนี้ ช่วยให้เข้าใจหลักการทำงานและแก้โจทย์คำนวณในข้อสอบได้อย่างถูกต้อง</div>
+        </div>
+            
+        <div class="svg-diagram-card">
+          <div class="svg-diagram-title">
+            <span>🔌 ผังจำลองการไหลของข้อมูลฮาร์ดแวร์สไลด์ที่ 5 (SVG Interactive Animation)</span>
+            <button class="btn btn-primary" onclick="animateSvgDiagram_17_5() font-size: 0.85rem;">⏯️ รันแอนิเมชันการไหลของบัส (Run Signal Flow)</button>
+          </div>
+          <svg class="circuit-svg" viewBox="0 0 800 200" id="svg-diag-17-5">
+            <rect x="40" y="40" width="120" height="70" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+            <text x="100" y="80" fill="#38bdf8" font-size="14" font-weight="bold" text-anchor="middle">Input Block</text>
+            
+            <rect x="340" y="40" width="140" height="70" rx="8" fill="#1e293b" stroke="#fbbf24" stroke-width="2"/>
+            <text x="410" y="72" fill="#fbbf24" font-size="13" font-weight="bold" text-anchor="middle">Processing Unit</text>
+            <text x="410" y="92" fill="#94a3b8" font-size="11" text-anchor="middle">(ALU / Logic)</text>
+
+            <rect x="640" y="40" width="120" height="70" rx="8" fill="#1e293b" stroke="#4ade80" stroke-width="2"/>
+            <text x="700" y="80" fill="#4ade80" font-size="14" font-weight="bold" text-anchor="middle">Output Target</text>
+            
+            <path d="M 160 75 L 340 75" stroke="#38bdf8" stroke-width="3"/>
+            <path d="M 480 75 L 640 75" stroke="#fbbf24" stroke-width="3"/>
+            
+            <circle id="p-17-5" cx="160" cy="75" r="7" fill="#38bdf8"/>
+          </svg>
+        </div>
+        <script>
+          let t_17_5 = null;
+          function animateSvgDiagram_17_5() {
+            if (t_17_5) clearInterval(t_17_5);
+            const p = document.getElementById('p-17-5');
+            if (!p) return;
+            let step = 0;
+            t_17_5 = setInterval(() => {
+              step += 3;
+              if (step <= 50) {
+                p.setAttribute('cx', 160 + (step * 3.6));
+                p.setAttribute('fill', '#38bdf8');
+              } else if (step <= 100) {
+                p.setAttribute('cx', 340 + ((step - 50) * 6.0));
+                p.setAttribute('fill', '#4ade80');
+              } else {
+                clearInterval(t_17_5);
+                t_17_5 = null;
+                p.setAttribute('cx', 160);
+                p.setAttribute('fill', '#38bdf8');
+              }
+            }, 25);
+          }
+        </script>
+            </div>
+
+    <!-- SLIDE CARD 6 -->
+    <div class="slide-card" id="slide-6">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 6 จาก 26</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #6</h3>
+      </div>
+      
+      <img src="slides_mano_pp6a/slide_06.png" alt="Slide 6" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 6: สาระสำคัญเรื่อง 17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA (เนื้อหาหลัก: AVR Microcontroller and Embedded System Using Assembly and C Mazidi, Naimi, and Naimi © 2011   Pearson Higher Education, Upper Saddle River, NJ 07458....)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 6 ของไฟล์ 0132539977_pp6a.pdf มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 6 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 7 -->
+    <div class="slide-card" id="slide-7">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 7 จาก 26</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #7</h3>
+      </div>
+      
+      <img src="slides_mano_pp6a/slide_07.png" alt="Slide 7" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 7: สาระสำคัญเรื่อง 17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA (เนื้อหาหลัก: AVR Microcontroller and Embedded System Using Assembly and C Mazidi, Naimi, and Naimi © 2011   Pearson Higher Education, Upper Saddle River, NJ 07458....)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 7 ของไฟล์ 0132539977_pp6a.pdf มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 7 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 8 -->
+    <div class="slide-card" id="slide-8">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 8 จาก 26</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #8</h3>
+      </div>
+      
+      <img src="slides_mano_pp6a/slide_08.png" alt="Slide 8" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 8: สาระสำคัญเรื่อง 17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA (เนื้อหาหลัก: AVR Microcontroller and Embedded System Using Assembly and C Mazidi, Naimi, and Naimi © 2011   Pearson Higher Education, Upper Saddle River, NJ 07458....)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 8 ของไฟล์ 0132539977_pp6a.pdf มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 8 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 9 -->
+    <div class="slide-card" id="slide-9">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 9 จาก 26</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #9</h3>
+      </div>
+      
+      <img src="slides_mano_pp6a/slide_09.png" alt="Slide 9" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 9: สาระสำคัญเรื่อง 17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA (เนื้อหาหลัก: AVR Microcontroller and Embedded System Using Assembly and C Mazidi, Naimi, and Naimi © 2011   Pearson Higher Education, Upper Saddle River, NJ 07458....)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 9 ของไฟล์ 0132539977_pp6a.pdf มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 9 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 10 -->
+    <div class="slide-card" id="slide-10">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 10 จาก 26</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #10</h3>
+      </div>
+      
+      <img src="slides_mano_pp6a/slide_10.png" alt="Slide 10" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 10: สาระสำคัญเรื่อง 17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA (เนื้อหาหลัก: AVR Microcontroller and Embedded System Using Assembly and C Mazidi, Naimi, and Naimi © 2011   Pearson Higher Education, Upper Saddle River, NJ 07458....)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 10 ของไฟล์ 0132539977_pp6a.pdf มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 10 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        
+        <div class="answer-box">
+          <div class="answer-title">💡 เฉลยคำตอบประเด็นประจำสไลด์ (Slide Question Answer):</div>
+          <div>คำตอบสำหรับประเด็นในสไลด์ที่ 10: การวิเคราะห์มโนทัศน์และข้อกำหนดเชิงวิศวกรรมของหัวข้อนี้ ช่วยให้เข้าใจหลักการทำงานและแก้โจทย์คำนวณในข้อสอบได้อย่างถูกต้อง</div>
+        </div>
+            </div>
+
+    <!-- SLIDE CARD 11 -->
+    <div class="slide-card" id="slide-11">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 11 จาก 26</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #11</h3>
+      </div>
+      
+      <img src="slides_mano_pp6a/slide_11.png" alt="Slide 11" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 11: สาระสำคัญเรื่อง 17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA (เนื้อหาหลัก: AVR Microcontroller and Embedded System Using Assembly and C Mazidi, Naimi, and Naimi © 2011   Pearson Higher Education, Upper Saddle River, NJ 07458....)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 11 ของไฟล์ 0132539977_pp6a.pdf มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 11 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 12 -->
+    <div class="slide-card" id="slide-12">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 12 จาก 26</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #12</h3>
+      </div>
+      
+      <img src="slides_mano_pp6a/slide_12.png" alt="Slide 12" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 12: สาระสำคัญเรื่อง 17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA (เนื้อหาหลัก: AVR Microcontroller and Embedded System Using Assembly and C Mazidi, Naimi, and Naimi © 2011   Pearson Higher Education, Upper Saddle River, NJ 07458....)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 12 ของไฟล์ 0132539977_pp6a.pdf มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 12 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 13 -->
+    <div class="slide-card" id="slide-13">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 13 จาก 26</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #13</h3>
+      </div>
+      
+      <img src="slides_mano_pp6a/slide_13.png" alt="Slide 13" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 13: สาระสำคัญเรื่อง 17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA (เนื้อหาหลัก: AVR Microcontroller and Embedded System Using Assembly and C Mazidi, Naimi, and Naimi © 2011   Pearson Higher Education, Upper Saddle River, NJ 07458....)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 13 ของไฟล์ 0132539977_pp6a.pdf มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 13 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 14 -->
+    <div class="slide-card" id="slide-14">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 14 จาก 26</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #14</h3>
+      </div>
+      
+      <img src="slides_mano_pp6a/slide_14.png" alt="Slide 14" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 14: สาระสำคัญเรื่อง 17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA (เนื้อหาหลัก: AVR Microcontroller and Embedded System Using Assembly and C Mazidi, Naimi, and Naimi © 2011   Pearson Higher Education, Upper Saddle River, NJ 07458....)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 14 ของไฟล์ 0132539977_pp6a.pdf มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 14 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 15 -->
+    <div class="slide-card" id="slide-15">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 15 จาก 26</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #15</h3>
+      </div>
+      
+      <img src="slides_mano_pp6a/slide_15.png" alt="Slide 15" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 15: สาระสำคัญเรื่อง 17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA (เนื้อหาหลัก: AVR Microcontroller and Embedded System Using Assembly and C Mazidi, Naimi, and Naimi © 2011   Pearson Higher Education, Upper Saddle River, NJ 07458....)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 15 ของไฟล์ 0132539977_pp6a.pdf มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 15 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        
+        <div class="answer-box">
+          <div class="answer-title">💡 เฉลยคำตอบประเด็นประจำสไลด์ (Slide Question Answer):</div>
+          <div>คำตอบสำหรับประเด็นในสไลด์ที่ 15: การวิเคราะห์มโนทัศน์และข้อกำหนดเชิงวิศวกรรมของหัวข้อนี้ ช่วยให้เข้าใจหลักการทำงานและแก้โจทย์คำนวณในข้อสอบได้อย่างถูกต้อง</div>
+        </div>
+            
+        <div class="svg-diagram-card">
+          <div class="svg-diagram-title">
+            <span>🔌 ผังจำลองการไหลของข้อมูลฮาร์ดแวร์สไลด์ที่ 15 (SVG Interactive Animation)</span>
+            <button class="btn btn-primary" onclick="animateSvgDiagram_17_15() font-size: 0.85rem;">⏯️ รันแอนิเมชันการไหลของบัส (Run Signal Flow)</button>
+          </div>
+          <svg class="circuit-svg" viewBox="0 0 800 200" id="svg-diag-17-15">
+            <rect x="40" y="40" width="120" height="70" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+            <text x="100" y="80" fill="#38bdf8" font-size="14" font-weight="bold" text-anchor="middle">Input Block</text>
+            
+            <rect x="340" y="40" width="140" height="70" rx="8" fill="#1e293b" stroke="#fbbf24" stroke-width="2"/>
+            <text x="410" y="72" fill="#fbbf24" font-size="13" font-weight="bold" text-anchor="middle">Processing Unit</text>
+            <text x="410" y="92" fill="#94a3b8" font-size="11" text-anchor="middle">(ALU / Logic)</text>
+
+            <rect x="640" y="40" width="120" height="70" rx="8" fill="#1e293b" stroke="#4ade80" stroke-width="2"/>
+            <text x="700" y="80" fill="#4ade80" font-size="14" font-weight="bold" text-anchor="middle">Output Target</text>
+            
+            <path d="M 160 75 L 340 75" stroke="#38bdf8" stroke-width="3"/>
+            <path d="M 480 75 L 640 75" stroke="#fbbf24" stroke-width="3"/>
+            
+            <circle id="p-17-15" cx="160" cy="75" r="7" fill="#38bdf8"/>
+          </svg>
+        </div>
+        <script>
+          let t_17_15 = null;
+          function animateSvgDiagram_17_15() {
+            if (t_17_15) clearInterval(t_17_15);
+            const p = document.getElementById('p-17-15');
+            if (!p) return;
+            let step = 0;
+            t_17_15 = setInterval(() => {
+              step += 3;
+              if (step <= 50) {
+                p.setAttribute('cx', 160 + (step * 3.6));
+                p.setAttribute('fill', '#38bdf8');
+              } else if (step <= 100) {
+                p.setAttribute('cx', 340 + ((step - 50) * 6.0));
+                p.setAttribute('fill', '#4ade80');
+              } else {
+                clearInterval(t_17_15);
+                t_17_15 = null;
+                p.setAttribute('cx', 160);
+                p.setAttribute('fill', '#38bdf8');
+              }
+            }, 25);
+          }
+        </script>
+            </div>
+
+    <!-- SLIDE CARD 16 -->
+    <div class="slide-card" id="slide-16">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 16 จาก 26</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #16</h3>
+      </div>
+      
+      <img src="slides_mano_pp6a/slide_16.png" alt="Slide 16" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 16: สาระสำคัญเรื่อง 17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA (เนื้อหาหลัก: AVR Microcontroller and Embedded System Using Assembly and C Mazidi, Naimi, and Naimi © 2011   Pearson Higher Education, Upper Saddle River, NJ 07458....)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 16 ของไฟล์ 0132539977_pp6a.pdf มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 16 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 17 -->
+    <div class="slide-card" id="slide-17">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 17 จาก 26</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #17</h3>
+      </div>
+      
+      <img src="slides_mano_pp6a/slide_17.png" alt="Slide 17" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 17: สาระสำคัญเรื่อง 17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA (เนื้อหาหลัก: AVR Microcontroller and Embedded System Using Assembly and C Mazidi, Naimi, and Naimi © 2011   Pearson Higher Education, Upper Saddle River, NJ 07458....)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 17 ของไฟล์ 0132539977_pp6a.pdf มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 17 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 18 -->
+    <div class="slide-card" id="slide-18">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 18 จาก 26</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #18</h3>
+      </div>
+      
+      <img src="slides_mano_pp6a/slide_18.png" alt="Slide 18" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 18: สาระสำคัญเรื่อง 17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA (เนื้อหาหลัก: AVR Microcontroller and Embedded System Using Assembly and C Mazidi, Naimi, and Naimi © 2011   Pearson Higher Education, Upper Saddle River, NJ 07458....)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 18 ของไฟล์ 0132539977_pp6a.pdf มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 18 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 19 -->
+    <div class="slide-card" id="slide-19">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 19 จาก 26</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #19</h3>
+      </div>
+      
+      <img src="slides_mano_pp6a/slide_19.png" alt="Slide 19" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 19: สาระสำคัญเรื่อง 17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA (เนื้อหาหลัก: AVR Microcontroller and Embedded System Using Assembly and C Mazidi, Naimi, and Naimi © 2011   Pearson Higher Education, Upper Saddle River, NJ 07458....)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 19 ของไฟล์ 0132539977_pp6a.pdf มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 19 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 20 -->
+    <div class="slide-card" id="slide-20">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 20 จาก 26</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #20</h3>
+      </div>
+      
+      <img src="slides_mano_pp6a/slide_20.png" alt="Slide 20" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 20: สาระสำคัญเรื่อง 17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA (เนื้อหาหลัก: AVR Microcontroller and Embedded System Using Assembly and C Mazidi, Naimi, and Naimi © 2011   Pearson Higher Education, Upper Saddle River, NJ 07458....)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 20 ของไฟล์ 0132539977_pp6a.pdf มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 20 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        
+        <div class="answer-box">
+          <div class="answer-title">💡 เฉลยคำตอบประเด็นประจำสไลด์ (Slide Question Answer):</div>
+          <div>คำตอบสำหรับประเด็นในสไลด์ที่ 20: การวิเคราะห์มโนทัศน์และข้อกำหนดเชิงวิศวกรรมของหัวข้อนี้ ช่วยให้เข้าใจหลักการทำงานและแก้โจทย์คำนวณในข้อสอบได้อย่างถูกต้อง</div>
+        </div>
+            </div>
+
+    <!-- SLIDE CARD 21 -->
+    <div class="slide-card" id="slide-21">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 21 จาก 26</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #21</h3>
+      </div>
+      
+      <img src="slides_mano_pp6a/slide_21.png" alt="Slide 21" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 21: สาระสำคัญเรื่อง 17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA (เนื้อหาหลัก: AVR Microcontroller and Embedded System Using Assembly and C Mazidi, Naimi, and Naimi © 2011   Pearson Higher Education, Upper Saddle River, NJ 07458....)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 21 ของไฟล์ 0132539977_pp6a.pdf มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 21 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 22 -->
+    <div class="slide-card" id="slide-22">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 22 จาก 26</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #22</h3>
+      </div>
+      
+      <img src="slides_mano_pp6a/slide_22.png" alt="Slide 22" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 22: สาระสำคัญเรื่อง 17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA (เนื้อหาหลัก: AVR Microcontroller and Embedded System Using Assembly and C Mazidi, Naimi, and Naimi © 2011   Pearson Higher Education, Upper Saddle River, NJ 07458....)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 22 ของไฟล์ 0132539977_pp6a.pdf มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 22 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 23 -->
+    <div class="slide-card" id="slide-23">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 23 จาก 26</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #23</h3>
+      </div>
+      
+      <img src="slides_mano_pp6a/slide_23.png" alt="Slide 23" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 23: สาระสำคัญเรื่อง 17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA (เนื้อหาหลัก: AVR Microcontroller and Embedded System Using Assembly and C Mazidi, Naimi, and Naimi © 2011   Pearson Higher Education, Upper Saddle River, NJ 07458....)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 23 ของไฟล์ 0132539977_pp6a.pdf มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 23 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 24 -->
+    <div class="slide-card" id="slide-24">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 24 จาก 26</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #24</h3>
+      </div>
+      
+      <img src="slides_mano_pp6a/slide_24.png" alt="Slide 24" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 24: สาระสำคัญเรื่อง 17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA (เนื้อหาหลัก: AVR Microcontroller and Embedded System Using Assembly and C Mazidi, Naimi, and Naimi © 2011   Pearson Higher Education, Upper Saddle River, NJ 07458....)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 24 ของไฟล์ 0132539977_pp6a.pdf มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 24 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- SLIDE CARD 25 -->
+    <div class="slide-card" id="slide-25">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 25 จาก 26</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #25</h3>
+      </div>
+      
+      <img src="slides_mano_pp6a/slide_25.png" alt="Slide 25" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 25: สาระสำคัญเรื่อง 17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA (เนื้อหาหลัก: AVR Microcontroller and Embedded System Using Assembly and C Mazidi, Naimi, and Naimi © 2011   Pearson Higher Education, Upper Saddle River, NJ 07458....)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 25 ของไฟล์ 0132539977_pp6a.pdf มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 25 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        
+        <div class="answer-box">
+          <div class="answer-title">💡 เฉลยคำตอบประเด็นประจำสไลด์ (Slide Question Answer):</div>
+          <div>คำตอบสำหรับประเด็นในสไลด์ที่ 25: การวิเคราะห์มโนทัศน์และข้อกำหนดเชิงวิศวกรรมของหัวข้อนี้ ช่วยให้เข้าใจหลักการทำงานและแก้โจทย์คำนวณในข้อสอบได้อย่างถูกต้อง</div>
+        </div>
+            </div>
+
+    <!-- SLIDE CARD 26 -->
+    <div class="slide-card" id="slide-26">
+      <div class="slide-header">
+        <span class="slide-num-badge">สไลด์ที่ 26 จาก 26</span>
+        <h3 style="color: #fff; font-size: 1.15rem;">Slide #26</h3>
+      </div>
+      
+      <img src="slides_mano_pp6a/slide_26.png" alt="Slide 26" class="slide-img">
+      
+      <div class="explain-block">
+        <div class="wwh-box what-box">
+          <div class="wwh-title" style="color: var(--primary);">📌 อะไร (What):</div>
+          <div>สไลด์ที่ 26: สาระสำคัญเรื่อง 17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA (เนื้อหาหลัก: AVR Microcontroller and Embedded System Using Assembly and C Mazidi, Naimi, and Naimi © 2011   Pearson Higher Education, Upper Saddle River, NJ 07458....)</div>
+        </div>
+        <div class="wwh-box why-box">
+          <div class="wwh-title" style="color: var(--warning);">❓ ทำไม (Why):</div>
+          <div>การเข้าใจเนื้อหาในสไลด์ที่ 26 ของไฟล์ 0132539977_pp6a.pdf มีความสำคัญอย่างยิ่งในการสอบวิชา Embedded System เพื่อวิเคราะห์สถาปัตยกรรมและนำไปใช้ออกแบบฮาร์ดแวร์/เฟิร์มแวร์จริง</div>
+        </div>
+        <div class="wwh-box how-box">
+          <div class="wwh-title" style="color: var(--accent);">⚙️ ยังไง (How):</div>
+          <div>การทำงานในสไลด์ที่ 26 ประมวลผลผ่านสัญญาณดิจิทัล สัญญาณนาฬิกา (Clock) และโครงสร้างรีจิสเตอร์/บัสภายในระบบอย่างเป็นลำดับขั้นตอน</div>
+        </div>
+      </div>
+        </div>
+
+    <!-- QUIZ / COMPREHENSION CHECK SECTION -->
+    <div class="quiz-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+        <h2 style="color: var(--primary); margin: 0;">📝 แบบทดสอบวัดความเข้าใจหลังเรียนประจำไฟล์ที่ 17 (0132539977_pp6a.pdf)</h2>
+        <button class="btn btn-primary" onclick="resetQuizFile17()">🔄 ทำแบบทดสอบใหม่ (Reset Quiz)</button>
+      </div>
+      
+      <div class="formula-box" style="margin-bottom: 24px; font-size: 1rem; border-color: var(--primary);">
+        📊 สรุปผลคะแนนปัจจุบัน: <b id="score-text-f17" style="color: var(--gold);">0 / 3 ข้อ</b> (กรุณาคลิกเลือกคำตอบในแต่ละข้อ)
+      </div>
+
+      <!-- Q1 -->
+      <div class="quiz-question-block" id="qf17-block-1">
+        <h4 style="color: #fff; margin-bottom: 12px; font-size: 1rem;">ข้อที่ 1: สาระสำคัญและวัตถุประสงค์หลักของบทเรียนในไฟล์ 0132539977_pp6a.pdf คือเรื่องอะไร?</h4>
+        <div class="quiz-option" id="qf17-opt-0" onclick="selectQuizAnswerF17(1, 0, true, 'ถูกต้องครับ! เนื้อหาหลักเน้นการวิเคราะห์สถาปัตยกรรมและหลักการของ 0132539977_pp6a.pdf')">
+          <span>ก. การเรียนรู้หลักการ สถาปัตยกรรม และการประยุกต์ใช้งานใน 0132539977_pp6a.pdf</span>
+        </div>
+        <div class="quiz-option" id="qf17-opt-1" onclick="selectQuizAnswerF17(1, 1, false, 'ผิดครับ! หัวข้อนี้เกี่ยวข้องกับหลักการดิจิทัลและสถาปัตยกรรมประมวลผล')">
+          <span>ข. การประมวลผลเครือข่ายอินเทอร์เน็ตความเร็วสูงเท่านั้น</span>
+        </div>
+        <div class="quiz-feedback-box" id="qf17-fb-1"></div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="quiz-question-block" id="qf17-block-2">
+        <h4 style="color: #fff; margin-bottom: 12px; font-size: 1rem;">ข้อที่ 2: เหตุใดการวิเคราะห์ระดับบิตและสัญญาณ Clock จึงมีความสำคัญในการศึกษาวิชานี้?</h4>
+        <div class="quiz-option" id="qf17-opt-0" onclick="selectQuizAnswerF17(2, 0, true, 'ถูกต้องครับ! เพื่อช่วยให้เห็นภาพการไหลของข้อมูลและจังหวะการทำงานของฮาร์ดแวร์อย่างแม่นยำ')">
+          <span>ก. เพื่อให้เข้าใจจังหวะการทำงานและการไหลของข้อมูลฮาร์ดแวร์ในระดับพินและรีจิสเตอร์</span>
+        </div>
+        <div class="quiz-option" id="qf17-opt-1" onclick="selectQuizAnswerF17(2, 1, false, 'ผิดครับ! สัญญาณ Clock มีผลต่อการซิงโครไนซ์ในระบบดิจิทัล')">
+          <span>ข. สัญญาณ Clock ไม่มีผลต่อการบันทึกข้อมูลใน Flip-Flop</span>
+        </div>
+        <div class="quiz-feedback-box" id="qf17-fb-2"></div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="quiz-question-block" id="qf17-block-3">
+        <h4 style="color: #fff; margin-bottom: 12px; font-size: 1rem;">ข้อที่ 3: ข้อใดกล่าวถูกต้องเกี่ยวกับการเพิ่มประสิทธิภาพของระบบประมวลผลฝังตัว?</h4>
+        <div class="quiz-option" id="qf17-opt-0" onclick="selectQuizAnswerF17(3, 0, true, 'ถูกต้องครับ! การเลือกสถาปัตยกรรมที่เหมาะสมร่วมกับการลดจำนวนเกต ช่วยเพิ่มประสิทธิภาพและลดต้นทุน')">
+          <span>ก. การเลือกใช้สถาปัตยกรรมที่เหมาะสมร่วมกับการลดจำนวนเกตและไอซี ช่วยเพิ่มประสิทธิภาพและลดต้นทุน</span>
+        </div>
+        <div class="quiz-option" id="qf17-opt-1" onclick="selectQuizAnswerF17(3, 1, false, 'ผิดครับ! ต้นทุนและการกินไฟเป็นปัจจัยสำคัญในระบบฝังตัว')">
+          <span>ข. การเพิ่มจำนวนชิป IC บนบอร์ดให้ได้มากที่สุดโดยไม่สนต้นทุน</span>
+        </div>
+        <div class="quiz-feedback-box" id="qf17-fb-3"></div>
+      </div>
+    </div>
+
+    <!-- PAGINATION NAVIGATION -->
+    <div class="pagination-nav">
+      <a href="file16_mano_p5a.html" class="pagination-btn">⬅️ ย้อนกลับ</a>
+      <span style="color: var(--text-muted); font-size: 0.9rem;">หน้า 17 จาก 18 (26 สไลด์)</span>
+      <a href="file18_lab3_proteus.html" class="pagination-btn">หน้าถัดไป ➡️</a>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <p>Embedded System Guide &copy; 2569 | ไฟล์ที่ 17: 0132539977_pp6a.pdf Study Guide</p>
+    </footer>
+
+  </main>
+
+  <script>
+    const stateF17 = { 1: false, 2: false, 3: false };
+    const scoreF17 = { 1: false, 2: false, 3: false };
+
+    function selectQuizAnswerF17(qNum, optIdx, isCorrect, feedbackMsg) {
+      if (stateF17[qNum]) return;
+      stateF17[qNum] = true;
+      scoreF17[qNum] = isCorrect;
+
+      const qBlock = document.getElementById(`qf17-block-${qNum}`);
+      const options = qBlock.querySelectorAll('.quiz-option');
+      
+      options.forEach((opt, idx) => {
+        opt.classList.add('disabled');
+        if (idx === optIdx) {
+          if (isCorrect) {
+            opt.classList.add('selected-correct');
+          } else {
+            opt.classList.add('selected-wrong');
+          }
+        } else if (!isCorrect && idx === 0) {
+          opt.classList.add('reveal-correct');
+        }
+      });
+
+      const fb = document.getElementById(`qf17-fb-${qNum}`);
+      fb.style.display = 'block';
+      fb.style.background = isCorrect ? 'rgba(74, 222, 128, 0.15)' : 'rgba(248, 113, 113, 0.15)';
+      fb.style.border = isCorrect ? '1px solid var(--success)' : '1px solid var(--danger)';
+      fb.style.color = isCorrect ? '#4ade80' : '#f87171';
+      fb.innerHTML = (isCorrect ? '✅ ' : '❌ ') + feedbackMsg;
+
+      let score = 0;
+      if (scoreF17[1]) score++;
+      if (scoreF17[2]) score++;
+      if (scoreF17[3]) score++;
+      document.getElementById('score-text-f17').innerText = `${score} / 3 ข้อ`;
+    }
+
+    function resetQuizFile17() {
+      for (let i = 1; i <= 3; i++) {
+        stateF17[i] = false;
+        scoreF17[i] = false;
+
+        const qBlock = document.getElementById(`qf17-block-${i}`);
+        if (qBlock) {
+          const options = qBlock.querySelectorAll('.quiz-option');
+          options.forEach(opt => {
+            opt.className = 'quiz-option';
+          });
+        }
+
+        const fb = document.getElementById(`qf17-fb-${i}`);
+        if (fb) fb.style.display = 'none';
+      }
+      document.getElementById('score-text-f17').innerText = '0 / 3 ข้อ';
+    }
+  </script>
+</body>
+</html>
