@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>รายงานการทดลองที่ 2: Atmel AVR Studio Tutorial</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
+
+    :root {
+      --primary: #14496e;
+      --primary-2: #0f3a58;
+      --accent: #0e9488;
+      --ink: #1e293b;
+      --line: #e2e8f0;
+      --soft-1: #f1f5f9;
+      --soft-2: #f8fafc;
+      --muted: #64748b;
+    }
+
+    /* Page size & margins */
+    @page {
+      size: A4 portrait;
+      margin: 15mm;
+    }
+
+    html[lang="th"] {
+      font-size: 100%; /* ขนาดตัวอักษรมาตรฐานอ่านง่าย */
+    }
+
+    body {
+      font-family: 'Sarabun', 'TH Sarabun New', 'TH Sarabun PSK', sans-serif;
+      font-size: 14.5px;
+      line-height: 1.6;
+      color: var(--ink);
+      text-align: left;
+      margin: 0;
+      padding: 0;
+    }
+
+    p::first-letter, span::first-letter, li::first-letter {
+      all: unset;
+    }
+
+    p {
+      margin: 0 0 10px 0;
+      text-indent: 1cm;
+    }
+
+    /* Headings */
+    h2 {
+      font-size: 14pt;
+      color: var(--primary);
+      font-weight: bold;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      border-left: 4px solid var(--accent);
+      padding-left: 10px;
+      break-after: avoid;
+    }
+
+    h3 {
+      font-size: 12.5pt;
+      color: var(--primary-2);
+      font-weight: bold;
+      margin-top: 15px;
+      margin-bottom: 8px;
+      break-after: avoid;
+    }
+
+    /* Code Block Display */
+    pre.code-block {
+      background-color: var(--soft-2);
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--primary);
+      padding: 10px 15px;
+      font-family: Consolas, Monaco, 'Courier New', monospace;
+      font-size: 9.5pt;
+      line-height: 1.45;
+      overflow-x: auto;
+      margin: 12px 0;
+      border-radius: 0 4px 4px 0;
+    }
+
+    /* Memory Grid Display */
+    .memory-grid {
+      width: 90%;
+      margin: 12px auto;
+      border-collapse: collapse;
+      font-family: Consolas, Monaco, 'Courier New', monospace;
+      font-size: 9.5pt;
+      text-align: center;
+    }
+
+    .memory-grid th, .memory-grid td {
+      border: 1px solid var(--line);
+      padding: 6px;
+      text-indent: 0;
+    }
+
+    .memory-grid th {
+      background-color: var(--soft-1);
+      color: var(--primary-2);
+      font-weight: bold;
+    }
+
+    .memory-grid td.addr {
+      background-color: var(--soft-2);
+      font-weight: bold;
+      color: var(--primary);
+    }
+
+    .memory-grid td.highlight {
+      background-color: #fef08a; /* Soft yellow */
+      color: #b45309;
+      font-weight: bold;
+      border: 2px solid var(--accent);
+    }
+
+    /* Q&A style */
+    .qa-block {
+      margin-bottom: 15px;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .question {
+      font-weight: bold;
+      color: var(--primary);
+      margin-bottom: 4px;
+      text-indent: 0;
+      font-size: 10.5pt;
+    }
+
+    .answer {
+      background-color: var(--soft-2);
+      border-left: 3px solid var(--accent);
+      padding: 8px 12px;
+      margin: 0 0 12px 0;
+      border-radius: 0 4px 4px 0;
+      text-indent: 0;
+      font-size: 10pt;
+    }
+
+    /* Callout */
+    .callout {
+      background-color: var(--soft-1);
+      border-left: 3px solid var(--primary);
+      padding: 10px 14px;
+      margin: 12px 0;
+      border-radius: 0 4px 4px 0;
+      font-size: 10pt;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    #exercise2 {
+      page-break-before: always;
+      break-before: page;
+    }
+    .callout p {
+      margin: 0;
+      text-indent: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ HEADER ============ -->
+  <div style="border-bottom: 2px solid var(--primary); padding-bottom: 12px; margin-bottom: 20px;">
+    <h1 style="text-align: left; margin: 0 0 8px 0; font-size: 16pt; color: var(--primary);">รายงานการทดลองที่ 2: Atmel AVR Studio Tutorial</h1>
+    <div style="font-size: 10pt; color: var(--ink); line-height: 1.6;">
+      <strong>ผู้จัดทำ:</strong> 
+      1. นายดรัณภพ พิทักษ์กิจไพศาล (6710301007) &nbsp;&nbsp;&nbsp;&nbsp;
+      2. นายอภิสักก์ คงภักดี (6710301009) &nbsp;&nbsp;&nbsp;&nbsp;
+      3. นายธนัท จงธีรธนโชติ (6710301032) <br>
+      <strong>วิชา:</strong> Embedded System Design &nbsp;&nbsp;&nbsp;&nbsp;
+      <strong>เสนอ:</strong> อาจารย์คทาเทพ สวัสดิพิศาล &nbsp;&nbsp;&nbsp;&nbsp;
+      <strong>ภาคการศึกษา:</strong> 1/2569
+    </div>
+  </div>
+
+  <!-- ============ EXERCISE 1 ============ -->
+  <div class="section" id="exercise1">
+    <h2>1. การวิเคราะห์โค้ดการทดลอง (Exercise 1)</h2>
+    <p>
+      Project AssemblerApp1 เป็นการเขียนโปรแกรมภาษา Assembly เบื้องต้นเพื่อบวกค่าเลขคณิตและจัดเก็บผลลัพธ์ลงใน SRAM รายละเอียดโค้ดและการวิเคราะห์ผลมีดังนี้:
+    </p>
+
+    <pre class="code-block">
+.include "m328pdef.inc"    ; นำเข้าไฟล์จำกัดความของชิป ATmega328P
+.list                      ; แสดงผลรหัสเครื่องในไฟล์ลิสติ้ง (.lss)
+
+    rjmp main              ; กระโดดไปยัง main หลังเปิดเครื่องหรือ Reset
+
+main:
+    ldi r16,0x99           ; โหลดค่า 0x99 เข้าเก็บใน Register R16
+    sts 0x212,r16          ; เขียนบันทึกค่าใน R16 ลงแรม SRAM ตำแหน่ง 0x212
+    ldi r17,0x15           ; โหลดค่า 0x15 เข้าเก็บใน Register R17
+    ldi r18,0x20           ; โหลดค่า 0x20 เข้าเก็บใน Register R18
+    add r17,r18            ; บวกค่า R17 + R18 (0x15 + 0x20) เก็บผล 0x35 ไว้ใน R17
+    sts 0x213,r17          ; เขียนบันทึกผลลัพธ์จาก R17 ลง SRAM ตำแหน่ง 0x213
+
+here:
+    rjmp here              ; วนรอบจบการทำงานปกติอย่างปลอดภัย
+    </pre>
+
+    <h3>ผลการจำลองการทำงานและข้อมูลใน SRAM</h3>
+    <p>
+      จากการทดสอบรันโค้ดแบบทีละบรรทัด (Step Into) บนระบบจำลอง Simulator สามารถติดตามพฤติกรรมข้อมูลได้ดังนี้:
+    </p>
+    <ul>
+      <li>เมื่อคำสั่ง <code>ldi r16, 0x99</code> ทำงาน ค่าใน Register R16 จะเปลี่ยนเป็น <code>0x99</code></li>
+      <li>เมื่อคำสั่ง <code>sts 0x212, r16</code> ทำงาน ค่าสะสมจะถูกบันทึกเขียนตรงไปยัง SRAM Address <code>0x212</code></li>
+      <li>เมื่อคำสั่ง <code>add r17, r18</code> ทำงาน ค่าใน R17 จะกลายเป็น <code>0x35</code> จากสมการผลบวก 0x15 + 0x20 = 0x35</li>
+      <li>เมื่อคำสั่ง <code>sts 0x213, r17</code> ทำงาน จะนำคำตอบผลรวม <code>0x35</code> ไปเขียนบันทึกลง SRAM Address <code>0x213</code></li>
+    </ul>
+
+    <table class="memory-grid">
+      <thead>
+        <tr>
+          <th style="width: 20%;">Address</th>
+          <th>+0</th><th>+1</th><th>+2</th><th>+3</th><th>+4</th><th>+5</th><th>+6</th><th>+7</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="addr">0x0210</td>
+          <td>00</td><td>00</td><td class="highlight">99</td><td class="highlight">35</td><td>00</td><td>00</td><td>00</td><td>00</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ============ EXERCISE 2 ============ -->
+  <div class="section" id="exercise2">
+    <h2>2. การเขียนโปรแกรมคำนวณและจัดเก็บข้อมูลใน SRAM (Exercise 2)</h2>
+    <p>
+      การทดลองส่วนนี้เป็นการเขียนโปรแกรมคำนวณโจทย์ 0x23 + 0x72 - 0x14 และจัดเก็บผลลัพธ์ลงใน SRAM Address <code>0x214</code> ของชิป ATmega328P:
+    </p>
+
+    <pre class="code-block">
+.include "m328pdef.inc"
+
+    rjmp main              ; เริ่มทำงานที่ป้ายชื่อ main หลังการ Reset
+
+main:
+    ldi r16, 0x23          ; โหลดค่า 0x23 ไปยัง Register R16
+    ldi r17, 0x72          ; โหลดค่า 0x72 ไปยัง Register R17
+    add r16, r17           ; R16 = R16 + R17 = 0x23 + 0x72 (ผลลัพธ์ได้ 0x95)
+    ldi r17, 0x14          ; โหลดค่า 0x14 ไปยัง Register R17 เพื่อนำมาลบ
+    sub r16, r17           ; R16 = R16 - R17 = 0x95 - 0x14 (ผลลัพธ์สุดท้ายได้ 0x81)
+    sts 0x214, r16         ; จัดเก็บค่าใน R16 (0x81) ลงใน SRAM Address 0x214
+
+here:
+    rjmp here              ; วนรอบหยุดการทำงานเพื่อความปลอดภัย
+    </pre>
+
+    <h3>ผลการจำลองการทำงานและข้อมูลใน SRAM</h3>
+    <p>
+      จากการวิเคราะห์กลไกตัวแปรผ่านโปรแกรม Debugger Simulator:
+    </p>
+    <ul>
+      <li>เมื่อทำงานถึงคำสั่งบวกค่า ผลลัพธ์ใน R16 มีค่าสะสมเป็น <code>0x95</code></li>
+      <li>เมื่อทำงานถึงคำสั่งลบค่า ผลลัพธ์สุดท้ายใน R16 จะลดลงเหลือ <code>0x81</code> (เทียบเท่า 129 ในระบบฐานสิบ)</li>
+      <li>เมื่อคำสั่ง <code>sts 0x214, r16</code> ทำงาน ค่าผลลัพธ์ <code>0x81</code> จะเขียนบันทึกลงแรม SRAM Address <code>0x214</code> โดยตรง</li>
+    </ul>
+
+    <table class="memory-grid">
+      <thead>
+        <tr>
+          <th style="width: 20%;">Address</th>
+          <th>+0</th><th>+1</th><th>+2</th><th>+3</th><th>+4</th><th>+5</th><th>+6</th><th>+7</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="addr">0x0210</td>
+          <td>00</td><td>00</td><td>00</td><td>00</td><td class="highlight">81</td><td>00</td><td>00</td><td>00</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ============ SECTION 3 ============ -->
+  <div class="section" id="questions">
+    <h2>3. ตอบคำถามท้ายบทการทดลอง</h2>
+    
+    <div class="qa-block">
+      <div class="question">คำถามข้อที่ 1: Watch Window คืออะไร? ทำงานอย่างไร?</div>
+      <div class="answer">
+        <strong>คำตอบ:</strong> Watch Window คือเครื่องมือในโปรแกรม Debugger ที่คอยสืบค้นและแสดงผลค่าของตัวแปรหรือ Register ที่เราสนใจแบบเรียลไทม์ขณะ Debug โดยจะดึงค่าจาก CPU Simulator มาแสดงผลโดยอัตโนมัติเมื่อกด Step รันคำสั่งทีละบรรทัด
+      </div>
+    </div>
+
+    <div class="qa-block">
+      <div class="question">คำถามข้อที่ 2: อธิบายการทำงานของคำสั่ง ADD</div>
+      <div class="answer">
+        <strong>คำตอบ:</strong> คำสั่ง <code>ADD Rd, Rr</code> จะบวกข้อมูลจาก Register ต้นทาง <code>Rr</code> เข้ากับ Register ปลายทาง <code>Rd</code> แล้วนำผลรวมเขียนทับลงใน Register ปลายทาง <code>Rd</code> โดยใช้เวลาทำงาน 1 รอบสัญญาณนาฬิกา และส่งผลอัปเดตสถานะของ Flag ต่าง ๆ ใน SREG ทันที
+      </div>
+    </div>
+
+    <div class="qa-block">
+      <div class="question">คำถามข้อที่ 3: คำสั่ง Reset ใน Debug menu ทำหน้าที่อะไร?</div>
+      <div class="answer">
+        <strong>คำตอบ:</strong> คำสั่ง Reset จะดึงค่าของ Program Counter (PC) กลับไปยังจุดเริ่มต้น Address <code>0x0000</code> เพื่อเตรียมเริ่มต้นประมวลผลคำสั่งใหม่ทั้งหมดเสมือนพฤติกรรมการกดปุ่ม Reset Hardware จริง แต่จะไม่ล้างข้อมูลใน Register ทั่วไปและหน่วยความจำ SRAM
+      </div>
+    </div>
+  </div>
+
+
+
+</body>
+</html>

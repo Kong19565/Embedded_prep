@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>รายงาน การใช้ ROM เป็นคลังคำสั่งควบคุม (ROM as Control Store)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+
+  html[lang="th"] { font-size: 106.25%; }
+  :root{
+    --ink:#1f2733; --primary:#14496e; --primary-2:#2b7bb9; --accent:#0e9488;
+    --soft:#eef4f9; --soft-2:#e5f3f1; --line:#d5dee6; --muted:#6b7785;
+    --amber:#b7791f; --green:#1f7a4d;
+  }
+  @page{
+    size:A4; margin:20mm 18mm 18mm 18mm;
+    @bottom-center{ content:counter(page); font-family:'Sarabun',sans-serif; font-size:10pt; color:#8a94a0; }
+  }
+  @page:first{ margin:0; @bottom-center{ content:normal; } }
+
+  *{ box-sizing:border-box; }
+  p::first-letter, span::first-letter, li::first-letter { all: unset; }
+  body{ font-family:'Sarabun', 'TH Sarabun New', 'TH Sarabun PSK', sans-serif; font-size:15.5px; line-height:1.75; color:var(--ink); margin:0; text-align:left; }
+  p{ margin:0 0 9px 0; text-indent:1.25cm; }
+  .cover p, .callout p, .note p, table p, td, th { text-indent:0; }
+
+  /* ---------- COVER ---------- */
+  .cover{ min-height:247mm; height:auto; page-break-after:always; break-after:always; display:flex; flex-direction:column; text-align:center; padding-top:1.5cm; }
+  .cover .topbar{ height:14mm; background:linear-gradient(90deg,var(--primary),var(--primary-2) 60%,var(--accent)); }
+  .cover .botbar{ height:8mm; background:linear-gradient(90deg,var(--accent),var(--primary-2) 40%,var(--primary)); margin-top:auto; }
+  .cover .inner{ padding:0 24mm; flex:1; display:flex; flex-direction:column; justify-content:center; }
+  .cover .kicker{ align-self:center; letter-spacing:2px; font-size:13px; color:var(--primary-2); font-weight:700;
+    border:1.5px solid var(--primary-2); border-radius:20px; padding:3px 16px; margin-bottom:16px; }
+  .cover h1{ font-size:33px; line-height:1.28; font-weight:800; color:var(--primary); margin:0 0 6px; }
+  .cover .en{ font-size:23px; font-weight:700; color:var(--primary-2); margin:0 0 4px; }
+  .cover .tool{ font-size:19px; font-weight:700; color:var(--ink); margin:0; }
+  .cover .subtitle{ font-size:14.5px; color:var(--muted); margin:12px auto 0; max-width:150mm; line-height:1.6; }
+  .cover .divider{ width:60mm; height:3px; background:var(--accent); border-radius:2px; margin:26px auto; }
+  .cover .card{ border:1px solid var(--line); border-top:4px solid var(--primary-2); border-radius:12px;
+    background:var(--soft); padding:18px 26px; max-width:150mm; margin:0 auto; }
+  .cover .card h3{ margin:0 0 12px; font-size:16px; color:var(--primary); letter-spacing:.5px; }
+  table.members{ width:100%; border-collapse:collapse; }
+  table.members td{ padding:5px 8px; font-size:15px; text-align:left; vertical-align:middle; }
+  table.members td.no{ width:26px; color:var(--primary-2); font-weight:700; text-align:center; }
+  table.members td.sid{ width:38mm; text-align:right; color:var(--muted); font-variant-numeric:tabular-nums; }
+  .cover .submit{ margin-top:22px; font-size:15px; line-height:2.1; }
+  .cover .submit .lbl{ font-weight:700; color:var(--primary); }
+
+  /* ---------- SECTIONS ---------- */
+  h2.sec{ font-size:19px; font-weight:800; color:var(--primary); margin:22px 0 12px; padding-bottom:7px;
+    border-bottom:2px solid var(--line); break-after:avoid; page-break-after:avoid; display:flex; align-items:center; gap:11px; }
+  h2.sec .num{ flex:0 0 auto; width:29px; height:29px; background:var(--primary); color:#fff; border-radius:8px;
+    font-size:15px; display:inline-flex; align-items:center; justify-content:center; font-weight:700; }
+  h2.sec .en{ color:var(--primary-2); font-weight:700; font-size:16px; }
+  h3.sub{ font-size:16px; font-weight:700; color:var(--accent); margin:15px 0 5px; break-after:avoid; page-break-after:avoid; }
+  ul.clean{ margin:4px 0 10px; padding-left:0; list-style:none; }
+  ul.clean li{ position:relative; padding-left:22px; margin-bottom:7px; text-align:left; }
+  ul.clean li::before{ content:""; position:absolute; left:4px; top:11px; width:7px; height:7px;
+    border-radius:50%; background:var(--primary-2); }
+  b.term{ color:var(--primary); }
+
+  ol.objlist{ margin:6px 0 10px; padding-left:0; list-style:none; counter-reset:obj; }
+  ol.objlist li{ position:relative; padding-left:30px; margin-bottom:8px; text-align:left; counter-increment:obj; }
+  ol.objlist li::before{ content:counter(obj) "."; position:absolute; left:3px; top:0;
+    font-weight:700; color:var(--primary-2); }
+  ol.refs{ margin:6px 0 10px; padding-left:24px; }
+  ol.refs li{ margin-bottom:10px; text-align:left; }
+
+  /* ---------- FRONT MATTER ---------- */
+  .front{ break-after:page; page-break-after:always; }
+  h2.plain{ font-size:20px; font-weight:800; color:var(--primary); text-align:center; letter-spacing:1px;
+    margin:0 0 20px; padding-bottom:9px; border-bottom:2px solid var(--line); }
+  .toc ul{ list-style:none; margin:0; padding:0; }
+  .toc li{ margin:1px 0; line-height:1.62; }
+  .toc a{ text-decoration:none; color:var(--ink); display:flex; align-items:baseline; }
+  .toc .title { flex-shrink: 0; }
+  .toc .dots { flex-grow: 1; border-bottom: 2px dotted var(--line); margin: 0 8px; position: relative; top: -3px; }
+  .toc .page { flex-shrink: 0; color: var(--muted); font-variant-numeric: tabular-nums; font-weight: 700; }
+  .toc .lv1 a{ font-weight:700; color:var(--primary); }
+  .toc .lv2{ padding-left:24px; font-size:13.8px; }
+  .toc .lv2 a{ color:var(--ink); font-weight: normal; }
+  .toc h3{ font-size:15.5px; font-weight:700; color:var(--accent); margin:15px 0 4px; }
+  .toc .lv2{ line-height:1.55; }
+
+  /* ---------- TABLES ---------- */
+  table, table.data{ width:100%; border-collapse:collapse; margin:8px 0 6px; font-size:14.5px; break-inside:avoid; page-break-inside:avoid; }
+  table tr, table.data tr{ break-inside:avoid; page-break-inside:avoid; }
+  table.data caption{ caption-side:top; text-align:center; font-size:14px; color:var(--muted); margin-bottom:6px; font-weight:600; }
+  table.data th{ background:var(--primary); color:#fff; font-weight:700; padding:8px 10px; text-align:center; border:1px solid #0f3a58; }
+  table.data td{ padding:7px 10px; border:1px solid var(--line); vertical-align:middle; text-align:center; }
+  table.data tbody tr:nth-child(even){ background:var(--soft); }
+  table.data .lead{ text-align:left; }
+  table.tight{ font-size:13px; }
+  table.tight th{ padding:6px 4px; font-size:13px; }
+  table.tight td{ padding:4px 4px; }
+  .bin{ font-family:'Menlo','DejaVu Sans Mono',monospace; letter-spacing:1.5px; font-size:13px; white-space:nowrap; }
+  table.tight .bin{ letter-spacing:0.5px; font-size:12px; }
+  .hl td{ background:var(--soft-2) !important; font-weight:700; }
+  .badge-reset{ color:var(--accent); font-weight:700; }
+
+  /* ---------- FIGURES ---------- */
+  figure.fig{ margin:14px 0 16px; break-inside:avoid; text-align:center; }
+  figure.fig img{ max-width:100%; border:1px solid var(--line); border-radius:10px; }
+  figcaption{ text-align:center; font-size:13px; color:var(--muted); margin-top:8px; }
+  figcaption b{ color:var(--primary); }
+  .diagram{ border:1px solid var(--line); border-radius:12px; background:#fbfdff; padding:14px 10px 6px; break-inside:avoid; }
+  .diagram svg{ width:100%; height:auto; display:block; }
+
+  /* ---------- CALLOUT / NOTE ---------- */
+  .callout{ border:1px solid var(--line); border-left:5px solid var(--primary-2); border-radius:8px;
+    background:#fbfdff; padding:11px 15px; margin:9px 0; break-inside:avoid; }
+  .callout .pb{ font-weight:700; color:var(--amber); }
+  .callout .sl{ font-weight:700; color:var(--green); }
+  .callout p{ margin:3px 0 0; }
+  .note{ background:var(--soft-2); border-radius:8px; padding:10px 15px; margin:10px 0; font-size:14.5px; break-inside:avoid; }
+  .tblwrap{ break-inside:avoid; page-break-inside:avoid; margin:8px 0 6px; }
+  .tblwrap.split, table.data.split{ break-inside:auto; page-break-inside:auto; }
+  table.data.split thead{ display:table-header-group; }
+  figure.diagfig{ margin:14px 0 16px; break-inside:avoid; page-break-inside:avoid; }
+  .eq{ font-family:'Menlo','DejaVu Sans Mono',monospace; font-size:12.6px; background:#fbfdff; border:1px solid var(--line);
+       border-radius:8px; padding:10px 14px; margin:6px 0; line-height:1.8; text-align:left; break-inside:avoid; }
+
+  /* ---------- MICROINSTRUCTION BIT MAP ---------- */
+  table.bitmap{ width:100%; border-collapse:collapse; margin:10px 0 4px; break-inside:avoid; }
+  table.bitmap td{ border:1px solid var(--primary); padding:9px 4px; text-align:center; }
+  table.bitmap .bnum{ border:none; font-size:12px; color:var(--muted); font-weight:700; padding-bottom:3px; }
+  table.bitmap .bname{ font-weight:800; font-size:15px; color:var(--primary); }
+  table.bitmap .bdesc{ border:none; font-size:12px; color:var(--muted); line-height:1.45; padding-top:5px; }
+  .b7{ background:#dbe8f5; } .b6{ background:#dcefe9; } .b5{ background:#f7dede; }
+  .b4{ background:#fbeed3; } .b30{ background:#e9eef3; }
+  #s10, #s11 { page-break-before: always; break-before: page; }
+</style>
+</head>
+<body>
+<!-- ============ COVER ============ -->
+<div class="cover">
+ <div class="topbar"></div>
+ <div class="inner">
+ <div class="kicker">รายงานการทดลอง</div>
+ <h1>การใช้หน่วยความจำ ROM เป็นคลังคำสั่งควบคุม</h1>
+ <p class="en">(Lab 1 : ROM as Control Store)</p>
+ <p class="tool">ด้วยโปรแกรม Logisim-Evolution</p>
+ <p class="subtitle">การออกแบบหน่วยควบคุมแบบ Microprogram (Microprogrammed Control Unit)
+ ที่เก็บลำดับสัญญาณควบคุมไว้ใน ROM และขับเคลื่อนด้วย Microsequencer</p>
+ <div class="divider"></div>
+ <div class="card">
+ <h3>จัดทำโดย</h3>
+ <table class="members">
+ <tr><td class="no">1</td><td>นายดรัณภพ&nbsp;&nbsp;พิทักษ์กิจไพศาล</td><td class="sid">6710301007</td></tr>
+ <tr><td class="no">2</td><td>นายอภิสักก์&nbsp;&nbsp;คงภักดี</td><td class="sid">6710301009</td></tr>
+ <tr><td class="no">3</td><td>นายธนัท&nbsp;&nbsp;จงธีรธนโชติ</td><td class="sid">6710301032</td></tr>
+ </table>
+ </div>
+ <div class="submit">
+ <div><span class="lbl">เสนอ</span>&nbsp;&nbsp;อาจารย์คทาเทพ&nbsp;&nbsp;สวัสดิพิศาล</div>
+ <div>รายวิชา Embedded System Design&nbsp;&nbsp;ภาคการศึกษาที่ 1&nbsp;&nbsp;ปีการศึกษา 2569</div>
+ </div>
+ </div>
+ <div class="botbar"></div>
+</div>
+
+<!-- ============ คำนำ ============ -->
+<div class="front">
+ <h2 class="plain">คำนำ</h2>
+ <p>รายงานฉบับนี้เป็นส่วนหนึ่งของรายวิชา Embedded System Design ภาคการศึกษาที่ 1 ปีการศึกษา 2569 จัดทำขึ้นเพื่อนำเสนอผลการวิเคราะห์และทดสอบวงจร <b class="term">Lab 1 : ROM as Control Store</b> บนโปรแกรม Logisim-Evolution ซึ่งเป็นการสร้างหน่วยควบคุมขนาดเล็กที่ใช้หน่วยความจำ ROM ทำหน้าที่เป็น “คลังคำสั่งควบคุม” (Control Store) แทนการต่อวงจรลอจิกควบคุมด้วย Gate แบบตายตัว อันเป็นแนวคิดพื้นฐานของการออกแบบหน่วยประมวลผลแบบ Microprogram</p>
+
+ <p>เนื้อหาภายในรายงานประกอบด้วยแนวคิดการออกแบบหน่วยควบคุมทั้งสองแนวทาง รายการอุปกรณ์ทั้งหมดที่ใช้ภายในวงจร รูปแบบของ Microinstruction ขนาด 8 Bit การทำงานของแต่ละส่วนโดยละเอียด ได้แก่ ส่วนลำดับที่อยู่ (MUX, µPC และ Adder) ตัวคลังคำสั่ง (ROM) วงจรถอดรหัส (Splitter) ตัวนับ (CNT) วงจรตัดสินใจกระโดด (Branch Logic) และส่วนแสดงผล ตลอดจนการถอดรหัสโปรแกรมที่บรรจุอยู่ใน ROM ตารางการทำงานทีละคาบสัญญาณนาฬิกาทั้ง 42 คาบ วิธีการทดลองในโปรแกรม และข้อสังเกตที่ควรระวัง</p>
+
+ <p>คณะผู้จัดทำหวังเป็นอย่างยิ่งว่ารายงานฉบับนี้จะเป็นประโยชน์แก่ผู้ที่สนใจศึกษาการออกแบบหน่วยควบคุมแบบ Microprogram หากมีข้อผิดพลาดประการใด คณะผู้จัดทำขออภัยมา ณ ที่นี้ และขอขอบพระคุณอาจารย์คทาเทพ สวัสดิพิศาล ที่ให้คำแนะนำตลอดการทำรายงานฉบับนี้</p>
+
+ <p style="text-align:right; margin-top:20px;"><b class="term">คณะผู้จัดทำ</b></p>
+</div>
+
+<!-- ============ สารบัญ ============ -->
+<div class="front toc">
+ <h2 class="plain">สารบัญ</h2>
+ <ul>
+ <li class="lv1"><a href="#s1"><span class="title">1 &nbsp;บทนำ</span><span class="dots"></span><span class="page">5</span></a></li>
+ <li class="lv1"><a href="#s2"><span class="title">2 &nbsp;วัตถุประสงค์</span><span class="dots"></span><span class="page">5</span></a></li>
+ <li class="lv1"><a href="#s3"><span class="title">3 &nbsp;เครื่องมือและอุปกรณ์ที่ใช้</span><span class="dots"></span><span class="page">5</span></a></li>
+ <li class="lv2"><a href="#s3-1"><span class="title">3.1 &nbsp;โปรแกรมจำลองการทำงาน</span><span class="dots"></span><span class="page">5</span></a></li>
+ <li class="lv2"><a href="#s3-2"><span class="title">3.2 &nbsp;รายการอุปกรณ์ทั้งหมดในวงจร</span><span class="dots"></span><span class="page">6</span></a></li>
+ <li class="lv1"><a href="#s4"><span class="title">4 &nbsp;แนวคิดการออกแบบวงจร</span><span class="dots"></span><span class="page">7</span></a></li>
+ <li class="lv2"><a href="#s4-1"><span class="title">4.1 &nbsp;หน่วยควบคุมสองแนวทาง</span><span class="dots"></span><span class="page">7</span></a></li>
+ <li class="lv2"><a href="#s4-2"><span class="title">4.2 &nbsp;BlockDiagram รวมของวงจร</span><span class="dots"></span><span class="page">7</span></a></li>
+ <li class="lv2"><a href="#s4-3"><span class="title">4.3 &nbsp;รูปแบบของ Microinstruction (8 Bit)</span><span class="dots"></span><span class="page">8</span></a></li>
+ <li class="lv1"><a href="#s5"><span class="title">5 &nbsp;การทำงานของแต่ละส่วน</span><span class="dots"></span><span class="page">9</span></a></li>
+ <li class="lv2"><a href="#s5-1"><span class="title">5.1 &nbsp;ส่วนลำดับที่อยู่ : MUX + µPC + Adder</span><span class="dots"></span><span class="page">9</span></a></li>
+ <li class="lv2"><a href="#s5-2"><span class="title">5.2 &nbsp;ROM — ตัวคลังคำสั่ง</span><span class="dots"></span><span class="page">9</span></a></li>
+ <li class="lv2"><a href="#s5-3"><span class="title">5.3 &nbsp;Splitter — ตัวถอดรหัสคำสั่ง</span><span class="dots"></span><span class="page">9</span></a></li>
+ <li class="lv2"><a href="#s5-4"><span class="title">5.4 &nbsp;ตัวนับ CNT — งานจริงที่โปรแกรมสั่ง</span><span class="dots"></span><span class="page">10</span></a></li>
+ <li class="lv2"><a href="#s5-5"><span class="title">5.5 &nbsp;Comparator + Branch Logic</span><span class="dots"></span><span class="page">10</span></a></li>
+ <li class="lv2"><a href="#s5-6"><span class="title">5.6 &nbsp;Tri-state Buffer + Hex Display</span><span class="dots"></span><span class="page">11</span></a></li>
+ <li class="lv2"><a href="#s5-7"><span class="title">5.7 &nbsp;สัญญาณนาฬิกาและการ Reset</span><span class="dots"></span><span class="page">11</span></a></li>
+ <li class="lv1"><a href="#s6"><span class="title">6 &nbsp;โปรแกรมที่บรรจุอยู่ใน ROM</span><span class="dots"></span><span class="page">11</span></a></li>
+ <li class="lv2"><a href="#s6-1"><span class="title">6.1 &nbsp;ตารางถอดรหัส Microprogram</span><span class="dots"></span><span class="page">11</span></a></li>
+ <li class="lv2"><a href="#s6-2"><span class="title">6.2 &nbsp;ผังการไหลของโปรแกรม</span><span class="dots"></span><span class="page">12</span></a></li>
+ <li class="lv1"><a href="#s7"><span class="title">7 &nbsp;ตารางการทำงานทีละคาบสัญญาณนาฬิกา</span><span class="dots"></span><span class="page">12</span></a></li>
+ <li class="lv1"><a href="#s8"><span class="title">8 &nbsp;วิธีทดลองใน Logisim-Evolution</span><span class="dots"></span><span class="page">13</span></a></li>
+ <li class="lv2"><a href="#s8-1"><span class="title">8.1 &nbsp;การกำหนดแหล่งสัญญาณนาฬิกาก่อนใช้ Auto-Tick</span><span class="dots"></span><span class="page">14</span></a></li>
+ <li class="lv1"><a href="#s9"><span class="title">9 &nbsp;ข้อสังเกตและจุดที่ควรระวัง</span><span class="dots"></span><span class="page">16</span></a></li>
+ <li class="lv1"><a href="#s10"><span class="title">10 &nbsp;สรุปผล</span><span class="dots"></span><span class="page">17</span></a></li>
+ <li class="lv1"><a href="#s11"><span class="title">11 &nbsp;เอกสารอ้างอิง</span><span class="dots"></span><span class="page">18</span></a></li>
+ </ul>
+
+ <h3>สารบัญตาราง</h3>
+ <ul>
+ <li class="lv2"><a href="#t1"><span class="title">ตารางที่ 1 &nbsp;รายการอุปกรณ์ทั้งหมดในวงจรและหน้าที่</span><span class="dots"></span><span class="page">6</span></a></li>
+ <li class="lv2"><a href="#t2"><span class="title">ตารางที่ 2 &nbsp;ความหมายของแต่ละ Bit ใน Microinstruction</span><span class="dots"></span><span class="page">8</span></a></li>
+ <li class="lv2"><a href="#t3"><span class="title">ตารางที่ 3 &nbsp;การอ่านความหมายของวงจรตัดสินใจกระโดดทีละกรณี</span><span class="dots"></span><span class="page">10</span></a></li>
+ <li class="lv2"><a href="#t4"><span class="title">ตารางที่ 4 &nbsp;การถอดรหัส Microprogram ที่บรรจุใน ROM</span><span class="dots"></span><span class="page">11</span></a></li>
+ <li class="lv2"><a href="#t5"><span class="title">ตารางที่ 5 &nbsp;การทำงานทีละคาบสัญญาณนาฬิกา (42 คาบ)</span><span class="dots"></span><span class="page">12</span></a></li>
+ </ul>
+
+ <h3>สารบัญรูปภาพ</h3>
+ <ul>
+ <li class="lv2"><a href="#f1"><span class="title">รูปที่ 1 &nbsp;BlockDiagram รวมของวงจร ROM as Control Store</span><span class="dots"></span><span class="page">8</span></a></li>
+ <li class="lv2"><a href="#f2"><span class="title">รูปที่ 2 &nbsp;รูปแบบ Bit ของ Microinstruction</span><span class="dots"></span><span class="page">8</span></a></li>
+ <li class="lv2"><a href="#f3"><span class="title">รูปที่ 3 &nbsp;วงจรตัดสินใจกระโดดระดับ Gate</span><span class="dots"></span><span class="page">10</span></a></li>
+ <li class="lv2"><a href="#f4"><span class="title">รูปที่ 4 &nbsp;ผังการไหลของ Microprogram</span><span class="dots"></span><span class="page">12</span></a></li>
+ <li class="lv2"><a href="#f5"><span class="title">รูปที่ 5 &nbsp;วงจรรวมบนพื้นที่ทำงานของ Logisim-Evolution ในสถานะเริ่มต้น</span><span class="dots"></span><span class="page">14</span></a></li>
+ <li class="lv2"><a href="#f6"><span class="title">รูปที่ 6 &nbsp;หน้าต่าง Hex Editor สำหรับแก้ไขข้อมูลภายใน ROM</span><span class="dots"></span><span class="page">14</span></a></li>
+ <li class="lv2"><a href="#f7"><span class="title">รูปที่ 7 &nbsp;หน้าต่าง Clock Source Selection</span><span class="dots"></span><span class="page">15</span></a></li>
+ <li class="lv2"><a href="#f8"><span class="title">รูปที่ 8 &nbsp;ผลการจำลองเมื่อโปรแกรมหยุดค้างที่ค่า A</span><span class="dots"></span><span class="page">16</span></a></li>
+ </ul>
+</div>
+
+<!-- ============ 1 บทนำ ============ -->
+<h2 class="sec" id="s1"><span class="num">1</span> บทนำ <span class="en">(Introduction)</span></h2>
+
+<p>ในหน่วยประมวลผลกลาง (CPU) ทุกชนิด <b class="term">หน่วยควบคุม (Control Unit)</b> คือส่วนที่ทำหน้าที่สร้างสัญญาณควบคุมไปสั่งงานส่วนต่าง ๆ ของวงจร เช่น สั่งให้ Register โหลดค่า สั่งให้ ALU บวก หรือสั่งให้ตัวนับเพิ่มค่า การสร้างหน่วยควบคุมสามารถทำได้ 2 แนวทางหลัก ได้แก่ การต่อวงจรลอจิกด้วย Gate โดยตรง (Hardwired Control) และการเก็บลำดับของสัญญาณควบคุมไว้ในหน่วยความจำแล้วอ่านออกมาทีละคำ (Microprogrammed Control)</p>
+
+<p>รายงานฉบับนี้นำเสนอผลการวิเคราะห์วงจร <b class="term">Lab 1 : ROM as Control Store</b> ซึ่งเป็นหน่วยควบคุมแบบ Microprogram ขนาดเล็กที่ใช้ ROM ขนาด 16 × 8 Bit ทำหน้าที่เป็นคลังคำสั่งควบคุม โดยในทุกคาบสัญญาณนาฬิกา วงจรจะอ่านคำสั่งขนาด 8 Bit จาก ROM ออกมาหนึ่งคำ นำ 4 Bit บนไปใช้เป็นสัญญาณควบคุม และนำ 4 Bit ล่างไปใช้เป็นที่อยู่ปลายทางของการกระโดด จากนั้นจึงตัดสินใจว่าคำสั่งถัดไปคือ “ที่อยู่ถัดไป (PC + 1)” หรือ “กระโดดไปที่อยู่ปลายทาง”</p>
+
+<p>โปรแกรมที่บรรจุอยู่ใน ROM ทำหน้าที่นับเลขตั้งแต่ 0 ถึง 10 แสดงผลบนจอแสดงผล 7-segment แบบเลขฐานสิบหก แล้วหยุดค้างที่ค่า A (เท่ากับ 10 ในฐานสิบ) โดยใช้เวลาทั้งหมด 41 ขอบสัญญาณนาฬิกา การวิเคราะห์ในรายงานนี้จัดทำโดยการอ่านไฟล์วงจรโดยตรง ตรวจสอบตำแหน่งขาสัญญาณทุกตัวด้วยการจำลองจริง และจำลองการทำงานทีละคาบสัญญาณนาฬิกาเพื่อยืนยันความถูกต้อง</p>
+
+<div class="note">
+ <p><b class="term">ประเด็นสำคัญของการทดลองนี้</b> — วงจรแบบ Microprogram สามารถเปลี่ยนพฤติกรรมของ Hardware ได้โดยการแก้ไขเพียงข้อมูลใน ROM เท่านั้น <b>ไม่ต้องแตะต้องสายไฟแม้แต่เส้นเดียว</b> ซึ่งเป็นข้อได้เปรียบหลักเหนือการต่อวงจรควบคุมแบบตายตัว</p>
+</div>
+
+<!-- ============ 2 วัตถุประสงค์ ============ -->
+<h2 class="sec" id="s2"><span class="num">2</span> วัตถุประสงค์ <span class="en">(Objectives)</span></h2>
+
+<ol class="objlist">
+ <li>เพื่อศึกษาแนวคิดของหน่วยควบคุมแบบ Microprogram (Microprogrammed Control Unit) และเปรียบเทียบกับหน่วยควบคุมแบบต่อวงจรตายตัว (Hardwired Control)</li>
+ <li>เพื่อทำความเข้าใจบทบาทของ ROM ในฐานะคลังคำสั่งควบคุม (Control Store) และโครงสร้างของ Microsequencer (Microsequencer) ที่ประกอบด้วย MUX, µPC และ Adder</li>
+ <li>เพื่อออกแบบและตีความรูปแบบของ Microinstruction ขนาด 8 Bit ที่แบ่งเป็นสัญญาณควบคุม 4 Bit และที่อยู่ปลายทาง 4 Bit</li>
+ <li>เพื่อวิเคราะห์วงจรตัดสินใจกระโดด (Branch Logic) ที่สร้างจาก NOT Gate, OR และ AND ตลอดจนสมการลอจิกของสัญญาณเลือก (SEL)</li>
+ <li>เพื่อศึกษาการใช้งาน Tri-state Buffer ในการจำลอง Shared Bus (Shared Bus) และการควบคุมการแสดงผลด้วยสัญญาณจากหน่วยควบคุม</li>
+ <li>เพื่อฝึกการจำลองการทำงานทีละคาบสัญญาณนาฬิกาในโปรแกรม Logisim-Evolution และตรวจสอบความถูกต้องของวงจรตลอดทั้ง 42 คาบ</li>
+</ol>
+
+<!-- ============ 3 เครื่องมือ ============ -->
+<h2 class="sec" id="s3"><span class="num">3</span> เครื่องมือและอุปกรณ์ที่ใช้ <span class="en">(Tools and Components)</span></h2>
+
+<h3 class="sub" id="s3-1">3.1 โปรแกรมจำลองการทำงาน</h3>
+<ul class="clean">
+ <li><b class="term">Logisim-Evolution v4.1.0</b> — โปรแกรมสำหรับออกแบบและทดสอบวงจรลอจิก ใช้สร้างวงจรหน่วยควบคุมและจำลองการทำงานทีละคาบสัญญาณนาฬิกา ไฟล์วงจรที่ใช้ในรายงานนี้คือ <b class="term">Lab_1_ROM_as_Control_Store.circ</b></li>
+ <li><b class="term">เครื่องมือ Poke Tool</b> — ใช้กดสลับค่าที่ขา Clock และ Reset เพื่อเดินวงจรทีละคาบและสังเกตผลลัพธ์</li>
+ <li><b class="term">Function Auto-Tick</b> — ใช้เดินสัญญาณนาฬิกาอัตโนมัติเพื่อดูการทำงานต่อเนื่องตั้งแต่ต้นจนโปรแกรมหยุด โดยต้องกำหนดแหล่งสัญญาณนาฬิกาให้เป็นขา Clock ก่อน (ดูหัวข้อ 8.1)</li>
+</ul>
+
+<h3 class="sub" id="s3-2">3.2 รายการอุปกรณ์ทั้งหมดในวงจร</h3>
+<p>วงจรทั้งหมดถูกสร้างขึ้นภายในวงจรเดียว (ไม่มีการแบ่งเป็นวงจรย่อย) โดยมีอุปกรณ์และการตั้งค่าตามที่ตรวจสอบได้จากไฟล์วงจรโดยตรง สรุปไว้ในตารางที่ 1</p>
+
+<div class="tblwrap split">
+<table class="data split" id="t1">
+ <caption>ตารางที่ 1 รายการอุปกรณ์ทั้งหมดในวงจรและหน้าที่</caption>
+ <thead>
+ <tr><th style="width:24%">อุปกรณ์</th><th style="width:16%">พิกัดในไฟล์</th><th style="width:16%">การตั้งค่า</th><th>หน้าที่</th></tr>
+ </thead>
+ <tbody>
+ <tr><td class="lead"><b class="term">ROM</b></td><td class="bin">(440,120)</td><td>16 × 8 Bit</td><td class="lead">คลังคำสั่งควบคุม เก็บ Microprogram 6 คำสั่ง</td></tr>
+ <tr><td class="lead">Register (µPC)</td><td class="bin">(270,270)</td><td>4 Bit</td><td class="lead">ตัวชี้ที่อยู่คำสั่งปัจจุบัน</td></tr>
+ <tr><td class="lead">Register (CNT)</td><td class="bin">(990,130)</td><td>4 Bit</td><td class="lead">ตัวนับที่โปรแกรมสั่งงาน (ผลลัพธ์ของแล็บ)</td></tr>
+ <tr><td class="lead">Adder</td><td class="bin">(380,180)</td><td>4 Bit, +1</td><td class="lead">คำนวณ µPC + 1 (ที่อยู่ถัดไปแบบเรียงลำดับ)</td></tr>
+ <tr><td class="lead">Adder</td><td class="bin">(1140,170)</td><td>4 Bit, +1</td><td class="lead">คำนวณ CNT + 1 ป้อนกลับเข้าตัวนับ</td></tr>
+ <tr><td class="lead">Multiplexer</td><td class="bin">(230,240)</td><td>2 → 1, 4 Bit</td><td class="lead">เลือกว่าที่อยู่ถัดไปคือ PC + 1 หรือ TARGET</td></tr>
+ <tr><td class="lead">Comparator</td><td class="bin">(1150,330)</td><td>4 Bit</td><td class="lead">เปรียบเทียบ CNT กับค่าคงที่ 10 (ใช้เฉพาะขา A = B)</td></tr>
+ <tr><td class="lead">Splitter</td><td class="bin">(760,180)</td><td>8 → 8</td><td class="lead">ผ่าคำสั่ง 8 Bit ออกเป็น Bit เดี่ยว</td></tr>
+ <tr><td class="lead">Splitter</td><td class="bin">(800,90)</td><td>4 → 4</td><td class="lead">รวม Bit D3–D0 กลับเป็น Bus 4 Bit (ที่อยู่ปลายทาง)</td></tr>
+ <tr><td class="lead">Controlled Buffer</td><td class="bin">(1270,300)</td><td>4 Bit</td><td class="lead">ประตู tri-state ปล่อยค่า CNT ออกจอเมื่อได้รับอนุญาต</td></tr>
+ <tr><td class="lead">Hex Digit Display</td><td class="bin">(1330,260)</td><td>—</td><td class="lead">แสดงค่าตัวนับเป็นเลขฐานสิบหก</td></tr>
+ <tr><td class="lead">NOT Gate, AND, OR, NOT</td><td class="bin">(550,420) (500,430)<br>(600,440) (650,450)</td><td>—</td><td class="lead">วงจรตัดสินใจกระโดด (Branch Logic)</td></tr>
+ <tr><td class="lead">Constant</td><td class="bin">(310,190) / (1080,180)</td><td>= 1</td><td class="lead">ค่า “+1” ป้อนให้ Adder ทั้งสองตัว</td></tr>
+ <tr><td class="lead">Constant</td><td class="bin">(1070,340)</td><td>= 0xA (10)</td><td class="lead">ค่าเป้าหมายที่ใช้เปรียบเทียบ</td></tr>
+ <tr><td class="lead">Constant</td><td class="bin">(250,320)</td><td>= 1</td><td class="lead">ผูกขา Enable ของ µPC ไว้ตลอด → µPC เดินทุกคาบ</td></tr>
+ <tr><td class="lead">Pin Reset / Clock</td><td class="bin">(170,380) / (170,510)</td><td>1 Bit</td><td class="lead">อินพุตจากผู้ใช้</td></tr>
+ <tr><td class="lead">Output Pin</td><td class="bin">(710,200) / (1300,300)</td><td>8 / 4 Bit</td><td class="lead">จุดสังเกตค่า (คำสั่งดิบ / ค่าที่ส่งออกจอ)</td></tr>
+ </tbody>
+</table>
+</div>
+<!-- ============ 4 แนวคิดการออกแบบ ============ -->
+<h2 class="sec" id="s4"><span class="num">4</span> แนวคิดการออกแบบวงจร <span class="en">(Design Concept)</span></h2>
+
+<h3 class="sub" id="s4-1">4.1 หน่วยควบคุมสองแนวทาง : ทำไมต้องใช้ ROM เป็นหน่วยควบคุม</h3>
+<p>ในซีพียู หน่วยควบคุม (Control Unit) มีหน้าที่สร้างสัญญาณควบคุมไปสั่งงานส่วนต่าง ๆ เช่น สั่งให้ Register โหลดค่า สั่งให้ ALU บวก หรือสั่งให้ตัวนับเพิ่มค่า การสร้างหน่วยควบคุมสามารถทำได้ 2 แนวทาง ดังนี้</p>
+
+<ul class="clean">
+ <li><b class="term">Hardwired Control</b> — ต่อวงจรลอจิกด้วย Gate โดยตรง มีข้อดีคือทำงานได้เร็ว แต่มีข้อเสียคือแก้ไขได้ยาก เพราะหากต้องการเปลี่ยนพฤติกรรมของวงจรจะต้องรื้อและต่อวงจรใหม่ทั้งหมด</li>
+ <li><b class="term">Microprogrammed Control</b> — เก็บ “ลำดับของสัญญาณควบคุม” ไว้ในหน่วยความจำ (ROM) แล้วอ่านออกมาทีละคำ วิธีนี้สามารถ <b>เปลี่ยนพฤติกรรมของวงจรได้โดยแก้ไขเพียงข้อมูลใน ROM ไม่ต้องแตะต้องสายไฟแม้แต่เส้นเดียว</b> ซึ่งเป็นแนวทางที่วงจรในไฟล์นี้เลือกใช้</li>
+</ul>
+
+<p>แต่ละแถวใน ROM เรียกว่า <b class="term">Microinstruction (Microinstruction)</b> และตัวชี้ตำแหน่งแถวปัจจุบันเรียกว่า <b class="term">µPC (micro Program Counter)</b> ทั้งชุดนี้รวมกันเรียกว่า <b class="term">Microsequencer (Microsequencer)</b></p>
+
+<h3 class="sub" id="s4-2">4.2 BlockDiagram รวมของวงจร</h3>
+<p>โครงสร้างรวมของวงจรทั้งหมดแสดงไว้ในรูปที่ 1 โดยเส้นหนาสีน้ำเงินคือ Data Bus หลาย Bit ส่วนเส้นบางสีเทาคือสัญญาณควบคุมขนาด 1 Bit ส่วนสัญญาณนาฬิกา (CLK) จะต่อเข้า Register µPC และ CNT พร้อมกัน จึงไม่ได้วาดไว้ในรูปเพื่อลดความรก</p>
+
+<figure class="fig diagfig" id="f1">
+<div class="diagram">
+<svg viewBox="0 0 940 470" xmlns="http://www.w3.org/2000/svg" font-family="Sarabun,sans-serif">
+ <defs>
+ <marker id="ah" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+ <path d="M0,0 L8,3 L0,6 z" fill="#14496e"/>
+ </marker>
+ <marker id="ahr" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+ <path d="M0,0 L8,3 L0,6 z" fill="#b03030"/>
+ </marker>
+ </defs>
+ <g fill="none" stroke="#14496e" stroke-width="1.4" marker-end="url(#ah)">
+ <!-- MUX -> uPC -->
+ <path d="M118,255 L160,255"/>
+ <!-- uPC -> fanout node -->
+ <path d="M232,255 L268,255"/>
+ <!-- fanout up to adder -->
+ <path d="M268,255 L268,190 L292,190"/>
+ <!-- fanout down to ROM -->
+ <path d="M268,255 L268,340 L292,340"/>
+ <!-- ROM -> splitter -->
+ <path d="M400,340 L400,250 L432,250"/>
+ <!-- splitter -> CNT_EN -->
+ <path d="M448,150 L520,150"/>
+ <!-- splitter -> CNT_CLR -->
+ <path d="M448,178 L520,178"/>
+ <!-- CNT -> +1 -->
+ <path d="M650,150 L680,150"/>
+ <!-- CNT -> comparator -->
+ <path d="M630,190 L630,238 L560,238"/>
+ <!-- const10 -> comparator -->
+ <path d="M498,252 L520,252"/>
+ <!-- comparator EQ -> branch -->
+ <path d="M540,272 L540,300 L520,300"/>
+ <!-- splitter D7 -> branch -->
+ <path d="M448,205 L470,205 L470,300 L520,300"/>
+ <!-- splitter D4 -> branch -->
+ <path d="M448,232 L460,232 L460,322 L520,322"/>
+ <!-- branch SEL -> back to MUX (routed below the ROM block) -->
+ <path d="M520,336 L520,406 L80,406 L80,290 L96,290"/>
+ <!-- D4 -> tristate -->
+ <path d="M460,322 L460,392 L742,392 L742,372"/>
+ <!-- CNT -> tristate -->
+ <path d="M630,190 L630,360 L720,360"/>
+ <!-- tristate -> display -->
+ <path d="M768,360 L792,360"/>
+ <!-- adder -> MUX ch0 -->
+ <path d="M356,190 L356,40 L60,40 L60,232 L96,232"/>
+ <!-- D3-D0 target -> MUX ch1 -->
+ <path d="M448,260 L448,432 L40,432 L40,262 L96,262"/>
+ </g>
+ <!-- +1 feedback to CNT -->
+ <path d="M712,138 L712,110 L560,110 L560,138" fill="none" stroke="#14496e" stroke-width="1.4" marker-end="url(#ah)"/>
+
+ <g stroke="#14496e" stroke-width="1.6" fill="#fff">
+ <rect x="96" y="222" width="22" height="76" rx="3"/>
+ <rect x="160" y="232" width="72" height="46" rx="5"/>
+ <rect x="292" y="172" width="64" height="36" rx="5"/>
+ <rect x="292" y="316" width="108" height="48" rx="5"/>
+ <rect x="520" y="130" width="130" height="60" rx="5"/>
+ <rect x="680" y="134" width="64" height="32" rx="5"/>
+ <rect x="520" y="238" width="120" height="34" rx="5"/>
+ <rect x="470" y="240" width="28" height="24" rx="3"/>
+ <rect x="520" y="290" width="130" height="46" rx="5"/>
+ <rect x="792" y="340" width="42" height="40" rx="5"/>
+ </g>
+ <!-- splitter bars -->
+ <rect x="432" y="140" width="9" height="130" fill="#14496e"/>
+ <rect x="797" y="88" width="7" height="60" fill="#14496e" opacity="0"/>
+ <!-- tri-state triangle -->
+ <path d="M720,346 L720,374 L748,360 z" fill="#fff" stroke="#14496e" stroke-width="1.6"/>
+
+ <g font-size="11" fill="#1f2733" text-anchor="middle">
+ <text x="107" y="264" font-size="10" font-weight="700" transform="rotate(-90 107,264)">MUX</text>
+ <text x="196" y="252" font-weight="700">µPC</text>
+ <text x="196" y="266" font-size="9" fill="#6b7785">Register 4-bit</text>
+ <text x="324" y="194" font-weight="700">ADDER +1</text>
+ <text x="346" y="336" font-weight="700">ROM 16 × 8</text>
+ <text x="346" y="350" font-size="8.5" fill="#6b7785">Control Store</text>
+ <text x="585" y="154" font-weight="700">CNT</text>
+ <text x="585" y="167" font-size="9" fill="#6b7785">Register 4-bit (ตัวนับ)</text>
+ <text x="712" y="155" font-weight="700">+1</text>
+ <text x="580" y="255" font-weight="700">COMPARATOR</text>
+ <text x="580" y="266" font-size="9" fill="#6b7785">A = B ?</text>
+ <text x="484" y="256" font-weight="700">10</text>
+ <text x="585" y="308" font-weight="700">BRANCH LOGIC</text>
+ <text x="585" y="320" font-size="9" fill="#6b7785">AND / OR / NOT</text>
+ <text x="813" y="366" font-weight="700" font-size="14">A</text>
+ <text x="440" y="132" font-size="9" fill="#6b7785">Splitter</text>
+ <text x="742" y="384" font-size="8.5" fill="#6b7785">Tri-state</text>
+ <text x="813" y="392" font-size="8.5" fill="#6b7785">Hex Display</text>
+ <text x="186" y="315" font-size="9" fill="#6b7785">RESET</text>
+ <text x="415" y="242" font-size="9" fill="#6b7785">8</text>
+ </g>
+ <path d="M196,300 L196,280" fill="none" stroke="#14496e" stroke-width="1.4" marker-end="url(#ah)"/>
+
+ <g font-size="9.5" font-family="Menlo,monospace" font-weight="700">
+ <text x="455" y="146" fill="#1f7a4d">D6 = CNT_EN</text>
+ <text x="455" y="174" fill="#b03030">D5 = CNT_CLR</text>
+ <text x="612" y="234" fill="#1f7a4d">EQ (CNT = 10)</text>
+ <text x="455" y="201" fill="#14496e">D7 = SEQ</text>
+ <text x="455" y="228" fill="#b7791f">D4 = OUT/JMP</text>
+ <text x="600" y="389" fill="#14496e">D4 = OUT_EN</text>
+ <text x="640" y="105" fill="#14496e">CNT + 1</text>
+ </g>
+ <g font-size="9.5" font-family="Menlo,monospace" font-weight="700" fill="#b03030">
+ <text x="150" y="401">SEL (เลือก 0 = PC+1 , 1 = TARGET)</text>
+ <text x="46" y="428">D3–D0 = TARGET (ที่อยู่ปลายทาง 4 Bit)</text>
+ </g>
+</svg>
+</div>
+<figcaption><b>รูปที่ 1</b> — BlockDiagram รวมของวงจร ROM as Control Store<br>เส้นหนาสีน้ำเงินคือ Data Bus หลาย Bit เส้นบางคือสัญญาณควบคุม 1 Bit (สัญญาณนาฬิกาไม่ได้วาดไว้เพื่อลดความรก)</figcaption>
+</figure>
+
+<div class="callout">
+ <p><b class="sl">เส้นทางสัญญาณอ่านตามลูกศร :</b></p>
+ <p>µPC ใช้เป็น <i>ที่อยู่</i> ป้อนให้ ROM → ROM คายคำสั่ง 8 Bit → Splitter ผ่าคำสั่งออกเป็นสัญญาณควบคุม 4 เส้น (D7–D4) และที่อยู่ปลายทาง 4 Bit (D3–D0) → สัญญาณควบคุมไปสั่งตัวนับ CNT และวงจรตัดสินใจกระโดด → ผลการตัดสินใจ (SEL) ย้อนกลับไปสั่ง MUX ว่าจะป้อนค่าใดกลับเข้า µPC ในขอบนาฬิกาถัดไป</p>
+</div>
+
+<h3 class="sub" id="s4-3">4.3 รูปแบบของ Microinstruction (8 Bit)</h3>
+<p>หัวใจของวงจรอยู่ที่การ “ตีความ” ค่า 8 Bit ที่ ROM คายออกมา วงจรกำหนดความหมายของแต่ละ Bit ไว้ตามรูปที่ 2 โดยแบ่งเป็นสัญญาณควบคุม 4 Bit บน (D7–D4) และที่อยู่ปลายทางของการกระโดด 4 Bit ล่าง (D3–D0)</p>
+
+<figure class="fig" id="f2">
+<table class="bitmap">
+ <tr>
+ <td class="bnum">bit 7</td><td class="bnum">bit 6</td><td class="bnum">bit 5</td><td class="bnum">bit 4</td><td class="bnum">bit 3 … bit 0</td>
+ </tr>
+ <tr>
+ <td class="bname b7">D7</td><td class="bname b6">D6</td><td class="bname b5">D5</td><td class="bname b4">D4</td>
+ <td class="bname b30">D3&nbsp;&nbsp;D2&nbsp;&nbsp;D1&nbsp;&nbsp;D0</td>
+ </tr>
+ <tr>
+ <td class="bdesc"><b>SEQ</b><br>ไปคำสั่งถัดไป</td>
+ <td class="bdesc"><b>CNT_EN</b><br>นับเพิ่ม 1</td>
+ <td class="bdesc"><b>CNT_CLR</b><br>ล้างตัวนับ</td>
+ <td class="bdesc"><b>OUT_EN / JMP</b><br>แสดงผล + กระโดด</td>
+ <td class="bdesc"><b>TARGET ADDRESS</b><br>ที่อยู่ปลายทางของการกระโดด (0–15)</td>
+ </tr>
+</table>
+<figcaption><b>รูปที่ 2</b> — รูปแบบ Bit ของ Microinstruction</figcaption>
+</figure>
+
+<div class="tblwrap split">
+<table class="data split" id="t2">
+ <caption>ตารางที่ 2 ความหมายของแต่ละ Bit ใน Microinstruction</caption>
+ <thead>
+ <tr><th style="width:9%">Bit</th><th style="width:18%">ชื่อ</th><th style="width:26%">ต่อไปที่ไหน</th><th>ความหมายเมื่อมีค่าเป็น 1</th></tr>
+ </thead>
+ <tbody>
+ <tr><td class="bin"><b class="term">D7</b></td><td><b>SEQ</b></td><td class="lead">อินพุต NOT Gate → AND</td><td class="lead">บังคับให้ไปคำสั่งถัดไปแบบเรียงลำดับ (PC + 1) <b>ห้ามกระโดด</b> ไม่ว่าเงื่อนไขใด ๆ</td></tr>
+ <tr><td class="bin"><b class="term">D6</b></td><td><b>CNT_EN</b></td><td class="lead">ขา Enable ของ Register CNT</td><td class="lead">อนุญาตให้ตัวนับโหลดค่าใหม่ → CNT ← CNT + 1</td></tr>
+ <tr><td class="bin"><b class="term">D5</b></td><td><b>CNT_CLR</b></td><td class="lead">ขา Reset ของ Register CNT</td><td class="lead">ล้างตัวนับเป็น 0</td></tr>
+ <tr><td class="bin"><b class="term">D4</b></td><td><b>OUT_EN / JMP</b></td><td class="lead">ขา Enable ของ tri-state buffer และอินพุต OR Gate</td><td class="lead">ทำงาน 2 อย่างพร้อมกัน : (1) เปิดจอให้แสดงค่า CNT (2) ถ้า D7 = 0 ด้วย จะกลายเป็นการ <b>กระโดดแบบไม่มีเงื่อนไข</b></td></tr>
+ <tr><td class="bin">D3–D0</td><td><b>TARGET</b></td><td class="lead">อินพุตช่อง 1 ของ MUX</td><td class="lead">ที่อยู่ปลายทางของการกระโดด (0–15)</td></tr>
+ </tbody>
+</table>
+</div>
+<!-- ============ 5 การทำงานของแต่ละส่วน ============ -->
+<h2 class="sec" id="s5"><span class="num">5</span> การทำงานของแต่ละส่วน <span class="en">(Detailed Operation)</span></h2>
+
+<h3 class="sub" id="s5-1">5.1 ส่วนลำดับที่อยู่ : MUX + µPC + Adder</h3>
+<p>สามชิ้นนี้ต่อกันเป็น <b class="term">วงรอบป้อนกลับ (Feedback Loop)</b> ซึ่งเป็นแกนกลางของวงจรทั้งหมด</p>
+
+<ul class="clean">
+ <li><b class="term">µPC (Register 4 Bit)</b> เก็บที่อยู่ของคำสั่งที่กำลังทำงานอยู่ ค่าที่ขาออก (Q) ถูกส่งไป 2 ทางพร้อมกัน คือ ไปเป็นที่อยู่ของ ROM และไปเข้า Adder</li>
+ <li><b class="term">Adder (+1)</b> รับค่า µPC บวกกับค่าคงที่ 1 ได้ผลเป็น µPC + 1 ซึ่งคือที่อยู่ถัดไปแบบเรียงลำดับ</li>
+ <li><b class="term">MUX 2→1 (4 Bit)</b> เป็นจุดตัดสินใจ มีสองทางเลือก ได้แก่
+ <ul class="clean" style="margin-top:5px">
+ <li><b>ช่อง 0</b> ← µPC + 1 (เดินหน้าตามปกติ)</li>
+ <li><b>ช่อง 1</b> ← TARGET จาก ROM (กระโดด)</li>
+ </ul>
+ ขาเลือก (SEL) มาจากวงจรตัดสินใจในหัวข้อ 5.5 ผลลัพธ์ของ MUX คือค่าที่จะถูกโหลดเข้า µPC ในขอบสัญญาณนาฬิกาถัดไป</li>
+ <li>ขา <b class="term">Enable</b> ของ µPC ถูกผูกไว้กับค่าคงที่ 1 ตลอดเวลา แปลว่า <b>µPC เปลี่ยนค่าทุกขอบสัญญาณนาฬิกาเสมอ</b> ไม่มีการหยุดค้าง การ “หยุด” ของโปรแกรมจึงต้องทำด้วยการ <i>กระโดดหาตัวเอง</i> ไม่ใช่การหยุดสัญญาณนาฬิกา</li>
+ <li>ขา <b class="term">Reset</b> ของ µPC ต่อกับปุ่ม Reset ภายนอก ใช้บังคับให้เริ่มที่ address 0</li>
+</ul>
+
+<h3 class="sub" id="s5-2">5.2 ROM — ตัวคลังคำสั่ง</h3>
+<p>ROM ตั้งค่าเป็น <b class="term">address 4 Bit × data 8 Bit</b> จึงมี 16 แถว แถวละ 8 Bit ทำงานแบบ <b class="term">อะซิงโครนัส (Asynchronous)</b> คือไม่ต้องรอสัญญาณนาฬิกา ทันทีที่ µPC เปลี่ยนค่า ROM จะคายข้อมูลแถวนั้นออกมาทันที ค่าที่คายออกมานี้เองที่กลายเป็น “สัญญาณควบคุมของคาบปัจจุบัน”</p>
+
+<h3 class="sub" id="s5-3">5.3 Splitter — ตัวถอดรหัสคำสั่ง</h3>
+<p>Splitter ตัวใหญ่ (8 → 8) ผ่าคำสั่ง 8 Bit ออกเป็นเส้นเดี่ยว ๆ วงจรดึงไปใช้เพียง 4 เส้นบน คือ D7, D6, D5 และ D4</p>
+
+<div class="callout">
+ <p><b class="pb">จุดที่มักมองข้าม</b> — Bit D3–D0 ไม่ได้ถูกเดินสายด้วย “เส้นลวด” แต่ Splitter ตัวเล็ก (4 → 4) ถูกวาง <b>ให้ปลายขาชนกันพอดีกับ Splitter ตัวใหญ่</b> ใน Logisim การที่ขาสองตัวอยู่ตำแหน่งเดียวกันถือว่า “ต่อถึงกัน” แล้ว Splitter ตัวเล็กจึงทำหน้าที่รวม Bit D3–D0 กลับเป็น Bus 4 Bit ส่งไปเป็นที่อยู่ปลายทางให้ MUX (ตรวจสอบยืนยันแล้วด้วยการจำลอง : Bus ที่ได้เท่ากับ 4 Bit ล่างของคำสั่งเสมอ)</p>
+</div>
+
+<h3 class="sub" id="s5-4">5.4 ตัวนับ CNT — “งานจริง” ที่โปรแกรมสั่ง</h3>
+<p>Register CNT ต่อกับ Adder (+1) แบบป้อนกลับ ทำให้เกิดเป็น <b class="term">ตัวนับขึ้น (Up-counter)</b> ที่ <i>ควบคุมด้วย Software</i> พฤติกรรมที่ขอบสัญญาณนาฬิกาแต่ละครั้งเป็นดังนี้ (เรียงตามลำดับความสำคัญ)</p>
+
+<div class="eq" style="background:var(--primary); color:#fff; border-color:var(--primary); text-align:center;">
+ถ้า D5 = 1 → CNT ← 0 &nbsp;&nbsp;|&nbsp;&nbsp; ไม่เช่นนั้น ถ้า D6 = 1 → CNT ← CNT + 1 &nbsp;&nbsp;|&nbsp;&nbsp; ไม่เช่นนั้น → CNT ค้างค่าเดิม
+</div>
+
+<p>สังเกตว่า CNT <b>ไม่ได้ต่อกับปุ่ม Reset ภายนอกเลย</b> การล้างค่าตัวนับต้องสั่งผ่าน <b class="term">คำสั่งใน ROM</b> (Bit D5) เท่านั้น ซึ่งก็คือคำสั่งแรกของโปรแกรมนั่นเอง</p>
+
+<h3 class="sub" id="s5-5">5.5 Comparator + Branch Logic — สมองของการตัดสินใจ</h3>
+<p>Comparator เปรียบเทียบ <b class="term">CNT</b> กับค่าคงที่ <b class="term">10</b> วงจรใช้เพียงขาออกเดียวคือ <b>A = B</b> เรียกสัญญาณนี้ว่า <b class="term">EQ</b> (EQ = 1 เมื่อ CNT นับถึง 10 พอดี) จากนั้น EQ ถูกส่งเข้า Gate 4 ตัวต่อไปนี้</p>
+
+<figure class="fig diagfig" id="f3">
+<div class="diagram">
+<svg viewBox="0 0 640 210" xmlns="http://www.w3.org/2000/svg" font-family="Sarabun,sans-serif">
+ <g fill="none" stroke="#14496e" stroke-width="1.5">
+ <path d="M70,45 L128,45"/>
+ <path d="M168,45 L230,45 L230,62"/>
+ <path d="M70,105 L230,105 L230,88"/>
+ <path d="M292,75 L360,75 L360,92"/>
+ <path d="M70,165 L128,165"/>
+ <path d="M168,165 L360,165 L360,118"/>
+ <path d="M420,105 L500,105"/>
+ </g>
+ <!-- NOT gate (EQ) -->
+ <path d="M128,32 L128,58 L156,45 z" fill="#fff" stroke="#14496e" stroke-width="1.6"/>
+ <circle cx="161" cy="45" r="5" fill="#fff" stroke="#14496e" stroke-width="1.6"/>
+ <!-- NOT gate (D7) -->
+ <path d="M128,152 L128,178 L156,165 z" fill="#fff" stroke="#14496e" stroke-width="1.6"/>
+ <circle cx="161" cy="165" r="5" fill="#fff" stroke="#14496e" stroke-width="1.6"/>
+ <!-- OR gate -->
+ <path d="M230,50 Q248,75 230,100 Q268,100 292,75 Q268,50 230,50 z" fill="#fff" stroke="#14496e" stroke-width="1.6"/>
+ <!-- AND gate -->
+ <path d="M360,80 L392,80 A25,25 0 0 1 392,130 L360,130 z" fill="#fff" stroke="#14496e" stroke-width="1.6"/>
+ <path d="M360,80 L360,130" stroke="#14496e" stroke-width="1.6" fill="none"/>
+ <g font-size="11" font-weight="700" font-family="Menlo,monospace">
+ <text x="34" y="49" fill="#1f7a4d">EQ</text>
+ <text x="34" y="109" fill="#b7791f">D4</text>
+ <text x="34" y="169" fill="#14496e">D7</text>
+ <text x="510" y="109" fill="#b03030">SEL</text>
+ </g>
+ <g font-size="9.5" fill="#6b7785" text-anchor="middle">
+ <text x="145" y="72">NOT</text>
+ <text x="255" y="118">OR</text>
+ <text x="145" y="192">NOT</text>
+ <text x="385" y="150">AND</text>
+ </g>
+</svg>
+</div>
+<figcaption><b>รูปที่ 3</b> — วงจรตัดสินใจกระโดด ระดับ Gate</figcaption>
+</figure>
+
+<div class="eq" style="background:var(--primary); color:#fff; border-color:var(--primary); text-align:center; font-size:14px; letter-spacing:1px;">
+SEL &nbsp;=&nbsp; NOT(D7) &nbsp;AND&nbsp; ( D4 &nbsp;OR&nbsp; NOT(EQ) )
+</div>
+
+<p>อ่านความหมายทีละกรณีได้ตามตารางที่ 3</p>
+
+<div class="tblwrap split">
+<table class="data split" id="t3">
+ <caption>ตารางที่ 3 การอ่านความหมายของวงจรตัดสินใจกระโดดทีละกรณี</caption>
+ <thead>
+ <tr><th style="width:9%">D7</th><th style="width:9%">D4</th><th style="width:16%">CNT = 10 ?</th><th style="width:9%">SEL</th><th>ผลลัพธ์</th></tr>
+ </thead>
+ <tbody>
+ <tr><td class="bin">1</td><td class="bin">ใดก็ได้</td><td>ใดก็ได้</td><td class="bin">0</td><td class="lead"><b class="term">เดินหน้าตามลำดับ</b> µPC ← µPC + 1 (D7 มีอำนาจเหนือทุกเงื่อนไข)</td></tr>
+ <tr><td class="bin">0</td><td class="bin">1</td><td>ใดก็ได้</td><td class="bin">1</td><td class="lead"><b class="term">กระโดดแบบไม่มีเงื่อนไข</b> µPC ← TARGET</td></tr>
+ <tr><td class="bin">0</td><td class="bin">0</td><td>ไม่เท่า</td><td class="bin">1</td><td class="lead"><b class="term">กระโดด</b> µPC ← TARGET (ยังนับไม่ครบ → วน Loop ต่อ)</td></tr>
+ <tr class="hl"><td class="bin">0</td><td class="bin">0</td><td>เท่ากับ 10</td><td class="bin">0</td><td class="lead"><b class="term">ไม่กระโดด</b> µPC ← µPC + 1 (นับครบแล้ว → ออกจาก Loop)</td></tr>
+ </tbody>
+</table>
+</div>
+
+<p>สองแถวล่างรวมกันคือคำสั่งชนิด <b class="term">“กระโดดถ้ายังไม่เท่ากับ 10” (Branch if Not Equal)</b> ซึ่งเป็นกลไกที่ทำให้เกิด Loop ในโปรแกรม</p>
+
+<h3 class="sub" id="s5-6">5.6 Tri-state Buffer + Hex Display — ส่วนแสดงผล</h3>
+<p>ค่า CNT ไม่ได้ต่อตรงเข้าจอ แต่ผ่าน <b class="term">Controlled Buffer (tri-state)</b> ที่มี Bit D4 เป็นตัวควบคุม</p>
+<ul class="clean">
+ <li><b class="term">D4 = 1</b> → Buffer นำกระแส ค่า CNT ปรากฏบนจอ</li>
+ <li><b class="term">D4 = 0</b> → Buffer อยู่ใน High Impedance state (ลอย) สายขาออกไม่มีค่า จอไม่แสดงตัวเลข</li>
+</ul>
+<p>นี่คือการจำลอง <b class="term">Shared Bus (Shared Bus)</b> ในซีพียูจริง ที่อุปกรณ์หลายตัวต่อสายเส้นเดียวกัน แต่จะมีเพียงตัวที่ได้รับ “ใบอนุญาต” จากหน่วยควบคุมเท่านั้นที่ปล่อยค่าออกมาได้ ณ เวลาหนึ่ง ๆ</p>
+
+<h3 class="sub" id="s5-7">5.7 สัญญาณนาฬิกาและการ Reset</h3>
+<ul class="clean">
+ <li><b class="term">Clock</b> ต่อขนานเข้าทั้ง µPC และ CNT ทั้งสองจึงอัปเดต <b>พร้อมกัน</b> ที่ขอบขาขึ้นเดียวกัน โดยใช้สัญญาณควบคุมจากคำสั่ง <i>ปัจจุบัน</i> เป็นตัวกำหนดว่าจะเปลี่ยนค่าเป็นอะไร</li>
+ <li><b class="term">Reset</b> ต่อเข้า µPC เท่านั้น กดแล้วโปรแกรมกลับไปเริ่มที่ address 0 ส่วน CNT ถูกล้างโดยคำสั่งแรกอยู่แล้ว ผลลัพธ์สุดท้ายจึงเหมือนกับการ Reset ทั้งระบบ</li>
+</ul>
+<!-- ============ 6 โปรแกรมใน ROM ============ -->
+<h2 class="sec" id="s6"><span class="num">6</span> โปรแกรมที่บรรจุอยู่ใน ROM <span class="en">(The Microprogram)</span></h2>
+
+<h3 class="sub" id="s6-1">6.1 ตารางถอดรหัส Microprogram</h3>
+<p>ข้อมูลใน ROM ที่บันทึกไว้ในไฟล์วงจรคือ <b class="bin">a0 90 c0 80 01 15</b> (ที่อยู่ 6–15 เป็น 0 ทั้งหมด) เมื่อถอดรหัสตามรูปแบบ Bit ในหัวข้อ 4.3 จะได้โปรแกรมดังตารางที่ 4</p>
+
+<div class="tblwrap split">
+<table class="data split tight" id="t4">
+ <caption>ตารางที่ 4 การถอดรหัส Microprogram ที่บรรจุใน ROM</caption>
+ <thead>
+ <tr><th>Addr</th><th>ข้อมูล</th><th>D7</th><th>D6</th><th>D5</th><th>D4</th><th>TARGET</th><th>เทียบเท่าคำสั่ง</th><th style="width:38%">คำอธิบาย</th></tr>
+ </thead>
+ <tbody>
+ <tr><td class="bin">0</td><td class="bin">0xA0</td><td class="bin b7">1</td><td class="bin b6">0</td><td class="bin b5">1</td><td class="bin b4">0</td><td class="bin">0</td><td><b class="term">CLR CNT</b></td><td class="lead">D5 = 1 → เคลียร์ตัวนับเป็น 0 ; D7 = 1 → ไปคำสั่งถัดไป</td></tr>
+ <tr><td class="bin">1</td><td class="bin">0x90</td><td class="bin b7">1</td><td class="bin b6">0</td><td class="bin b5">0</td><td class="bin b4">1</td><td class="bin">0</td><td><b class="term">OUT</b></td><td class="lead">D4 = 1 → เปิด tri-state ส่งค่า CNT ออกจอ ; D7 = 1 → ไปคำสั่งถัดไป</td></tr>
+ <tr><td class="bin">2</td><td class="bin">0xC0</td><td class="bin b7">1</td><td class="bin b6">1</td><td class="bin b5">0</td><td class="bin b4">0</td><td class="bin">0</td><td><b class="term">INC CNT</b></td><td class="lead">D6 = 1 → CNT ← CNT + 1 ; D7 = 1 → ไปคำสั่งถัดไป</td></tr>
+ <tr><td class="bin">3</td><td class="bin">0x80</td><td class="bin b7">1</td><td class="bin b6">0</td><td class="bin b5">0</td><td class="bin b4">0</td><td class="bin">0</td><td><b class="term">NOP</b></td><td class="lead">ไม่ทำอะไร (หน่วง 1 คาบ) ; D7 = 1 → ไปคำสั่งถัดไป</td></tr>
+ <tr><td class="bin">4</td><td class="bin">0x01</td><td class="bin b7">0</td><td class="bin b6">0</td><td class="bin b5">0</td><td class="bin b4">0</td><td class="bin">1</td><td><b class="term">BNE 1</b></td><td class="lead">D7 = 0, D4 = 0 → กระโดดกลับไป addr 1 ถ้า CNT ≠ 10 ; ถ้า = 10 ให้ไปต่อ addr 5</td></tr>
+ <tr class="hl"><td class="bin">5</td><td class="bin">0x15</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">1</td><td class="bin">5</td><td><b class="term">HALT / OUT 5</b></td><td class="lead">D7 = 0, D4 = 1 → กระโดดหาตัวเองตลอด (หยุด) และเปิดจอค้างค่า A</td></tr>
+ </tbody>
+</table>
+</div>
+
+<h3 class="sub" id="s6-2">6.2 ผังการไหลของโปรแกรม</h3>
+
+<figure class="fig diagfig" id="f4">
+<div class="diagram">
+<svg viewBox="0 0 900 210" xmlns="http://www.w3.org/2000/svg" font-family="Sarabun,sans-serif">
+ <defs>
+ <marker id="a2" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+ <path d="M0,0 L8,3 L0,6 z" fill="#14496e"/>
+ </marker>
+ <marker id="a2r" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+ <path d="M0,0 L8,3 L0,6 z" fill="#b03030"/>
+ </marker>
+ </defs>
+ <g stroke="#14496e" stroke-width="1.6" fill="#fff">
+ <rect x="40" y="62" width="110" height="52" rx="8"/>
+ <rect x="190" y="62" width="110" height="52" rx="8"/>
+ <rect x="340" y="62" width="110" height="52" rx="8"/>
+ <rect x="490" y="62" width="110" height="52" rx="8"/>
+ <rect x="640" y="62" width="110" height="52" rx="8"/>
+ <rect x="790" y="62" width="90" height="52" rx="8"/>
+ </g>
+ <g fill="none" stroke="#14496e" stroke-width="1.5" marker-end="url(#a2)">
+ <path d="M150,88 L186,88"/>
+ <path d="M300,88 L336,88"/>
+ <path d="M450,88 L486,88"/>
+ <path d="M600,88 L636,88"/>
+ <path d="M750,88 L786,88"/>
+ <path d="M95,30 L95,58"/>
+ </g>
+ <!-- loop back -->
+ <path d="M695,114 L695,175 L245,175 L245,118" fill="none" stroke="#b03030" stroke-width="1.5" marker-end="url(#a2r)"/>
+ <!-- self loop halt -->
+ <path d="M855,62 L855,38 L800,38 L800,58" fill="none" stroke="#14496e" stroke-width="1.4" marker-end="url(#a2)"/>
+
+ <g text-anchor="middle" font-size="12" font-weight="700" fill="#14496e">
+ <text x="95" y="84">0: CLR</text>
+ <text x="245" y="84">1: OUT</text>
+ <text x="395" y="84">2: INC</text>
+ <text x="545" y="84">3: NOP</text>
+ <text x="695" y="84">4: BNE 1</text>
+ <text x="835" y="84">5: HALT</text>
+ </g>
+ <g text-anchor="middle" font-size="9.5" fill="#6b7785">
+ <text x="95" y="101">CNT ← 0</text>
+ <text x="245" y="101">แสดง CNT</text>
+ <text x="395" y="101">CNT ← CNT+1</text>
+ <text x="545" y="101">หน่วง 1 คาบ</text>
+ <text x="695" y="101">CNT = 10 ?</text>
+ <text x="835" y="101">ค้าง + แสดง A</text>
+ <text x="95" y="26">RESET</text>
+ <text x="836" y="32" font-size="9">วนหาตัวเอง</text>
+ </g>
+ <text x="470" y="190" text-anchor="middle" font-size="10" font-weight="700" fill="#b03030">CNT ≠ 10 → กระโดดกลับไปที่ address 1 (วน Loop)</text>
+ <text x="762" y="80" text-anchor="middle" font-size="9" font-weight="700" fill="#14496e">CNT = 10</text>
+</svg>
+</div>
+<figcaption><b>รูปที่ 4</b> — ผังการไหลของ Microprogram</figcaption>
+</figure>
+
+<div class="callout">
+ <p><b class="sl">อธิบายโปรแกรมเป็นภาษาคน :</b></p>
+ <p><b class="term">0</b> — ล้างตัวนับให้เป็น 0 ก่อน แล้วเดินหน้า</p>
+ <p><b class="term">1</b> — เปิดจอแสดงค่าตัวนับปัจจุบัน แล้วเดินหน้า</p>
+ <p><b class="term">2</b> — สั่งตัวนับ +1 แล้วเดินหน้า</p>
+ <p><b class="term">3</b> — คำสั่งว่าง (NOP) หน่วงเวลา 1 คาบ แล้วเดินหน้า</p>
+ <p><b class="term">4</b> — ตรวจว่าตัวนับถึง 10 หรือยัง : <b>ยังไม่ถึง</b> → กระโดดกลับไป address 1 (วนซ้ำ) / <b>ถึงแล้ว</b> → เดินหน้าไป address 5</p>
+ <p><b class="term">5</b> — กระโดดหาตัวเองไปเรื่อย ๆ (หยุดทำงาน) พร้อมเปิดจอค้างไว้ที่ค่า A</p>
+</div>
+
+<p>Loop 1 → 2 → 3 → 4 → 1 ยาว 4 คาบ และวนทั้งหมด 10 รอบ เมื่อรวมกับคำสั่งล้างค่าตอนต้น 1 คาบ จึงใช้เวลาทั้งสิ้น <b class="term">1 + (10 × 4) = 41 ขอบสัญญาณนาฬิกา</b> กว่าจะไปถึงคำสั่งหยุดที่ address 5</p>
+
+<!-- ============ 7 ตารางทีละคาบ ============ -->
+<h2 class="sec" id="s7"><span class="num">7</span> ตารางการทำงานทีละคาบสัญญาณนาฬิกา <span class="en">(Cycle-by-Cycle Trace)</span></h2>
+
+<p>ตารางที่ 5 ได้จากการจำลองวงจรตามผังที่ถอดออกมา โดยแสดงค่า <i>ก่อน</i> ขอบสัญญาณนาฬิกาของแต่ละคาบ</p>
+
+<div class="tblwrap split">
+<table class="data split tight" id="t5">
+ <caption>ตารางที่ 5 การทำงานทีละคาบสัญญาณนาฬิกา (42 คาบ)</caption>
+ <thead>
+ <tr><th>คาบ</th><th>µPC</th><th>คำสั่ง</th><th>D7</th><th>D6</th><th>D5</th><th>D4</th><th>TGT</th><th>CNT</th><th style="width:30%">การตัดสินใจ → µPC ถัดไป</th></tr>
+ </thead>
+ <tbody>
+ <tr><td class="bin">1</td><td class="bin">0</td><td class="bin">0xA0</td><td class="bin b7">1</td><td class="bin b6">0</td><td class="bin b5">1</td><td class="bin b4">0</td><td class="bin">0</td><td class="bin">0</td><td class="lead">PC+1 → 1</td></tr>
+ <tr><td class="bin">2</td><td class="bin">1</td><td class="bin">0x90</td><td class="bin b7">1</td><td class="bin b6">0</td><td class="bin b5">0</td><td class="bin b4">1</td><td class="bin">0</td><td class="bin">0</td><td class="lead">PC+1 → 2</td></tr>
+ <tr><td class="bin">3</td><td class="bin">2</td><td class="bin">0xC0</td><td class="bin b7">1</td><td class="bin b6">1</td><td class="bin b5">0</td><td class="bin b4">0</td><td class="bin">0</td><td class="bin">0</td><td class="lead">PC+1 → 3</td></tr>
+ <tr><td class="bin">4</td><td class="bin">3</td><td class="bin">0x80</td><td class="bin b7">1</td><td class="bin b6">0</td><td class="bin b5">0</td><td class="bin b4">0</td><td class="bin">0</td><td class="bin">1</td><td class="lead">PC+1 → 4</td></tr>
+ <tr class="hl"><td class="bin">5</td><td class="bin">4</td><td class="bin">0x01</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">1</td><td class="bin">1</td><td class="lead">BRANCH → 1</td></tr>
+ <tr><td class="bin">6</td><td class="bin">1</td><td class="bin">0x90</td><td class="bin b7">1</td><td class="bin b6">0</td><td class="bin b5">0</td><td class="bin b4">1</td><td class="bin">0</td><td class="bin">1</td><td class="lead">PC+1 → 2</td></tr>
+ <tr><td class="bin">7</td><td class="bin">2</td><td class="bin">0xC0</td><td class="bin b7">1</td><td class="bin b6">1</td><td class="bin b5">0</td><td class="bin b4">0</td><td class="bin">0</td><td class="bin">1</td><td class="lead">PC+1 → 3</td></tr>
+ <tr><td class="bin">8</td><td class="bin">3</td><td class="bin">0x80</td><td class="bin b7">1</td><td class="bin b6">0</td><td class="bin b5">0</td><td class="bin b4">0</td><td class="bin">0</td><td class="bin">2</td><td class="lead">PC+1 → 4</td></tr>
+ <tr class="hl"><td class="bin">9</td><td class="bin">4</td><td class="bin">0x01</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">1</td><td class="bin">2</td><td class="lead">BRANCH → 1</td></tr>
+ <tr><td colspan="10" style="font-style:italic; color:var(--muted); background:#fbfdff;">… วนซ้ำต่อเนื่อง (คาบ 10–36) : CNT เพิ่มขึ้นครั้งละ 1 ทุก ๆ 4 คาบ …</td></tr>
+ <tr class="hl"><td class="bin">37</td><td class="bin">4</td><td class="bin">0x01</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">1</td><td class="bin">9</td><td class="lead">BRANCH → 1</td></tr>
+ <tr><td class="bin">38</td><td class="bin">1</td><td class="bin">0x90</td><td class="bin b7">1</td><td class="bin b6">0</td><td class="bin b5">0</td><td class="bin b4">1</td><td class="bin">0</td><td class="bin">9</td><td class="lead">PC+1 → 2</td></tr>
+ <tr><td class="bin">39</td><td class="bin">2</td><td class="bin">0xC0</td><td class="bin b7">1</td><td class="bin b6">1</td><td class="bin b5">0</td><td class="bin b4">0</td><td class="bin">0</td><td class="bin">9</td><td class="lead">PC+1 → 3</td></tr>
+ <tr><td class="bin">40</td><td class="bin">3</td><td class="bin">0x80</td><td class="bin b7">1</td><td class="bin b6">0</td><td class="bin b5">0</td><td class="bin b4">0</td><td class="bin">0</td><td class="bin">10</td><td class="lead">PC+1 → 4</td></tr>
+ <tr><td class="bin">41</td><td class="bin">4</td><td class="bin">0x01</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">1</td><td class="bin">10</td><td class="lead"><b>PC+1 → 5</b> (นับครบ → ออกจาก Loop)</td></tr>
+ <tr class="hl"><td class="bin">42</td><td class="bin">5</td><td class="bin"><b>0x15</b></td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">1</td><td class="bin">5</td><td class="bin">10</td><td class="lead"><b>BRANCH → 5</b> (หยุดค้าง)</td></tr>
+ </tbody>
+</table>
+</div>
+
+<p>สังเกตแถวสีเน้น (address 4) — ทุกครั้งที่มาถึงจะตรวจค่า CNT ตราบใดที่ยังไม่ถึง 10 ก็จะกระโดดกลับไป address 1 จนกระทั่งคาบที่ 41 ค่า CNT = 10 พอดี เงื่อนไขเป็นเท็จ วงจรจึงปล่อยให้เดินหน้าไป address 5 และหยุดค้างอยู่ที่นั่น</p>
+
+<!-- ============ 8 วิธีทดลอง ============ -->
+<h2 class="sec" id="s8"><span class="num">8</span> วิธีทดลองใน Logisim-Evolution <span class="en">(Simulation Procedure)</span></h2>
+
+<ul class="clean">
+ <li>เปิดไฟล์ <b class="bin">Lab_1_ROM_as_Control_Store.circ</b> ในโปรแกรม Logisim-Evolution</li>
+ <li>เลือกเครื่องมือ <b class="term">Poke Tool</b> (รูปนิ้วมือ) สำหรับกดเปลี่ยนค่าที่ขาสัญญาณ</li>
+ <li>กดที่ขา <b class="term">Reset</b> ให้เป็น 1 แล้วกลับเป็น 0 → µPC กลับไปที่ address 0</li>
+ <li>กดที่ขา <b class="term">Clock</b> สลับ 0 ↔ 1 ทีละครั้ง เพื่อเดินทีละคาบ แล้วสังเกต
+ <ul class="clean" style="margin-top:5px">
+ <li>ขาออก 8 Bit = คำสั่งดิบที่ ROM คายออกมา</li>
+ <li>จอ Hex = ค่าตัวนับ (จะติดเฉพาะตอนอยู่ที่ address 1 และ 5)</li>
+ </ul>
+ </li>
+ <li>หากต้องการเดินอัตโนมัติ ใช้ Menu <b class="term">Simulate → Auto-Tick Enabled</b> (หรือกด Ctrl/Cmd + K) แต่ <b>ต้องกำหนดแหล่งสัญญาณนาฬิกาก่อน</b> ตามที่อธิบายไว้ในหัวข้อ 8.1 มิฉะนั้นวงจรจะไม่เดินเลย</li>
+ <li><b class="term">ลองแก้โปรแกรม</b> — Right-click ที่ ROM → <b>Edit Contents</b> แล้วเปลี่ยนค่า เช่น แก้ค่าคงที่ 0xA เป็นค่าอื่นเพื่อเปลี่ยนจุดหยุดของการนับ นี่คือประเด็นสำคัญที่สุดของแล็บนี้ : <b>เปลี่ยนพฤติกรรมของ Hardware ได้โดยไม่ต้องแก้สายไฟ</b></li>
+</ul>
+
+<figure class="fig" id="f5">
+ <img src="report_img/rom_main_circuit.png" alt="วงจรรวมบนพื้นที่ทำงานของ Logisim-Evolution">
+ <figcaption><b>รูปที่ 5</b> — วงจรรวมบนพื้นที่ทำงานของ Logisim-Evolution ในสถานะเริ่มต้น (µPC = 0)<br>
+ เห็น ROM 16 × 8 อยู่กึ่งกลางพร้อมข้อมูล a0 90 c0 80 01 15 โดยแถบไฮไลต์อยู่ที่ช่องแรก (a0)<br>
+ ขาออก 8 Bit แสดงค่า 10100000 (= 0xA0) และจอ 7-segment ยังดับอยู่เพราะคำสั่งนี้มี D4 = 0</figcaption>
+</figure>
+
+<p>ค่าบนขาออก 8 Bit ในรูปที่ 5 คือ <b class="bin">10100000</b> ซึ่งตรงกับ 0xA0 หรือคำสั่ง <b class="term">CLR CNT</b> ที่ address 0 ตามตารางที่ 4 ทุกประการ ส่วนจอแสดงผลยังไม่ติดเนื่องจาก Bit D4 ของคำสั่งนี้มีค่าเป็น 0 ทำให้ tri-state buffer อยู่ใน High Impedance state ตามที่อธิบายไว้ในหัวข้อ 5.6</p>
+
+<figure class="fig" id="f6">
+ <img src="report_img/rom_edit_contents.png" alt="หน้าต่างแก้ไขข้อมูลภายใน ROM">
+ <figcaption><b>รูปที่ 6</b> — หน้าต่าง Hex Editor สำหรับแก้ไขข้อมูลภายใน ROM<br>
+ แสดงข้อมูลครบทั้ง 16 Byte : a0 90 c0 80 01 15 แล้วตามด้วย 00 อีก 10 Byte (ที่อยู่ 6–15)</figcaption>
+</figure>
+
+<p>หน้าต่างนี้เปิดได้ 2 วิธี คือ Right-click ที่ ROM แล้วเลือก <b class="term">Edit Contents…</b> หรือ Click ที่ ROM หนึ่งครั้งแล้วกดช่อง <b class="term">Contents</b> ในแผง Properties ด้านซ้ายล่าง ข้อมูลที่ปรากฏยืนยันว่า Microprogram มีคำสั่งจริงเพียง 6 คำสั่ง ส่วนที่อยู่ 6–15 ว่างเปล่าเป็น 0x00 ทั้งหมด ตรงตามที่กล่าวไว้ในหัวข้อ 6.1 และข้อสังเกตในหัวข้อ 9</p>
+
+<h3 class="sub" id="s8-1">8.1 การกำหนดแหล่งสัญญาณนาฬิกาก่อนใช้ Auto-Tick</h3>
+<p>วงจรนี้ใช้ <b class="term">Pin ธรรมดา</b> เป็นขา Clock ไม่ได้ใช้อุปกรณ์ <b class="term">Clock component</b> ของ Logisim ดังนั้นเมื่อสั่ง <b>Simulate → Auto-Tick Enabled</b> โปรแกรมจะไม่สามารถหาสัญญาณนาฬิกาที่จะขับได้ และจะเปิดหน้าต่าง <b class="term">Clock Source Selection</b> ขึ้นมาถามก่อนตามรูปที่ 7</p>
+
+<figure class="fig" id="f7">
+ <img src="report_img/rom_clock_source.png" alt="หน้าต่าง Clock Source Selection" style="max-width:62%">
+ <figcaption><b>รูปที่ 7</b> — หน้าต่าง Clock Source Selection ที่ปรากฏขึ้นเมื่อเปิด Auto-Tick<br>
+ โปรแกรมแจ้งว่าไม่พบ Clock component ในวงจร และให้เลือกขาอินพุตมาทำหน้าที่แทน</figcaption>
+</figure>
+
+<div class="callout">
+ <p><b class="pb">จุดที่ต้องระวัง</b> — หากปิดหน้าต่างนี้ไปโดยไม่เลือกอะไร Auto-Tick จะไม่มีผลใด ๆ วงจรจะหยุดนิ่งสนิทและดูเหมือนวงจรเสีย ทั้งที่ความจริงคือยังไม่ได้กำหนดแหล่งสัญญาณนาฬิกา</p>
+ <p>รายการที่ให้เลือกมี 2 ขา คือ <b class="bin">Input(170,380)</b> ซึ่งเป็นขา <b>Reset</b> และ <b class="bin">Input(170,510)</b> ซึ่งเป็นขา <b>Clock</b> ต้องเลือก <b class="sl">Input(170,510)</b> แล้วกด OK เท่านั้น วงจรจึงจะเดินอัตโนมัติได้ถูกต้อง</p>
+</div>
+
+<figure class="fig" id="f8">
+ <img src="report_img/rom_simulation.png" alt="ผลการจำลองการทำงานเมื่อโปรแกรมหยุดที่ค่า A">
+ <figcaption><b>รูปที่ 8</b> — ผลการจำลองเมื่อโปรแกรมทำงานครบ 41 คาบและหยุดค้างที่คำสั่ง HALT<br>
+ µPC = 5, แถบไฮไลต์ใน ROM เลื่อนไปที่ค่า 15, ขาออก 8 Bit = 00010101 (= 0x15),<br>
+ ตัวนับ CNT = a และจอ 7-segment แสดงตัวอักษร <b>A</b> (= 10 ในฐานสิบ)</figcaption>
+</figure>
+
+<p>รูปที่ 8 คือหลักฐานยืนยันความถูกต้องของวงจรทั้งระบบ เมื่อเดินสัญญาณนาฬิกาจนครบ ค่าทุกจุดสังเกตตรงกับที่วิเคราะห์ไว้ในตารางที่ 5 แถวสุดท้าย (คาบที่ 42) ทุกค่า กล่าวคือ µPC หยุดอยู่ที่ 5 คำสั่งที่ถูกอ่านออกมาคือ 0x15 ตัวนับค้างที่ 10 (แสดงเป็น a ในฐานสิบหก) และเนื่องจากคำสั่งนี้มี Bit D4 = 1 จอแสดงผลจึงติดค้างแสดงค่า A ส่วน Bit D7 = 0 พร้อม TARGET = 5 ทำให้วงจรกระโดดกลับมาที่ address 5 ซ้ำไปเรื่อย ๆ อันเป็นกลไกการ “หยุด” ของโปรแกรมตามที่อธิบายไว้ในหัวข้อ 5.1</p>
+
+<!-- ============ 9 ข้อสังเกต ============ -->
+<h2 class="sec" id="s9"><span class="num">9</span> ข้อสังเกตและจุดที่ควรระวัง <span class="en">(Observations and Caveats)</span></h2>
+
+<ul class="clean">
+ <li><b class="term">D4 ทำสองหน้าที่ใน Bit เดียว</b> — เป็นทั้ง “เปิดจอ” และ “กระโดดไม่มีเงื่อนไข” ซึ่งประหยัด Bit ดี แต่ทำให้ทั้งสองความสามารถแยกจากกันไม่ได้ เช่น จะสั่ง “กระโดดโดยไม่เปิดจอ” ไม่ได้เลย (ที่ address 1 Bit นี้เปิดจอได้โดยไม่กระโดด เพราะ D7 = 1 ไปกดทับไว้)</li>
+ <li><b class="term">คำสั่ง NOP ที่ address 3 ไม่จำเป็นต่อการทำงาน</b> — ตัดออกได้ Loop จะเหลือ 3 คาบและทำงานเร็วขึ้น น่าจะใส่ไว้เพื่อให้เห็นการไล่ที่อยู่ชัดเจนขณะสาธิต</li>
+ <li><b class="term">ตัวนับไม่ได้ต่อกับปุ่ม Reset</b> — ถ้ากด Reset ตอนที่โปรแกรมอยู่กลาง Loop ตัวนับจะยังคงค่าเดิมไว้ชั่วขณะ แต่เนื่องจาก µPC กลับไป address 0 ซึ่งสั่งล้างตัวนับพอดี ผลสุดท้ายจึงยังถูกต้อง</li>
+ <li><b class="term">Comparator ใช้เพียง A = B</b> — อีกสองขา (A &gt; B, A &lt; B) ถูกปล่อยลอยไว้ ถ้าโปรแกรมเผลอนับข้าม 10 (เช่น แก้ ROM ให้ +2) เงื่อนไข “เท่ากับ” จะไม่เป็นจริง และวงจรจะวน Loop ไม่รู้จบ การใช้ขา A ≥ B จะปลอดภัยกว่า</li>
+ <li><b class="term">วงจรไม่มี Clock component</b> — ขา Clock เป็นเพียง Pin อินพุตธรรมดา วงจรจึงต้องอาศัยการกดสลับค่าด้วยมือ หรือกำหนดให้ Pin นี้เป็นแหล่งสัญญาณนาฬิกาผ่านหน้าต่าง Clock Source Selection ก่อนใช้ Auto-Tick (หัวข้อ 8.1) หากออกแบบใหม่ การวาง Clock component ลงในวงจรโดยตรงจะสะดวกกว่าและตัดขั้นตอนนี้ออกไปได้</li>
+ <li><b class="term">ROM ที่อยู่ 6–15 ว่าง (เป็น 0x00)</b> — ถ้า µPC หลุดไปที่นั่น จะได้ D7 = 0, D4 = 0, TARGET = 0 วงจรจะกระโดดกลับไป address 0 เองโดยอัตโนมัติ ถือเป็นพฤติกรรมกู้คืนที่ปลอดภัยพอดี</li>
+</ul>
+
+<!-- ============ 10 สรุปผล ============ -->
+<h2 class="sec" id="s10"><span class="num">10</span> สรุปผล <span class="en">(Conclusion)</span></h2>
+
+<p>การทดลองนี้แสดงให้เห็นการสร้าง <b class="term">หน่วยควบคุมแบบ Microprogram (Microprogrammed Control Unit)</b> ขนาดเล็กที่ใช้ ROM ขนาด 16 × 8 Bit ทำหน้าที่เป็นคลังคำสั่งควบคุม แทนการต่อวงจรลอจิกควบคุมด้วย Gate แบบตายตัว วงจรประกอบด้วย Microsequencer (MUX + µPC + Adder) ที่ทำหน้าที่ลำดับที่อยู่คำสั่ง ROM ที่ทำหน้าที่คายสัญญาณควบคุม Splitter ที่ทำหน้าที่ถอดรหัส และวงจรตัดสินใจกระโดดที่สร้างจาก Gate เพียง 4 ตัว ตามสมการ SEL = NOT(D7) AND (D4 OR NOT(EQ))</p>
+
+<p>ผลการจำลองการทำงานยืนยันว่าวงจรทำงานได้ถูกต้องตามที่ออกแบบไว้ กล่าวคือ โปรแกรมในหน่วยความจำสามารถสั่งให้ตัวนับล้างค่า แสดงผล เพิ่มค่า และวน Loop ตรวจสอบเงื่อนไขได้ครบถ้วน โดยไล่แสดงตัวเลข 0 ถึง 9 บนจอแสดงผล 7-segment แล้วหยุดค้างที่ค่า A (เท่ากับ 10 ในฐานสิบ) เมื่อเงื่อนไขการเปรียบเทียบเป็นจริง รวมใช้เวลาทั้งสิ้น 41 ขอบสัญญาณนาฬิกาตรงตามที่คำนวณไว้จากโครงสร้าง Loop 1 + (10 × 4)</p>
+
+<p>ข้อสรุปสำคัญที่สุดของการทดลองคือ <b class="term">การเปลี่ยนพฤติกรรมของวงจร Hardware สามารถทำได้โดยแก้ไขเพียงข้อมูลใน ROM ไม่จำเป็นต้องรื้อหรือต่อสายไฟใหม่แม้แต่เส้นเดียว</b> ซึ่งเป็นข้อได้เปรียบหลักของหน่วยควบคุมแบบ Microprogram เหนือแบบ Hardwired Control และเป็นแนวคิดพื้นฐานที่ใช้จริงในการออกแบบหน่วยประมวลผลสมัยใหม่ นอกจากนี้การทดลองยังทำให้เข้าใจการใช้งาน Tri-state Buffer ในการจำลอง Shared Bus และเห็นความสำคัญของการออกแบบเงื่อนไขการเปรียบเทียบให้ครอบคลุม เพื่อป้องกันการวน Loop ไม่รู้จบดังที่กล่าวไว้ในข้อสังเกต</p>
+
+<!-- ============ 11 อ้างอิง ============ -->
+<h2 class="sec" id="s11"><span class="num">11</span> เอกสารอ้างอิง <span class="en">(References)</span></h2>
+
+<ol class="refs">
+ <li>Mano, M. M., &amp; Ciletti, M. D. (2018). <i>Digital Design: With an Introduction to the Verilog HDL, VHDL, and SystemVerilog</i> (6th ed.). Pearson Education.</li>
+ <li>Patterson, D. A., &amp; Hennessy, J. L. (2020). <i>Computer Organization and Design: The Hardware/Software Interface</i> (6th ed.). Morgan Kaufmann.</li>
+ <li>Wilkes, M. V. (1951). The Best Way to Design an Automatic Calculating Machine. <i>Report of the Manchester University Computer Inaugural Conference</i>, 16–18. (ต้นกำเนิดแนวคิด Microprogrammed Control)</li>
+ <li>Logisim-evolution Developers. (2024). <i>Logisim-evolution: Digital logic designer and simulator</i> (Version 4.1.0) [Computer software]. สืบค้นจาก https://github.com/logisim-evolution/logisim-evolution</li>
+ <li>Tanenbaum, A. S., &amp; Austin, T. (2013). <i>Structured Computer Organization</i> (6th ed.). Pearson Education.</li>
+</ol>
+
+</body>
+</html>

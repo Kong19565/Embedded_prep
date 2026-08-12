@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>รายงาน วงจรนับเลข 1 ถึง 10 (Counting 1 to 10)</title>
+<style>
+  :root{
+    --ink:#1f2733;
+    --primary:#14496e;
+    --primary-2:#2b7bb9;
+    --accent:#0e9488;
+    --soft:#eef4f9;
+    --soft-2:#e5f3f1;
+    --line:#d5dee6;
+    --muted:#6b7785;
+    --amber:#b7791f;
+    --green:#1f7a4d;
+  }
+  @page{
+    size:A4;
+    margin:20mm 18mm 18mm 18mm;
+    @bottom-center{
+      content:counter(page);
+      font-family:'Sarabun',sans-serif; font-size:10pt; color:#8a94a0;
+    }
+  }
+  @page:first{ margin:0; @bottom-center{ content:normal; } }
+
+  *{ box-sizing:border-box; }
+  body{
+    font-family:'Sarabun',sans-serif; font-size:15.5px; line-height:1.75;
+    color:var(--ink); margin:0; text-align:justify;
+  }
+  p{ margin:0 0 9px 0; }
+
+  /* ---------- COVER ---------- */
+  .cover{ height:297mm; page-break-after:always; display:flex; flex-direction:column; text-align:center; }
+  .cover .topbar{ height:14mm; background:linear-gradient(90deg,var(--primary),var(--primary-2) 60%,var(--accent)); }
+  .cover .botbar{ height:8mm; background:linear-gradient(90deg,var(--accent),var(--primary-2) 40%,var(--primary)); margin-top:auto; }
+  .cover .inner{ padding:0 24mm; flex:1; display:flex; flex-direction:column; justify-content:center; }
+  .cover .kicker{ align-self:center; letter-spacing:2px; font-size:13px; color:var(--primary-2); font-weight:700;
+    border:1.5px solid var(--primary-2); border-radius:20px; padding:3px 16px; margin-bottom:16px; }
+  .cover h1{ font-size:33px; line-height:1.28; font-weight:800; color:var(--primary); margin:0 0 6px; }
+  .cover .en{ font-size:23px; font-weight:700; color:var(--primary-2); margin:0 0 4px; }
+  .cover .tool{ font-size:19px; font-weight:700; color:var(--ink); margin:0; }
+  .cover .subtitle{ font-size:14.5px; color:var(--muted); margin:12px auto 0; max-width:150mm; line-height:1.6; }
+  .cover .divider{ width:60mm; height:3px; background:var(--accent); border-radius:2px; margin:26px auto; }
+  .cover .card{ border:1px solid var(--line); border-top:4px solid var(--primary-2); border-radius:12px;
+    background:var(--soft); padding:18px 26px; max-width:150mm; margin:0 auto; }
+  .cover .card h3{ margin:0 0 12px; font-size:16px; color:var(--primary); letter-spacing:.5px; }
+  table.members{ width:100%; border-collapse:collapse; }
+  table.members td{ padding:5px 8px; font-size:15px; text-align:left; vertical-align:middle; }
+  table.members td.no{ width:26px; color:var(--primary-2); font-weight:700; text-align:center; }
+  table.members td.sid{ width:38mm; text-align:right; color:var(--muted); font-variant-numeric:tabular-nums; }
+  .cover .submit{ margin-top:22px; font-size:15px; line-height:2.1; }
+  .cover .submit .lbl{ font-weight:700; color:var(--primary); }
+  .dots{ color:var(--muted); letter-spacing:1px; }
+
+  /* ---------- SECTIONS ---------- */
+  h2.sec{ font-size:19px; font-weight:800; color:var(--primary); margin:22px 0 12px; padding-bottom:7px;
+    border-bottom:2px solid var(--line); break-after:avoid; display:flex; align-items:center; gap:11px; }
+  h2.sec .num{ flex:0 0 auto; width:29px; height:29px; background:var(--primary); color:#fff; border-radius:8px;
+    font-size:15px; display:inline-flex; align-items:center; justify-content:center; font-weight:700; }
+  h2.sec .en{ color:var(--primary-2); font-weight:700; font-size:16px; }
+  h3.sub{ font-size:16px; font-weight:700; color:var(--accent); margin:15px 0 5px; break-after:avoid; }
+  ul.clean{ margin:4px 0 10px; padding-left:0; list-style:none; }
+  ul.clean li{ position:relative; padding-left:22px; margin-bottom:7px; text-align:left; }
+  ul.clean li::before{ content:""; position:absolute; left:4px; top:11px; width:7px; height:7px;
+    border-radius:50%; background:var(--primary-2); }
+  b.term{ color:var(--primary); }
+
+  /* ---------- TABLES ---------- */
+  table.data{ width:100%; border-collapse:collapse; margin:8px 0 6px; font-size:14.5px; break-inside:avoid; page-break-inside:avoid; }
+  table.data tr{ break-inside:avoid; page-break-inside:avoid; }
+  table.data caption{ caption-side:top; text-align:center; font-size:14px; color:var(--muted); margin-bottom:6px; font-weight:600; }
+  table.data th{ background:var(--primary); color:#fff; font-weight:700; padding:8px 10px; text-align:center; border:1px solid #0f3a58; }
+  table.data td{ padding:7px 10px; border:1px solid var(--line); vertical-align:middle; text-align:center; }
+  table.data tbody tr:nth-child(even){ background:var(--soft); }
+  table.data .lead{ text-align:left; }
+  .bin{ font-family:'Menlo','DejaVu Sans Mono',monospace; letter-spacing:2px; font-size:13.5px; }
+  .hl td{ background:var(--soft-2) !important; font-weight:700; }
+  .badge-reset{ color:var(--accent); font-weight:700; }
+
+  /* ---------- FIGURES ---------- */
+  figure.fig{ margin:14px 0 16px; break-inside:avoid; text-align:center; }
+  figure.fig img{ max-width:100%; border:1px solid var(--line); border-radius:10px; }
+  figcaption{ text-align:center; font-size:13px; color:var(--muted); margin-top:8px; }
+  figcaption b{ color:var(--primary); }
+  .diagram{ border:1px solid var(--line); border-radius:12px; background:#fbfdff; padding:14px 10px 6px; break-inside:avoid; }
+  .diagram svg{ width:100%; height:auto; display:block; }
+
+  /* ---------- CALLOUT / NOTE ---------- */
+  .callout{ border:1px solid var(--line); border-left:5px solid var(--primary-2); border-radius:8px;
+    background:#fbfdff; padding:11px 15px; margin:9px 0; break-inside:avoid; }
+  .callout .pb{ font-weight:700; color:var(--amber); }
+  .callout .sl{ font-weight:700; color:var(--green); }
+  .callout p{ margin:3px 0 0; }
+  .note{ background:var(--soft-2); border-radius:8px; padding:10px 15px; margin:10px 0; font-size:14.5px; break-inside:avoid; }
+</style>
+</head>
+<body>
+
+<!-- ============ COVER ============ -->
+<div class="cover">
+  <div class="topbar"></div>
+  <div class="inner">
+    <span class="kicker">รายงานการทดลอง</span>
+    <h1>วงจรนับเลข 1 ถึง 10</h1>
+    <p class="en">(Counting 1 to 10)</p>
+    <p class="tool">ด้วยโปรแกรม Logisim-Evolution</p>
+    <p class="subtitle">ระบบนับเลขฐานสอง (Binary) อัตโนมัติ ด้วยวงจร Counter, สัญญาณ Clock
+      และการตรวจจับค่าด้วย Logic Gate</p>
+    <div class="divider"></div>
+    <div class="card">
+      <h3>จัดทำโดย</h3>
+      <table class="members">
+        <tr><td class="no">1</td><td>นายดรัณภพ&nbsp;&nbsp;พิทักษ์กิจไพศาล</td><td class="sid">6710301007</td></tr>
+        <tr><td class="no">2</td><td>นายอภิสักก์&nbsp;&nbsp;คงภักดี</td><td class="sid">6710301009</td></tr>
+        <tr><td class="no">3</td><td>นายธนัท&nbsp;&nbsp;จงธีรธนโชติ</td><td class="sid">6710301032</td></tr>
+      </table>
+    </div>
+    <div class="submit">
+      <div><span class="lbl">เสนอ</span>&nbsp;&nbsp;อาจารย์คทาเทพ&nbsp;&nbsp;สวัสดิพิศาล</div>
+      <div>รายวิชา Embedded System&nbsp;&nbsp;ภาคการศึกษาที่ 1&nbsp;&nbsp;ปีการศึกษา 2569</div>
+    </div>
+  </div>
+  <div class="botbar"></div>
+</div>
+
+<!-- ============ 1. INTRODUCTION ============ -->
+<section>
+  <h2 class="sec"><span class="num">1</span>บทนำ <span class="en">(Introduction)</span></h2>
+  <p>รายงานฉบับนี้จัดทำขึ้นเพื่อนำเสนอการออกแบบและสร้างวงจรนับเลข (Counter) ที่สามารถนับเลขจาก 1 ถึง 10
+    โดยแสดงผลตาม Clock โดยใช้โปรแกรมจำลองวงจรดิจิทัลชื่อ Logisim-Evolution ซึ่งเป็นโปรแกรมฟรีที่นิยมใช้ในการเรียน
+    การสอนวิชาวงจรดิจิทัล เพราะสามารถวางอุปกรณ์ ลากสายไฟ และดูการทำงานของวงจรได้ทันทีบนหน้าจอ
+    โดยไม่ต้องต่อวงจรจริง</p>
+  <p>วงจรนับเลข (Counter) เป็นวงจรพื้นฐานที่สำคัญมากในระบบดิจิทัล พบได้ในอุปกรณ์รอบตัวเรา เช่น นาฬิกาดิจิทัล
+    เครื่องนับจำนวนคนเข้าร้าน หรือไฟจราจรที่นับเวลาถอยหลัง หลักการทำงานคือ วงจรจะรับสัญญาณ Clock ซึ่งเป็น
+    สัญญาณไฟฟ้าที่สลับค่า 0 กับ 1 เป็นจังหวะสม่ำเสมอ (คล้ายเสียงเข็มวินาทีของนาฬิกา) แล้วนับเพิ่มค่าขึ้นทีละ 1
+    ทุกครั้งที่ Clock มาหนึ่งจังหวะ ค่าที่นับได้จะถูกเก็บและแสดงผลในรูปเลขฐานสอง (Binary)</p>
+  <p>ในงานชิ้นนี้ กลุ่มของเราออกแบบวงจรให้นับตั้งแต่ 1 ไปจนถึง 10 และเมื่อนับถึง 10 แล้ว วงจรจะค้างที่ค่า 10
+    เพื่อคอยให้ผู้ใช้กดปุ่ม Reset เพื่อเริ่มนับรอบใหม่ โดยรายงานจะอธิบายแนวคิดการออกแบบ ขั้นตอนการสร้างวงจร
+    ผลการทดสอบ รวมถึงปัญหาที่พบระหว่างทำงานและวิธีแก้ไข</p>
+</section>
+
+<!-- ============ 2. OBJECTIVES ============ -->
+<section>
+  <h2 class="sec"><span class="num">2</span>วัตถุประสงค์ <span class="en">(Objectives)</span></h2>
+  <ul class="clean">
+    <li>เพื่อออกแบบและสร้างวงจรนับเลข (Counter) จาก 1 ถึง 10 ด้วยโปรแกรม Logisim-Evolution</li>
+    <li>เพื่อศึกษาการทำงานของสัญญาณ Clock ที่ใช้ควบคุมจังหวะการนับของวงจร</li>
+    <li>เพื่อศึกษาการเก็บค่าและการแสดงผลตัวเลขในรูปแบบเลขฐานสอง (Binary)</li>
+    <li>เพื่อศึกษาการออกแบบวงจรแบบแยกส่วนควบคุม (Control Unit) และส่วนประมวลผลข้อมูล (Datapath)</li>
+    <li>เพื่อฝึกการทดสอบวงจร ตรวจสอบความถูกต้อง และแก้ไขปัญหาที่เกิดขึ้นจริง</li>
+  </ul>
+</section>
+
+<!-- ============ 3. TOOLS ============ -->
+<section>
+  <h2 class="sec"><span class="num">3</span>เครื่องมือที่ใช้ <span class="en">(Tools Used)</span></h2>
+  <h3 class="sub">3.1 โปรแกรมที่ใช้</h3>
+  <p>Logisim-Evolution — โปรแกรมจำลองวงจรดิจิทัลที่ใช้ออกแบบ ต่อวงจร และทดสอบการทำงานทั้งหมดในงานชิ้นนี้</p>
+  <h3 class="sub">3.2 อุปกรณ์ (Component) หลักที่ใช้ภายในวงจร</h3>
+  <table class="data">
+    <caption>ตารางที่ 1 อุปกรณ์หลักที่ใช้ในวงจรและหน้าที่ของแต่ละตัว</caption>
+    <thead><tr><th style="width:34%">อุปกรณ์</th><th>หน้าที่ในวงจร</th></tr></thead>
+    <tbody>
+      <tr><td class="lead">Clock</td><td class="lead">สร้างสัญญาณจังหวะ 0/1 สลับกันสม่ำเสมอ เพื่อกำหนดจังหวะการนับ</td></tr>
+      <tr><td class="lead">Register (สร้างจาก Flip-Flop)</td><td class="lead">เก็บค่าตัวเลขปัจจุบันขนาด 4 บิต ค่าจะเปลี่ยนเมื่อ Clock มาเท่านั้น</td></tr>
+      <tr><td class="lead">Adder (วงจรบวก)</td><td class="lead">บวกค่าคงที่ 0001 เข้ากับค่าเดิม เพื่อให้ได้ค่าถัดไป (นับเพิ่มทีละ 1)</td></tr>
+      <tr><td class="lead">NOT Gate และ NAND Gate</td><td class="lead">ใช้ตรวจจับว่าค่าที่นับถึงเลข 10 (Binary = 1010) แล้วหรือยัง</td></tr>
+      <tr><td class="lead">Input Pin (Reset)</td><td class="lead">ปุ่มสั่งให้วงจรกลับไปเริ่มนับใหม่ด้วยมือ</td></tr>
+      <tr><td class="lead">Output Pin / Probe</td><td class="lead">แสดงค่าที่นับได้ในรูปเลขฐานสอง (Binary) 4 บิต</td></tr>
+      <tr><td class="lead">Oscilloscope (Chronogram)</td><td class="lead">แสดงกราฟสัญญาณแต่ละเส้นเทียบกับเวลา เพื่อดูจังหวะการนับ</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ 4. DESIGN CONCEPT ============ -->
+<section>
+  <h2 class="sec"><span class="num">4</span>แนวคิดการออกแบบวงจร <span class="en">(Circuit Design Concept)</span></h2>
+  <h3 class="sub">4.1 ทำไมต้องใช้ 4 บิต</h3>
+  <p>การจะนับถึงเลข 10 ต้องใช้เลขฐานสอง (Binary) อย่างน้อย 4 บิต เพราะ 3 บิตเก็บค่าได้มากที่สุดแค่ 7 (111)
+    แต่ 4 บิตเก็บได้ถึง 15 (1111) ซึ่งเพียงพอสำหรับเลข 10 (1010) ดังนั้นวงจรทั้งหมดจึงออกแบบบนข้อมูลขนาด 4 บิต</p>
+
+  <h3 class="sub">4.2 โครงสร้างหลักของวงจร</h3>
+  <p>กลุ่มของเราออกแบบโดยแบ่งวงจรออกเป็น 2 ส่วนใหญ่ ตามแนวคิดเดียวกับการออกแบบหน่วยประมวลผล คือ</p>
+  <ul class="clean">
+    <li><b class="term">Datapath (ส่วนข้อมูล)</b> — ทำหน้าที่เก็บค่าและคำนวณค่าถัดไป ภายในมี Register ขนาด 4 บิต
+      ที่สร้างจาก Flip-Flop ไว้เก็บค่าปัจจุบัน และมีวงจรบวก (Adder) ที่นำค่าปัจจุบันมาบวกกับค่าคงที่ 0001
+      แล้วส่งผลลัพธ์วนกลับไปที่ขา D ของ Register ทำให้ทุกครั้งที่ Clock มาขอบขาขึ้น ค่าใน Register
+      จะเพิ่มขึ้นทีละ 1 โดยอัตโนมัติ</li>
+    <li><b class="term">Control Unit (ส่วนควบคุม)</b> — ทำหน้าที่เป็น “สมอง” คอยตัดสินใจว่าเมื่อไรจะให้ Datapath
+      นับต่อ และเมื่อไรจะสั่งเริ่มรอบใหม่ โดยรับสัญญาณแจ้งเตือนว่านับถึง 10 แล้ว และรับสัญญาณ Reset จากผู้ใช้
+      แล้วส่งคำสั่งควบคุม (iLoad และ Clear) กลับไปยัง Datapath</li>
+  </ul>
+  <div class="note">เปรียบเทียบง่าย ๆ : <b>Datapath</b> เหมือน “มือ” ที่คอยขยับลูกคิดนับเลข ส่วน <b>Control Unit</b>
+    เหมือน “สมอง” ที่คอยสั่งว่าเมื่อไรให้นับต่อ เมื่อไรให้ล้างกระดานเริ่มใหม่</div>
+
+  <figure class="fig">
+    <div class="diagram">
+      <svg viewBox="0 0 764 300" xmlns="http://www.w3.org/2000/svg" font-family="Sarabun, sans-serif">
+        <!-- input pins -->
+        <rect x="16" y="64" width="92" height="36" rx="8" fill="#eef4f9" stroke="#2b7bb9" stroke-width="1.5"/>
+        <text x="62" y="87" text-anchor="middle" font-size="15" fill="#14496e" font-weight="700">Clock</text>
+        <rect x="16" y="150" width="92" height="36" rx="8" fill="#eef4f9" stroke="#2b7bb9" stroke-width="1.5"/>
+        <text x="62" y="173" text-anchor="middle" font-size="15" fill="#14496e" font-weight="700">Reset</text>
+        <!-- control unit -->
+        <rect x="170" y="52" width="150" height="134" rx="12" fill="#14496e"/>
+        <text x="245" y="110" text-anchor="middle" font-size="16" fill="#ffffff" font-weight="700">Control Unit</text>
+        <text x="245" y="133" text-anchor="middle" font-size="12.5" fill="#bcd4e8">ส่วนควบคุม</text>
+        <!-- datapath -->
+        <rect x="402" y="52" width="178" height="134" rx="12" fill="#14496e"/>
+        <text x="491" y="98" text-anchor="middle" font-size="16" fill="#ffffff" font-weight="700">Datapath</text>
+        <text x="491" y="122" text-anchor="middle" font-size="12.5" fill="#bcd4e8">Register 4 บิต (Flip-Flop)</text>
+        <text x="491" y="142" text-anchor="middle" font-size="12.5" fill="#bcd4e8">+ Adder เพิ่มค่าทีละ 1</text>
+        <!-- detector -->
+        <rect x="636" y="66" width="112" height="104" rx="12" fill="#0e9488"/>
+        <text x="692" y="110" text-anchor="middle" font-size="14" fill="#ffffff" font-weight="700">ตรวจจับ 1010</text>
+        <text x="692" y="131" text-anchor="middle" font-size="11.5" fill="#d5f0ec">(NOT + NAND)</text>
+        <!-- output -->
+        <rect x="402" y="230" width="178" height="48" rx="10" fill="#e5f3f1" stroke="#0e9488" stroke-width="1.5"/>
+        <text x="491" y="251" text-anchor="middle" font-size="13.5" fill="#0e6b62" font-weight="700">Output (Binary)</text>
+        <text x="491" y="270" text-anchor="middle" font-size="13" fill="#0e6b62">Q3 Q2 Q1 Q0</text>
+
+        <!-- arrows -->
+        <g stroke="#5a6b7a" stroke-width="2" fill="none">
+          <line x1="108" y1="82" x2="166" y2="87"/>
+          <line x1="108" y1="168" x2="166" y2="155"/>
+          <line x1="320" y1="116" x2="398" y2="116"/>
+          <line x1="580" y1="112" x2="632" y2="112"/>
+          <line x1="491" y1="186" x2="491" y2="228"/>
+        </g>
+        <g fill="#5a6b7a">
+          <polygon points="166,87 157,83 157,92"/>
+          <polygon points="166,155 157,151 158,160"/>
+          <polygon points="398,116 389,112 389,120"/>
+          <polygon points="632,112 623,108 623,116"/>
+          <polygon points="491,228 486,219 496,219"/>
+        </g>
+        <!-- feedback loop (teal) -->
+        <polyline points="692,66 692,26 245,26 245,50" fill="none" stroke="#0e9488" stroke-width="2.2"/>
+        <polygon points="245,50 240,41 250,41" fill="#0e9488"/>
+
+        <!-- labels -->
+        <text x="359" y="109" text-anchor="middle" font-size="11.5" fill="#4a5a68">iLoad / Clear</text>
+        <text x="606" y="105" text-anchor="middle" font-size="12" fill="#4a5a68">Q</text>
+        <text x="504" y="212" font-size="11.5" fill="#4a5a68">Q (4 บิต)</text>
+        <text x="468" y="19" text-anchor="middle" font-size="12" fill="#0e7d73" font-weight="700">ตรวจพบค่า = 10  →  inp</text>
+      </svg>
+    </div>
+    <figcaption><b>รูปที่ 1</b> โครงสร้างการทำงานของวงจร — Control Unit สั่งงาน Datapath และวนรับสัญญาณจากตัวตรวจจับเลข 10</figcaption>
+  </figure>
+  <div class="note"><b>หมายเหตุ :</b> สัญญาณ Clock ต่อเข้าทั้ง Control Unit และ Datapath พร้อมกัน เพื่อให้ทั้งสองส่วน
+    ทำงานสอดคล้องกันในทุกจังหวะ (แบบ Synchronous)</div>
+
+  <h3 class="sub">4.3 การตรวจจับเลข 10</h3>
+  <p>เลข 10 ในฐานสองคือ 1010 (บิต 3 = 1, บิต 2 = 0, บิต 1 = 1, บิต 0 = 0) กลุ่มของเราจึงนำเอาต์พุต Q ทั้ง 4 บิต
+    ของ Register มาเข้าวงจรตรวจสอบ โดยบิตที่ต้องเป็น 0 (บิต 0 และบิต 2) จะผ่าน NOT Gate กลับค่าให้เป็น 1 ก่อน
+    แล้วนำทั้ง 4 สัญญาณเข้า NAND Gate ผลคือเอาต์พุตของ NAND จะเปลี่ยนค่าก็ต่อเมื่อค่าที่นับเป็น 1010 พอดีเท่านั้น
+    สัญญาณนี้จะถูกส่งกลับไปบอก Control Unit ว่า “ครบ 10 แล้ว”</p>
+  <figure class="fig">
+    <img src="report_img/detector.png" style="max-width:56%" alt="วงจรตรวจจับเลข 10">
+    <figcaption><b>รูปที่ 2</b> วงจรตรวจจับค่า 10 — ใช้ NOT Gate ที่บิต 0 และบิต 2 ก่อนเข้า NAND Gate</figcaption>
+  </figure>
+
+  <h3 class="sub">4.4 การวนกลับไปเริ่มใหม่</h3>
+  <p>เมื่อผู้ใช้กดปุ่ม Reset หลังจากที่วงจรนับถึง 10 วงจรจะส่งสัญญาณควบคุมไปยัง Register
+    ของ Datapath เพื่อล้างค่าเดิมทิ้งและกลับไปตั้งต้นใหม่ จากนั้นการนับรอบถัดไปจะเริ่มที่ 1 แล้วไล่ขึ้นไปจนถึง 10
+    โดยจะค้างที่ค่า 10 เพื่อคอยการ Reset</p>
+</section>
+
+<!-- ============ 5. STEPS ============ -->
+<section>
+  <h2 class="sec"><span class="num">5</span>ขั้นตอนการสร้างวงจร <span class="en">(Implementation)</span></h2>
+  <h3 class="sub">5.1 สร้างไฟล์และวงจรย่อย</h3>
+  <p>เปิดโปรแกรม Logisim-Evolution สร้างไฟล์งานใหม่ แล้วสร้างวงจรย่อย (Subcircuit) ขึ้น 2 วงจร คือ Datapath
+    สำหรับส่วนข้อมูล และ Control Unit สำหรับส่วนควบคุม การแยกเป็นวงจรย่อยช่วยให้วงจรหลักดูสะอาด อ่านง่าย
+    และแก้ไขทีละส่วนได้สะดวก</p>
+  <h3 class="sub">5.2 สร้าง Datapath</h3>
+  <p>ภายใน Datapath วาง Register ขนาด 4 บิต (สร้างจาก Flip-Flop) กำหนดขาเข้า D, ILoad, Clock, Clear
+    และขาออก Q จากนั้นทดสอบเบื้องต้นว่า Register เก็บค่าและเคลียร์ค่าได้ถูกต้อง</p>
+  <figure class="fig">
+    <img src="report_img/datapath_internal.png" style="max-width:72%" alt="วงจรภายใน Datapath">
+    <figcaption><b>รูปที่ 3</b> วงจรภายในส่วน Datapath — Register 4 บิต รับขา D, ILoad, Clock, Clear และให้เอาต์พุต Q</figcaption>
+  </figure>
+  <h3 class="sub">5.3 ต่อวงจรบวกเพิ่มค่าทีละ 1</h3>
+  <p>วาง Adder ที่วงจรหลัก ต่อค่าคงที่ 0001 เข้าขาหนึ่งของ Adder และต่อเอาต์พุต Q ของ Register เข้าอีกขาหนึ่ง
+    แล้วนำผลบวกวนกลับไปเข้าขา D ของ Register เท่านี้ทุกจังหวะ Clock ค่าใน Register ก็จะเพิ่มขึ้นทีละ 1</p>
+  <h3 class="sub">5.4 สร้างวงจรตรวจจับเลข 10</h3>
+  <p>นำสาย Q ทั้ง 4 บิตมาแยกบิตด้วย Splitter บิตที่ต้องเป็น 0 (บิต 0 และบิต 2) ต่อผ่าน NOT Gate แล้วนำทั้ง 4 เส้น
+    เข้า NAND Gate เอาต์พุตของ NAND คือสัญญาณแจ้งว่า “นับถึง 10 แล้ว” ต่อสัญญาณนี้กลับไปที่ขา inp ของ Control Unit</p>
+  <h3 class="sub">5.5 สร้าง Control Unit</h3>
+  <p>ออกแบบ Control Unit ให้รับสัญญาณ inp (ตรวจพบเลข 10), Clock และ Reset แล้วสร้างสัญญาณควบคุม iLoad
+    และ Clear ส่งไปยัง Datapath เพื่อสั่งให้ Register โหลดค่าหรือล้างค่ากลับไปเริ่มต้นเมื่อถึงเงื่อนไข</p>
+  <figure class="fig">
+    <img src="report_img/control_internal.png" style="max-width:96%" alt="วงจรภายใน Control Unit">
+    <figcaption><b>รูปที่ 4</b> วงจรภายในส่วน Control Unit — ใช้ D Flip-Flop เก็บสถานะ ร่วมกับ Logic Gate สร้างสัญญาณ iLoad, Clear และ Outtt</figcaption>
+  </figure>
+  <h3 class="sub">5.6 ประกอบวงจรหลัก</h3>
+  <p>นำ Control Unit และ Datapath มาวางในวงจรหลัก ต่อ Clock เส้นเดียวกันเข้าทั้งสองส่วนเพื่อให้ทำงานพร้อมกัน
+    ต่อปุ่ม Reset ต่อ Output Pin แสดงค่า Binary และต่อ Oscilloscope เพื่อดูกราฟสัญญาณขณะวงจรทำงาน
+    ได้ผลลัพธ์เป็นวงจรหลักที่สมบูรณ์ดังรูปที่ 5</p>
+  <h3 class="sub">5.7 ทดสอบการทำงาน</h3>
+  <p>เปิดการจำลอง (Simulate) แล้วสั่งให้ Clock เดินอัตโนมัติ (Auto-Tick) สังเกตค่าที่ Output Pin และกราฟบน
+    Oscilloscope ว่านับ 1 ถึง 10 แล้ววนกลับถูกต้องหรือไม่ รวมถึงทดลองกด Reset ระหว่างนับเพื่อดูว่าวงจรกลับไป
+    เริ่มต้นได้จริง</p>
+  <figure class="fig">
+    <img src="report_img/main_circuit.png" alt="วงจรนับเลข 1 ถึง 10 ที่ต่อเสร็จ">
+    <figcaption><b>รูปที่ 5</b> วงจรนับเลข 1 ถึง 10 ที่ต่อเสร็จสมบูรณ์ใน Logisim-Evolution (Control Unit, Datapath, วงจรบวก, ตัวตรวจจับเลข 10 และ Oscilloscope)</figcaption>
+  </figure>
+</section>
+
+<!-- ============ 6. TESTING RESULTS ============ -->
+<section>
+  <h2 class="sec"><span class="num">6</span>ผลการทดสอบ <span class="en">(Testing Results)</span></h2>
+  <p>กลุ่มของเราทดสอบโดยเปิดโหมดจำลองการทำงาน แล้วให้ Clock เดินอัตโนมัติ จากนั้นจดค่าที่แสดงบน Output Pin
+    ในแต่ละจังหวะ Clock ผลปรากฏว่าวงจรนับค่าเพิ่มขึ้นทีละ 1 ตั้งแต่ 1 ไปจนถึง 10 ได้ถูกต้อง และเมื่อถึง 10
+    (Binary = 1010) วงจรตรวจจับทำงาน ส่งผลให้วงจรค้างที่ค่า 10 เพื่อคอยการ Reset จากผู้ใช้ ดังตารางต่อไปนี้</p>
+  <table class="data">
+    <caption>ตารางที่ 2 ผลการนับค่าของวงจรในแต่ละจังหวะ Clock</caption>
+    <thead><tr>
+      <th style="width:20%">จังหวะ Clock ที่</th>
+      <th style="width:20%">ค่าที่นับ (ฐานสิบ)</th>
+      <th style="width:28%">ค่าที่แสดง (Binary)<br>Q3 Q2 Q1 Q0</th>
+      <th>หมายเหตุ</th>
+    </tr></thead>
+    <tbody>
+      <tr><td>1</td><td>1</td><td class="bin">0 0 0 1</td><td class="lead">เริ่มนับ</td></tr>
+      <tr><td>2</td><td>2</td><td class="bin">0 0 1 0</td><td></td></tr>
+      <tr><td>3</td><td>3</td><td class="bin">0 0 1 1</td><td></td></tr>
+      <tr><td>4</td><td>4</td><td class="bin">0 1 0 0</td><td></td></tr>
+      <tr><td>5</td><td>5</td><td class="bin">0 1 0 1</td><td></td></tr>
+      <tr><td>6</td><td>6</td><td class="bin">0 1 1 0</td><td></td></tr>
+      <tr><td>7</td><td>7</td><td class="bin">0 1 1 1</td><td></td></tr>
+      <tr><td>8</td><td>8</td><td class="bin">1 0 0 0</td><td></td></tr>
+      <tr><td>9</td><td>9</td><td class="bin">1 0 0 1</td><td></td></tr>
+      <tr class="hl"><td>10</td><td>10</td><td class="bin">1 0 1 0</td><td class="lead"><span class="badge-reset">ครบ 10 (ค้างรอ Reset)</span></td></tr>
+      <tr><td>11</td><td>1</td><td class="bin">0 0 0 1</td><td class="lead">เริ่มใหม่เมื่อกด Reset</td></tr>
+    </tbody>
+  </table>
+  <p>นอกจากนี้ยังทดสอบปุ่ม Reset โดยกดระหว่างที่วงจรกำลังนับอยู่ พบว่าค่าจะกลับไปที่จุดเริ่มต้นทันทีและเริ่มนับ 1
+    ใหม่ตามที่ออกแบบไว้ ส่วนกราฟจาก Oscilloscope แสดงให้เห็นว่าแต่ละบิตของเอาต์พุตเปลี่ยนค่าสัมพันธ์กับขอบสัญญาณ
+    Clock อย่างเป็นจังหวะ ซึ่งยืนยันว่าวงจรทำงานแบบ Synchronous (เปลี่ยนค่าพร้อมกันตามจังหวะ Clock) จริง</p>
+  <figure class="fig">
+    <img src="report_img/circuit_1010.png" alt="วงจรขณะนับถึง 10 แสดง 1010">
+    <figcaption><b>รูปที่ 6</b> การทำงานจริงขณะวงจรนับถึง 10 — Output Pin แสดงค่า 1010 ก่อนผู้ใช้กด Reset</figcaption>
+  </figure>
+  <figure class="fig">
+    <img src="report_img/chronogram.png" style="max-width:82%" alt="กราฟสัญญาณ Chronogram">
+    <figcaption><b>รูปที่ 7</b> กราฟสัญญาณ (Chronogram) — แถวบนสุดคือ Clock ส่วนแถวถัดลงมาคือค่าของแต่ละบิตที่เปลี่ยนตามจังหวะการนับ</figcaption>
+  </figure>
+</section>
+
+<!-- ============ 7. PROBLEMS ============ -->
+<section>
+  <h2 class="sec"><span class="num">7</span>ปัญหาที่พบและวิธีแก้ไข <span class="en">(Problems &amp; Solutions)</span></h2>
+  <div class="callout">
+    <span class="pb">ปัญหา 7.1 :</span> วงจรไม่ยอมนับ ค่าไม่เปลี่ยนแม้ Clock เดินอยู่
+    <p><span class="sl">วิธีแก้ไข :</span> ตรวจสอบพบว่าต่อสัญญาณ Clock เข้าไม่ครบทั้ง Control Unit และ Datapath
+      แก้ไขโดยลากสาย Clock จากแหล่งเดียวกันเข้าทั้งสองส่วน ทำให้วงจรกลับมานับได้ตามปกติ</p>
+  </div>
+  <div class="callout">
+    <span class="pb">ปัญหา 7.2 :</span> วงจรไม่ Reset เมื่อนับถึง 10
+    <p><span class="sl">วิธีแก้ไข :</span> สาเหตุมาจากต่อบิตเข้า NOT Gate ผิดตำแหน่งในวงจรตรวจจับ ทำให้ตรวจไม่เจอค่า 1010
+      แก้ไขโดยเขียนค่า Binary ของเลข 10 ลงกระดาษก่อน (1010) แล้วไล่ตรวจทีละบิตว่าบิตที่ต้องเป็น 0 คือบิต 0 กับบิต 2
+      จึงย้าย NOT Gate มาไว้ที่สองบิตนี้ วงจรจึงตรวจจับได้ถูกต้อง</p>
+  </div>
+  <div class="callout">
+    <span class="pb">ปัญหา 7.3 :</span> สายไฟพันกันจนไล่วงจรยากและต่อผิดจุด
+    <p><span class="sl">วิธีแก้ไข :</span> ช่วงแรกวางอุปกรณ์ทั้งหมดในวงจรเดียว สายไฟทับกันจนหาจุดผิดยาก แก้ไขโดยแยกวงจร
+      ออกเป็น Subcircuit (Control Unit กับ Datapath) แล้วจัดวางตำแหน่งใหม่ ทำให้วงจรอ่านง่ายขึ้นมากและหาจุดผิดได้เร็ว</p>
+  </div>
+  <div class="callout">
+    <span class="pb">ปัญหา 7.4 :</span> สับสนเรื่องจังหวะที่ค่าเปลี่ยน
+    <p><span class="sl">วิธีแก้ไข :</span> ตอนแรกเข้าใจว่าค่าจะเปลี่ยนทันทีที่ต่อวงจรเสร็จ แต่จริง ๆ Register ที่สร้างจาก Flip-Flop
+      จะเปลี่ยนค่าเฉพาะตอนขอบขาขึ้นของ Clock เท่านั้น แก้ไขโดยใช้ Oscilloscope ดูจังหวะสัญญาณประกอบ
+      ทำให้เข้าใจการทำงานแบบ Synchronous มากขึ้น</p>
+  </div>
+</section>
+
+<!-- ============ 8. CONCLUSION ============ -->
+<section>
+  <h2 class="sec"><span class="num">8</span>สรุปผล <span class="en">(Conclusion)</span></h2>
+  <p>กลุ่มของเราสามารถออกแบบและสร้างวงจรนับเลข (Counter) จาก 1 ถึง 10 ด้วยโปรแกรม Logisim-Evolution
+    ได้สำเร็จตามวัตถุประสงค์ วงจรใช้สัญญาณ Clock ควบคุมจังหวะการนับ โดยค่าจะเพิ่มขึ้นทีละ 1 ทุกจังหวะ เก็บค่าไว้ใน
+    Register ที่สร้างจาก Flip-Flop และแสดงผลในรูปเลขฐานสอง (Binary) ขนาด 4 บิต เมื่อนับถึง 10 วงจรตรวจจับค่า 1010
+    จะค้างที่ค่า 10 เพื่อรอผู้ใช้กดปุ่ม Reset จึงเริ่มใหม่ ผลการทดสอบตรงตามตารางที่ออกแบบไว้ทุกจังหวะ</p>
+  <p>สิ่งที่ได้เรียนรู้จากงานชิ้นนี้ ได้แก่ การทำงานของ Flip-Flop และ Register, บทบาทของสัญญาณ Clock ในวงจรแบบ
+    Synchronous, การใช้ Logic Gate (NOT, NAND) ตรวจจับค่าที่ต้องการ และแนวคิดการแบ่งวงจรเป็น Control Unit
+    กับ Datapath ซึ่งเป็นพื้นฐานเดียวกับการออกแบบหน่วยประมวลผลจริง นอกจากนี้ยังได้ฝึกการไล่หาจุดผิดของวงจร
+    (Debug) อย่างเป็นระบบ</p>
+  <div class="note"><b>แนวทางการพัฒนาต่อ :</b> สามารถต่อยอดโดยนำเอาต์พุต Binary ไปเข้าวงจรถอดรหัสเพื่อแสดงผลบน
+    7-Segment Display ให้อ่านเป็นตัวเลขได้ง่ายขึ้น หรือปรับช่วงการนับเป็นค่าอื่น ๆ เช่น นับ 0 ถึง 59
+    เพื่อใช้ทำนาฬิกาดิจิทัลต่อไป</div>
+</section>
+
+<!-- ============ 9. APPENDIX ============ -->
+<section style="page-break-before: always; break-before: always;">
+  <h2 class="sec"><span class="num">9</span>ภาคผนวก <span class="en">(Appendix)</span></h2>
+  <p>ส่วนนี้แสดงภาพขยายรายละเอียดบางส่วนของวงจร เพื่อให้เห็นการทำงานภายในชัดเจนยิ่งขึ้น</p>
+  <figure class="fig">
+    <img src="report_img/adder.png" style="max-width:46%" alt="วงจรบวกเพิ่มค่าทีละ 1">
+    <figcaption><b>รูปที่ 8</b> วงจรบวกเพิ่มค่าทีละ 1 — นำค่า Q มาบวกกับค่าคงที่ 0001 ผ่าน Adder</figcaption>
+  </figure>
+  <figure class="fig">
+    <img src="report_img/out_1010.png" style="max-width:42%" alt="Output Pin แสดง 1010">
+    <figcaption><b>รูปที่ 9</b> Output Pin แสดงผลเป็นเลขฐานสอง 1010 ซึ่งมีค่าเท่ากับ 10 ในเลขฐานสิบ</figcaption>
+  </figure>
+</section>
+
+</body>
+</html>

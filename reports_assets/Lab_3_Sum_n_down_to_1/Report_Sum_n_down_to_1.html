@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>รายงาน วงจรคำนวณผลรวมสะสมจาก n ถึง 1 (Sum n down to 1)</title>
+<style>
+  :root{
+    --ink:#1f2733;
+    --primary:#14496e;
+    --primary-2:#2b7bb9;
+    --accent:#0e9488;
+    --soft:#eef4f9;
+    --soft-2:#e5f3f1;
+    --line:#d5dee6;
+    --muted:#6b7785;
+    --amber:#b7791f;
+    --green:#1f7a4d;
+  }
+  @page{
+    size:A4;
+    margin:20mm 18mm 18mm 18mm;
+    @bottom-center{
+      content:counter(page);
+      font-family:'Sarabun',sans-serif; font-size:10pt; color:#8a94a0;
+    }
+  }
+  @page:first{ margin:0; @bottom-center{ content:normal; } }
+
+  *{ box-sizing:border-box; }
+  body{
+    font-family:'Sarabun',sans-serif; font-size:15.5px; line-height:1.75;
+    color:var(--ink); margin:0; text-align:left;
+  }
+  p{ margin:0 0 9px 0; }
+  section > p { text-indent: 1.25cm; text-align: left; }
+
+  /* ---------- COVER ---------- */
+  .cover{ height:297mm; page-break-after:always; break-after:always; display:flex; flex-direction:column; text-align:center; }
+  .cover .topbar{ height:14mm; background:linear-gradient(90deg,var(--primary),var(--primary-2) 60%,var(--accent)); }
+  .cover .botbar{ height:8mm; background:linear-gradient(90deg,var(--accent),var(--primary-2) 40%,var(--primary)); margin-top:auto; }
+  .cover .inner{ padding:0 24mm; flex:1; display:flex; flex-direction:column; justify-content:center; }
+  .cover .kicker{ align-self:center; letter-spacing:2px; font-size:13px; color:var(--primary-2); font-weight:700;
+    border:1.5px solid var(--primary-2); border-radius:20px; padding:3px 16px; margin-bottom:16px; }
+  .cover h1{ font-size:33px; line-height:1.28; font-weight:800; color:var(--primary); margin:0 0 6px; }
+  .cover .en{ font-size:23px; font-weight:700; color:var(--primary-2); margin:0 0 4px; }
+  .cover .tool{ font-size:19px; font-weight:700; color:var(--ink); margin:0; }
+  .cover .subtitle{ font-size:14.5px; color:var(--muted); margin:12px auto 0; max-width:150mm; line-height:1.6; }
+  .cover .divider{ width:60mm; height:3px; background:var(--accent); border-radius:2px; margin:26px auto; }
+  .cover .card{ border:1px solid var(--line); border-top:4px solid var(--primary-2); border-radius:12px;
+    background:var(--soft); padding:18px 26px; max-width:150mm; margin:0 auto; }
+  .cover .card h3{ margin:0 0 12px; font-size:16px; color:var(--primary); letter-spacing:.5px; }
+  table.members{ width:100%; border-collapse:collapse; }
+  table.members td{ padding:5px 8px; font-size:15px; text-align:left; vertical-align:middle; }
+  table.members td.no{ width:26px; color:var(--primary-2); font-weight:700; text-align:center; }
+  table.members td.sid{ width:38mm; text-align:right; color:var(--muted); font-variant-numeric:tabular-nums; }
+  .cover .submit{ margin-top:22px; font-size:15px; line-height:2.1; }
+  .cover .submit .lbl{ font-weight:700; color:var(--primary); }
+  .dots{ color:var(--muted); letter-spacing:1px; }
+
+  /* ---------- SECTIONS ---------- */
+  h2.sec{ font-size:19px; font-weight:800; color:var(--primary); margin:16px 0 10px; padding-bottom:6px;
+    border-bottom:2px solid var(--line); break-after:avoid; page-break-after:avoid; display:flex; align-items:center; gap:11px; }
+  h2.sec .num{ flex:0 0 auto; width:29px; height:29px; background:var(--primary); color:#fff; border-radius:8px;
+    font-size:15px; display:inline-flex; align-items:center; justify-content:center; font-weight:700; }
+  h2.sec .en{ color:var(--primary-2); font-weight:700; font-size:16px; }
+  h3.sub{ font-size:16px; font-weight:700; color:var(--accent); margin:15px 0 5px; break-after:avoid; page-break-after:avoid; }
+  ul.clean{ margin:4px 0 10px; padding-left:0; list-style:none; break-inside:avoid; page-break-inside:avoid; }
+  ul.clean li{ position:relative; padding-left:22px; margin-bottom:7px; text-align:left; }
+  ul.clean li::before{ content:""; position:absolute; left:4px; top:11px; width:7px; height:7px;
+    border-radius:50%; background:var(--primary-2); }
+  ol.numbered{ margin:4px 0 10px; padding-left:22px; }
+  ol.numbered li{ margin-bottom:7px; text-align:left; }
+  b.term{ color:var(--primary); }
+
+  /* ---------- TABLES ---------- */
+  table.data{ width:100%; border-collapse:collapse; margin:8px 0 6px; font-size:14.5px; break-inside:avoid; page-break-inside:avoid; }
+  table.data tr{ break-inside:avoid; page-break-inside:avoid; }
+  table.data caption{ caption-side:top; text-align:center; font-size:14px; color:var(--muted); margin-bottom:6px; font-weight:600; }
+  table.data th{ background:var(--primary); color:#fff; font-weight:700; padding:6px 8px; text-align:center; border:1px solid #0f3a58; }
+  table.data td{ padding:5px 8px; border:1px solid var(--line); vertical-align:middle; text-align:center; }
+  table.data.compact{ font-size:13px; margin:6px 0 4px; }
+  table.data.compact td{ padding:3.5px 6px; }
+  table.data.compact th{ padding:4.5px 6px; }
+  table.data tbody tr:nth-child(even){ background:var(--soft); }
+  table.data .lead{ text-align:left; }
+  .bin{ font-family:'Menlo','DejaVu Sans Mono',monospace; letter-spacing:2px; font-size:13.5px; }
+  .hl td{ background:var(--soft-2) !important; }
+  .badge-reset{ color:var(--accent); font-weight:700; }
+
+  /* ---------- TABLE OF CONTENTS ---------- */
+  .toc-list{ list-style:none; padding:0; margin:24px 0; }
+  .toc-item{ display:flex; align-items:baseline; margin-bottom:12px; font-size:15px; }
+  .toc-item .title{ order:1; color:var(--primary); font-weight:700; }
+  .toc-item .dots{ order:2; flex-grow:1; border-bottom:1.5px dotted var(--muted); margin:0 8px; position:relative; top:-4px; }
+  .toc-item .page{ order:3; font-variant-numeric:tabular-nums; font-weight:700; color:var(--primary-2); }
+  .toc-item.toc-sub{ padding-left:24px; margin-bottom:10px; }
+  .toc-item.toc-sub .title{ font-weight:normal; color:var(--ink); }
+  .toc-item.toc-sub .page{ font-weight:normal; color:var(--muted); }
+
+  /* ---------- FIGURES ---------- */
+  figure.fig{ margin:14px 0 16px; break-inside:avoid; text-align:center; }
+  figure.fig img{ max-width:100%; border:1px solid var(--line); border-radius:10px; }
+  figcaption{ text-align:center; font-size:13px; color:var(--muted); margin-top:8px; }
+  figcaption b{ color:var(--primary); }
+  .diagram{ border:1px solid var(--line); border-radius:12px; background:#fbfdff; padding:14px 10px 6px; break-inside:avoid; }
+  .diagram svg{ width:100%; height:auto; display:block; }
+
+  /* ---------- CALLOUT / NOTE ---------- */
+  .callout{ border:1px solid var(--line); border-left:5px solid var(--primary-2); border-radius:8px;
+    background:#fbfdff; padding:11px 15px; margin:9px 0; break-inside:avoid; }
+  .callout .pb{ font-weight:700; color:var(--amber); }
+  .callout .sl{ font-weight:700; color:var(--green); }
+  .callout p{ margin:3px 0 0; }
+  .note{ background:var(--soft-2); border-radius:8px; padding:10px 15px; margin:10px 0; font-size:14.5px; break-inside:avoid; }
+</style>
+</head>
+<body>
+
+<!-- ============ COVER ============ -->
+<div class="cover">
+  <div class="topbar"></div>
+  <div class="inner">
+    <span class="kicker">รายงานการทดลอง</span>
+    <h1>วงจรบวกคำนวณผลรวมสะสมจาก n ถึง 1</h1>
+    <p class="en">(Sum n down to 1)</p>
+    <p class="tool">ด้วยโปรแกรม Logisim-Evolution</p>
+    <p class="subtitle">ระบบการออกแบบหน่วยประมวลผลขนาดเล็กแบบแยกส่วนควบคุม (Control Unit)
+      และส่วนการไหลของข้อมูล (Datapath) ที่ทำงานร่วมกับ Register File และ ALU 8 bit</p>
+    <div class="divider"></div>
+    <div class="card">
+      <h3>จัดทำโดย</h3>
+      <table class="members">
+        <tr><td class="no">1</td><td>นายดรัณภพ&nbsp;&nbsp;พิทักษ์กิจไพศาล</td><td class="sid">6710301007</td></tr>
+        <tr><td class="no">2</td><td>นายอภิสักก์&nbsp;&nbsp;คงภักดี</td><td class="sid">6710301009</td></tr>
+        <tr><td class="no">3</td><td>นายธนัท&nbsp;&nbsp;จงธีรธนโชติ</td><td class="sid">6710301032</td></tr>
+      </table>
+    </div>
+    <div class="submit">
+      <div><span class="lbl">เสนอ</span>&nbsp;&nbsp;อาจารย์คทาเทพ&nbsp;&nbsp;สวัสดิพิศาล</div>
+      <div>รายวิชา Embedded System Design&nbsp;&nbsp;ภาคการศึกษาที่ 1&nbsp;&nbsp;ปีการศึกษา 2569</div>
+    </div>
+  </div>
+  <div class="botbar"></div>
+</div>
+
+<!-- ============ TABLE OF CONTENTS ============ -->
+<section class="toc-page" style="page-break-after: always; break-after: always;">
+  <h2 class="sec" style="border-bottom:2px solid var(--primary); font-size:22px; justify-content:center; margin-bottom:30px;"><span class="num" style="display:none;"></span>สารบัญ <span class="en">(Table of Contents)</span></h2>
+  
+  <ul class="toc-list">
+    <li class="toc-item">
+      <span class="title">1. บทนำ (Introduction)</span>
+      <span class="dots"></span>
+      <span class="page">3</span>
+    </li>
+    <li class="toc-item">
+      <span class="title">2. วัตถุประสงค์ (Objectives)</span>
+      <span class="dots"></span>
+      <span class="page">3</span>
+    </li>
+    <li class="toc-item">
+      <span class="title">3. เครื่องมือที่ใช้ (Tools Used)</span>
+      <span class="dots"></span>
+      <span class="page">3</span>
+    </li>
+    <li class="toc-item">
+      <span class="title">4. แนวคิดการออกแบบวงจร (Circuit Design Concept)</span>
+      <span class="dots"></span>
+      <span class="page">4</span>
+    </li>
+    <li class="toc-item toc-sub">
+      <span class="title">4.1 โครงสร้างการส่งผ่านข้อมูล (Datapath Architecture)</span>
+      <span class="dots"></span>
+      <span class="page">4</span>
+    </li>
+    <li class="toc-item toc-sub">
+      <span class="title">4.2 รายละเอียดโครงสร้างการควบคุม FSM (Control Unit)</span>
+      <span class="dots"></span>
+      <span class="page">5</span>
+    </li>
+    <li class="toc-item">
+      <span class="title">5. ขั้นตอนการสร้างวงจร (Implementation)</span>
+      <span class="dots"></span>
+      <span class="page">6</span>
+    </li>
+    <li class="toc-item toc-sub">
+      <span class="title">5.1 สร้างโมดูลหน่วยประมวลผลคำนวณ (ALU 8 bit)</span>
+      <span class="dots"></span>
+      <span class="page">6</span>
+    </li>
+    <li class="toc-item toc-sub">
+      <span class="title">5.2 สร้างโมดูลบันทึก Register File (Register File)</span>
+      <span class="dots"></span>
+      <span class="page">6</span>
+    </li>
+    <li class="toc-item toc-sub">
+      <span class="title">5.3 ออกแบบสร้างวงจรควบคุมสถานะ (Control Unit)</span>
+      <span class="dots"></span>
+      <span class="page">7</span>
+    </li>
+    <li class="toc-item toc-sub">
+      <span class="title">5.4 ประกอบแผงวงจรหลักและการทดสอบ</span>
+      <span class="dots"></span>
+      <span class="page">7</span>
+    </li>
+    <li class="toc-item">
+      <span class="title">6. ผลการทดสอบ (Testing Results)</span>
+      <span class="dots"></span>
+      <span class="page">8</span>
+    </li>
+    <li class="toc-item">
+      <span class="title">7. ปัญหาที่พบและวิธีแก้ไข (Problems &amp; Solutions)</span>
+      <span class="dots"></span>
+      <span class="page">9</span>
+    </li>
+    <li class="toc-item">
+      <span class="title">8. สรุปผล (Conclusion)</span>
+      <span class="dots"></span>
+      <span class="page">10</span>
+    </li>
+    <li class="toc-item">
+      <span class="title">9. ภาคผนวก (Appendix)</span>
+      <span class="dots"></span>
+      <span class="page">10</span>
+    </li>
+  </ul>
+</section>
+
+<!-- ============ 1. INTRODUCTION ============ -->
+<section>
+  <h2 class="sec"><span class="num">1</span>บทนำ <span class="en">(Introduction)</span></h2>
+  <p>การเขียนโปรแกรมเพื่อคำนวณผลรวมสะสมจากค่า n ลงมาถึง 1 เช่น (5 + 4 + 3 + 2 + 1 = 15) เป็น Function พื้นฐานที่มักจะใช้วิธีวนลูป (Loop) ในระดับ Software แต่สำหรับระบบ Computer และระบบสมองกลฝังตัว (Embedded System) เราสามารถสร้างกลไกการคำนวณนี้ขึ้นมาได้ด้วยวงจร Hardware จำลอง โดยเชื่อมต่อส่วนประมวลผลและหน่วยความจำเข้าด้วยกัน ซึ่งจะช่วยให้เข้าใจสถาปัตยกรรม Computer และกลไกการทำงานในระดับ Hardware ได้อย่างลึกซึ้ง</p>
+  <p>รายงานฉบับนี้เสนอผลการออกแบบและสร้างวงจรคำนวณผลรวมสะสม n ถึง 1 (Sum n down to 1) ขนาด 8 bit บนโปรแกรม Logisim-Evolution โดยจัดโครงสร้างแบบแยกส่วนควบคุม (Control Unit) และส่วนข้อมูล (Datapath) ที่ทำงานสอดประสานกันตามสัญญาณนาฬิกา (Synchronous Clock) ผ่านทาง Register File และหน่วยคำนวณและตรรกะ (ALU)</p>
+  <p>การทดลองนี้จะช่วยให้เข้าใจกลไกการทำงานของหน่วยประมวลผลจริง ทั้งการจัดการ Data Bus การส่งสัญญาณควบคุมจาก FSM (Finite State Machine) การอ่านเขียน Register ตลอดจนการส่งผลลัพธ์ออกทาง Output พินเมื่อคำนวณเสร็จสิ้น</p>
+</section>
+
+<!-- ============ 2. OBJECTIVES ============ -->
+<section>
+  <h2 class="sec"><span class="num">2</span>วัตถุประสงค์ <span class="en">(Objectives)</span></h2>
+  <ol class="numbered">
+    <li>เพื่อออกแบบและสร้างวงจรคำนวณผลรวมสะสมจาก n ถึง 1 (Sum n down to 1) ด้วยโปรแกรม Logisim-Evolution</li>
+    <li>เพื่อศึกษาโครงสร้างและจังหวะการทำงานสอดประสานกันระหว่างส่วนควบคุม (Control Unit) และส่วนข้อมูล (Datapath) ผ่าน Register File และหน่วยคำนวณและตรรกะขนาด 8 bit</li>
+    <li>เพื่อวิเคราะห์ความถูกต้องและพฤติกรรมเวลาของหน่วยประมวลผลผ่านกราฟสัญญาณเวลา (Chronogram)</li>
+  </ol>
+</section>
+
+<!-- ============ 3. TOOLS ============ -->
+<section>
+  <h2 class="sec"><span class="num">3</span>เครื่องมือที่ใช้ <span class="en">(Tools Used)</span></h2>
+  <h3 class="sub">3.1 โปรแกรมจำลองการทำงาน</h3>
+  <p>Logisim-Evolution v4.1.0 — โปรแกรมสำหรับออกแบบและทดสอบวงจร Logic ซึ่งในโปรเจกต์นี้ใช้ในการสร้างสถาปัตยกรรมหน่วยประมวลผลย่อย ๆ และวิเคราะห์กราฟสัญญาณเวลา</p>
+  <h3 class="sub">3.2 ส่วนประกอบและโมดูลย่อยหลัก (Subcircuits)</h3>
+  <table class="data">
+    <caption>ตารางที่ 1 โมดูลย่อยหลักที่ใช้ภายในวงจรและบทบาทหน้าที่</caption>
+    <thead><tr><th style="width:34%">อุปกรณ์ / โมดูล</th><th>หน้าที่ในวงจร</th></tr></thead>
+    <tbody>
+      <tr><td class="lead">Control Unit (FSM)</td><td class="lead">ควบคุมการทำงานในแต่ละ State สร้างสัญญาณควบคุมสั่งงาน Datapath และส่งสัญญาณแจ้งเตือนเมื่อคำนวณเสร็จสิ้น</td></tr>
+      <tr><td class="lead">Register File (Four_Bit_RF)</td><td class="lead">หน่วยความจำขนาด 8 bit จำนวน 4 Register (R0-R3) รองรับการอ่านและเขียนข้อมูลพร้อมกัน</td></tr>
+      <tr><td class="lead">ALU (Arithmetic Logic Unit)</td><td class="lead">หน่วยประมวลผลคำนวณ รองรับการบวกค่าตัวเลขสะสม (ADD) และลดค่าตัวนับลงทีละหนึ่ง (DEC)</td></tr>
+      <tr><td class="lead">Multiplexer 8 bit</td><td class="lead">สลับสัญญาณขาเข้าของ Register File ระหว่างค่าเริ่มต้นของข้อมูล Input กับค่าคำนวณใหม่จาก ALU</td></tr>
+      <tr><td class="lead">Controlled Buffer</td><td class="lead">เป็น Tri-State Buffer ที่ทำหน้าที่เปิดและส่งข้อมูล Output สะสมออกสู่ภายนอกเมื่อ Done สิ้นสุดลง</td></tr>
+      <tr><td class="lead">Clock &amp; Start / Reset Pins</td><td class="lead">ปุ่ม Input รับสัญญาณควบคุมจังหวะและคำสั่งการเริ่มต้นและการล้างระบบวงจรจากภายนอก</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ 4. DESIGN CONCEPT ============ -->
+<section style="page-break-before: always; break-before: always;">
+  <h2 class="sec"><span class="num">4</span>แนวคิดการออกแบบวงจร <span class="en">(Circuit Design Concept)</span></h2>
+  <h3 class="sub">4.1 โครงสร้างการส่งผ่านข้อมูล (Datapath Architecture)</h3>
+  <p>โครงสร้างวงจรนี้ออกแบบเป็นระบบคำนวณขนาด 8 bit เพื่อรองรับการบวกสะสมค่าที่ใหญ่ขึ้น โดยฝั่ง Datapath จะมี Register File (Four_Bit_RF) ทำหน้าที่เก็บข้อมูลหลัก ซึ่งใช้ <b>R0</b> เก็บผลรวมสะสม (Sum) และใช้ <b>R1</b> เก็บตัวนับ Input (N) จากนั้นจะมี <b>ALU</b> เป็นตัวประมวลผลหลักในการบวกสะสมและลดค่าตัวนับทีละ 1</p>
+  
+    <figure class="fig">
+    <div class="diagram">
+      <svg viewBox="0 0 764 330" xmlns="http://www.w3.org/2000/svg" font-family="Sarabun, sans-serif">
+        <!-- input pins -->
+        <rect x="16" y="74" width="92" height="34" rx="8" fill="#eef4f9" stroke="#2b7bb9" stroke-width="1.5"/>
+        <text x="62" y="96" text-anchor="middle" font-size="14.5" fill="#14496e" font-weight="700">Start / Reset</text>
+        <rect x="16" y="150" width="92" height="34" rx="8" fill="#eef4f9" stroke="#2b7bb9" stroke-width="1.5"/>
+        <text x="62" y="172" text-anchor="middle" font-size="14.5" fill="#14496e" font-weight="700">Clock</text>
+        
+        <!-- control unit -->
+        <rect x="156" y="52" width="168" height="236" rx="12" fill="#14496e"/>
+        <text x="240" y="150" text-anchor="middle" font-size="16" fill="#ffffff" font-weight="700">Control Unit</text>
+        <text x="240" y="173" text-anchor="middle" font-size="12.5" fill="#bcd4e8">FSM State ควบคุม</text>
+        <text x="240" y="193" text-anchor="middle" font-size="12" fill="#bcd4e8">(D Flip-Flop x 3)</text>
+        
+        <!-- datapath multiplexer -->
+        <rect x="364" y="60" width="58" height="60" fill="#0e9488" rx="6"/>
+        <text x="393" y="94" text-anchor="middle" font-size="13" fill="#ffffff" font-weight="700">MUX 2:1</text>
+        
+        <!-- Register File -->
+        <rect x="452" y="52" width="144" height="154" rx="12" fill="#14496e"/>
+        <text x="524" y="110" text-anchor="middle" font-size="15" fill="#ffffff" font-weight="700">Register File</text>
+        <text x="524" y="132" text-anchor="middle" font-size="12" fill="#bcd4e8">R0-R3 (8-bit)</text>
+        <text x="524" y="150" text-anchor="middle" font-size="12.5" fill="#bcd4e8">R0: Sum, R1: N</text>
+
+        <!-- ALU -->
+        <polygon points="636,52 696,52 706,72 716,52 776,52 756,152 656,152" fill="#0e9488"/>
+        <text x="706" y="100" text-anchor="middle" font-size="16" fill="#ffffff" font-weight="700">ALU</text>
+        <text x="706" y="120" text-anchor="middle" font-size="12" fill="#d5f0ec">8-bit Calc</text>
+
+        <!-- Buffer & Output -->
+        <rect x="452" y="250" width="144" height="42" rx="10" fill="#e5f3f1" stroke="#0e9488" stroke-width="1.5"/>
+        <text x="524" y="276" text-anchor="middle" font-size="14" fill="#0e6b62" font-weight="700">Output (8-bit)</text>
+
+        <!-- connections & arrows -->
+        <g stroke="#5a6b7a" stroke-width="1.8" fill="none">
+          <polyline points="108,91 156,91"/>
+          <polyline points="108,167 136,167 136,250 156,250"/>
+          <!-- Control outputs -->
+          <polyline points="324,90 364,90"/>
+          <polyline points="324,152 452,152"/>
+          <polyline points="324,260 452,260"/>
+          <polyline points="240,288 240,314 624,314 624,194 480,194 480,206" stroke="#0e9488"/>
+          <!-- Bus -->
+          <polyline points="410,218 410,132 452,132" stroke="#b7791f"/>
+          <!-- Feedbacks -->
+          <polyline points="596,90 644,90"/>
+          <polyline points="596,160 620,160 620,114 644,114"/>
+          <polyline points="706,152 706,228 350,228 350,104 364,104" stroke="#b7791f"/>
+        </g>
+        <g fill="#5a6b7a">
+          <polygon points="156,91 148,87 148,95"/>
+          <polygon points="156,250 148,246 148,254"/>
+          <polygon points="364,90 356,86 356,94"/>
+          <polygon points="452,152 444,148 444,156"/>
+          <polygon points="452,260 444,256 444,264"/>
+          <polygon points="644,90 636,86 636,94"/>
+          <polygon points="644,114 636,110 636,118"/>
+          <polygon points="364,104 356,100 356,108"/>
+        </g>
+        <!-- labels -->
+        <text x="344" y="82" text-anchor="middle" font-size="11.5" fill="#4a5a68">IE (Select)</text>
+        <text x="372" y="146" text-anchor="middle" font-size="11" fill="#4a5a68">WE / WA / RAE / RBE</text>
+        <text x="382" y="253" text-anchor="middle" font-size="11.5" fill="#0e6b62">OE (Buffer Enable)</text>
+        <text x="444" y="324" text-anchor="middle" font-size="11.5" fill="#0e7d73" font-weight="700">ตรวจสอบ (N=0)' สัญญาณป้อนกลับลูป FSM</text>
+      </svg>
+    </div>
+    <figcaption><b>รูปที่ 1</b> Block Diagram ของระบบคำนวณ Sum n down to 1 — แสดงการเชื่อมต่อระหว่าง Control Unit และ Datapath ขนาด 8 bit</figcaption>
+  </figure>
+
+  <div style="break-inside: avoid; page-break-inside: avoid;">
+  <h3 class="sub" style="page-break-before: always; break-before: always;">4.2 รายละเอียดโครงสร้างการควบคุม FSM (Control Unit)</h3>
+  <p>การทำงานของส่วนควบคุม (Control Unit) จะใช้ D Flip-Flop จำนวน 3 ตัวเพื่อสร้างสถานะ (State) ของ Finite State Machine (FSM) โดยการเข้ารหัสสถานะจริงในวงจร (FSM State Encoding) ได้รับการออกแบบให้สอดคล้องกับพฤติกรรมการควบคุมของ Datapath ดังนี้:</p>
+  <ul class="clean">
+    <li><b class="term">State 000 (Idle/Reset)</b> — สถานะเริ่มต้นเพื่อคอยสัญญาณ <b>Start</b> หากมีการกดปุ่ม Start วงจรจะเปลี่ยน State เพื่อเริ่มโหลดค่า</li>
+    <li><b class="term">State 100 (Load Data)</b> — สั่งการเขียนค่าเริ่มต้น <b>Data Input</b> ลง Register R1 (เก็บค่า N) ผ่านทางสัญญาณควบคุม IE=1, WE=1, WA=01 โดยมีข้อจำกัดที่วงจรไม่ได้จัดส่งสัญญาณล้างค่าเริ่มต้นให้แก่ R0 (Sum) ในขั้นตอนนี้ (ต้องสั่ง Reset Simulation ของ Logisim-Evolution เพื่อ clear R0 เป็น 0 ก่อนเริ่มต้นการประมวลผลเสมอ)</li>
+    <li><b class="term">State 010 (Check &amp; Add)</b> — ตรวจสอบค่า N ผ่านขา <b>(N=0)'</b> หาก N ไม่เท่ากับ 0 จะสั่งบวกสะสม R0 = R0 + R1 โดยใช้คำสั่งอ่าน RAE=1, RAA=00, RBE=1, RBA=01 ส่งไปที่ ALU และเลือกคำสั่ง ALU ADD (รหัส `100` ใน Multiplexer จริง) จากนั้นเขียนกลับลง R0</li>
+    <li><b class="term">State 110 (Decrement N)</b> — สั่งลบค่าตัวนับ R1 = R1 - 1 โดยสั่งอ่าน RAE=1, RAA=01 เลือกคำสั่ง ALU DEC (รหัส `111` ใน Multiplexer จริง) และสั่งบันทึกข้อมูลเขียนกลับลง R1 (WE=1, WA=01) จากนั้นวนกลับไปยัง State ตรวจสอบ</li>
+    <li><b class="term">State 001 (Done)</b> — เมื่อ N มีค่าเป็น 0 สัญญาณแจ้งเตือน (N=0)' จะเปลี่ยนเป็น 0 วงจรจะเปลี่ยนมายัง State เสร็จสิ้น สั่งงานขา Done=1 เพื่อแจ้งเสร็จงาน และ OE=1 เพื่อปลดปล่อยผลลัพธ์ผ่าน Buffer ออกภายนอก</li>
+    <li><b class="term">State 101 (Auto-Reset Transition)</b> — State เปลี่ยนผ่านชั่วคราวเพื่อ Reset วงจรกลับสู่สถานะเริ่มต้นเมื่อสิ้นสุดการคำนวณและผู้ใช้กดปุ่ม Start ซ้ำอีกรอบ</li>
+  </ul>
+  </div>
+
+
+</section>
+
+<!-- ============ 5. STEPS ============ -->
+<section style="page-break-before: always; break-before: always;">
+  <h2 class="sec"><span class="num">5</span>ขั้นตอนการสร้างวงจร <span class="en">(Implementation)</span></h2>
+  <h3 class="sub">5.1 สร้างโมดูลหน่วยประมวลผลคำนวณ (ALU 8 bit)</h3>
+  <p>สร้างส่วนคำนวณหลักด้วยอุปกรณ์ Adder จำนวน 2 ตัว และ Subtractor จำนวน 2 ตัว ขนาด 8 bit นำผลลัพธ์จากทั้ง 4 บล็อกผ่าน Multiplexer ขนาด 8 bit ที่มีขาเลือก 3 เส้น (ALU2, ALU1, ALU0) รองรับ 8 Function ได้แก่ Pass A, AND, OR, NOT, ADD, SUB, INC และ DEC โดยวงจรนี้เน้นใช้งาน Function ADD (รหัส 100) สำหรับบวกสะสม และ DEC (รหัส 111) สำหรับลดค่าตัวนับทีละหนึ่ง</p>
+  <figure class="fig">
+    <img src="report_img/alu_sum.jpg" style="max-width:90%" alt="วงจรภายใน ALU 8 bit">
+    <figcaption><b>รูปที่ 2</b> วงจรจำลองภายในโมดูล ALU ขนาด 8 bit — บล็อกคำนวณหลักและการเลือก Function ด้วย Multiplexer</figcaption>
+  </figure>
+
+  <h3 class="sub">5.2 สร้างโมดูลบันทึก Register File (Register File)</h3>
+  <p>ต่อวงจร Register ขนาด 8 bit จำนวน 4 ตัว (R0–R3) เพื่อใช้เก็บสถานะข้อมูล ใช้ Decoder จำนวน 3 ตัวในการถอดรหัสเลือกเขียน (WA) และอ่านออกผ่านขา Port A กับ Port B พร้อมกัน โดยมี AND Gate ควบคุมการเปิด-ปิดสัญญาณอ่านเขียนแต่ละ Register แยกกันอิสระ ทำให้สามารถอ่านสองค่าพร้อมกันและเขียนค่าเดียวได้ในจังหวะ Clock เดียว</p>
+  <figure class="fig">
+    <img src="report_img/sum_rf_internal.png" style="max-width:80%" alt="วงจรภายใน Register File">
+    <figcaption><b>รูปที่ 3</b> โครงสร้างการเชื่อมต่อภายใน Register File ขนาด 8 bit — แสดงการจัด Port อ่านเขียน Register R0-R3</figcaption>
+  </figure>
+
+  <h3 class="sub">5.3 ออกแบบสร้างวงจรควบคุมสถานะ (Control Unit)</h3>
+  <p>สร้างวงจร FSM หลักด้วย D Flip-Flop จำนวน 3 ตัวในการระบุสถานะ ต่อ Logic Gate เพื่อแปลงค่าป้อนกลับทางสถานะและสั่งสัญญาณขา Output (Control Signals) ให้ทำงานพร้อมเพรียงกันในแต่ละ Cycle</p>
+  <figure class="fig">
+    <img src="report_img/control_unit_sum.jpg" style="max-width:92%" alt="วงจรภายใน Control Unit">
+    <figcaption><b>รูปที่ 4</b> แผง Logic ภายในส่วน Control Unit — FSM ควบคุมสัญญาณนาฬิกาและขาคำสั่งควบคุม Datapath</figcaption>
+  </figure>
+
+  <h3 class="sub">5.4 ประกอบแผงวงจรหลักและการทดสอบ</h3>
+  <p>นำวงจรควบคุม ส่วนข้อมูล สัญญาณ Input และตัวต้านทานสถานะ Output มาร่วมต่อเข้าด้วยกันในวงจรหลัก จากนั้นเชื่อมสัญญาณต่าง ๆ เข้าสู่เครื่องวัดสัญญาณ Chronogram เพื่อวิเคราะห์พฤติกรรมการเปลี่ยนจังหวะของ Logic ในแต่ละสถานะได้อย่างแม่นยำ</p>
+  <figure class="fig">
+    <img src="report_img/main_circuit_sum.jpg" alt="วงจรรวมสเปคสมบูรณ์">
+    <figcaption><b>รูปที่ 5</b> วงจรคำนวณผลรวมสะสม Sum n down to 1 ที่เชื่อมต่อเสร็จสมบูรณ์บน Logisim-Evolution</figcaption>
+  </figure>
+</section>
+
+<!-- ============ 6. TESTING RESULTS ============ -->
+<section>
+  <h2 class="sec"><span class="num">6</span>ผลการทดสอบ <span class="en">(Testing Results)</span></h2>
+  <p>การทดสอบจำลองประสิทธิภาพระบบโดยระบุ Input เริ่มต้นที่ <b>n = 5</b> (คาดหวังผลลัพธ์ผลรวมเท่ากับ 15 หรือ <code>0000 1111</code> ในเลขฐานสอง) จากนั้นทำการ Auto-Tick Clock ทีละ Cycle เพื่อประเมินค่าข้อมูลภายใน Register R0 (Sum) และ R1 (N) ในแต่ละจังหวะเวลาทำงาน:</p>
+  
+  <table class="data compact">
+    <caption>ตารางที่ 2 การวิเคราะห์ State การทำงานและการเปลี่ยนค่าในแต่ละ Cycle (n = 5)</caption>
+    <thead><tr>
+      <th style="width:16%">จังหวะ Clock</th>
+      <th style="width:20%">State FSM (Q2 Q1 Q0)</th>
+      <th style="width:20%">ค่าใน R0 (Sum)</th>
+      <th style="width:20%">ค่าใน R1 (Counter N)</th>
+      <th>พฤติกรรมของวงจรและคำสั่ง</th>
+    </tr></thead>
+    <tbody>
+      <tr><td>0</td><td>000 (Idle)</td><td>0000 0000</td><td>0000 0000</td><td class="lead">คอยคำสั่ง เริ่มการประมวลผล</td></tr>
+      <tr><td>1</td><td>100 (Load)</td><td>0000 0000</td><td class="bin">0000 0101</td><td class="lead">โหลดค่า Input n=5 ลง R1 (R0=0 ถูก clear โดย Logisim Reset)</td></tr>
+      <tr><td>2</td><td>010 (Add)</td><td class="bin">0000 0101</td><td>0000 0101</td><td class="lead">บวกสะสม: R0 = R0 + R1 (0 + 5 = 5)</td></tr>
+      <tr><td>3</td><td>110 (Dec)</td><td>0000 0101</td><td class="bin">0000 0100</td><td class="lead">ลดค่าตัวนับ: R1 = R1 - 1 (5 - 1 = 4)</td></tr>
+      <tr><td>4</td><td>010 (Add)</td><td class="bin">0000 1001</td><td>0000 0100</td><td class="lead">บวกสะสม: R0 = R0 + R1 (5 + 4 = 9)</td></tr>
+      <tr><td>5</td><td>110 (Dec)</td><td>0000 1001</td><td class="bin">0000 0011</td><td class="lead">ลดค่าตัวนับ: R1 = R1 - 1 (4 - 1 = 3)</td></tr>
+      <tr><td>6</td><td>010 (Add)</td><td class="bin">0000 1100</td><td>0000 0011</td><td class="lead">บวกสะสม: R0 = R0 + R1 (9 + 3 = 12)</td></tr>
+      <tr><td>7</td><td>110 (Dec)</td><td>0000 1100</td><td class="bin">0000 0010</td><td class="lead">ลดค่าตัวนับ: R1 = R1 - 1 (3 - 1 = 2)</td></tr>
+      <tr><td>8</td><td>010 (Add)</td><td class="bin">0000 1110</td><td>0000 0010</td><td class="lead">บวกสะสม: R0 = R0 + R1 (12 + 2 = 14)</td></tr>
+      <tr><td>9</td><td>110 (Dec)</td><td>0000 1110</td><td class="bin">0000 0001</td><td class="lead">ลดค่าตัวนับ: R1 = R1 - 1 (2 - 1 = 1)</td></tr>
+      <tr><td>10</td><td>010 (Add)</td><td class="bin">0000 1111</td><td>0000 0001</td><td class="lead">บวกสะสมรอบสุดท้าย: R0 = R0 + R1 (14 + 1 = 15)</td></tr>
+      <tr><td>11</td><td>110 (Dec)</td><td>0000 1111</td><td class="bin">0000 0000</td><td class="lead">ลดค่าตัวนับ: R1 = R1 - 1 (1 - 1 = 0)</td></tr>
+      <tr class="hl"><td>12</td><td>001 (Done)</td><td class="bin">0000 1111</td><td>0000 0000</td><td class="lead"><span class="badge-reset">เสร็จงาน แสดงผลลัพธ์เป็น 15 (0000 1111) ค้างรอ Reset</span></td></tr>
+    </tbody>
+  </table>
+
+  <p>จากการประเมิน วงจรสามารถจำลองและแสดงผลลัพธ์ได้ถูกต้องตามทฤษฎี และจะสิ้นสุดค้างสถานะ Output พิน Done ไว้เพื่อรอจนกว่าระบบจะได้รับสัญญาณ Reset จากผู้ใช้เพื่อล้าง Register และกลับไปทำงานที่จุดเริ่มต้นอีกครั้ง</p>
+  <figure class="fig">
+    <img src="report_img/sum_chronogram.png" style="max-width:85%" alt="สัญญาณ Chronogram ของวงจรสะสม">
+    <figcaption><b>รูปที่ 6</b> กราฟสัญญาณการวัดจังหวะ (Chronogram) ขณะทำการประมวลผลคำนวณบวกสะสม</figcaption>
+  </figure>
+</section>
+
+<!-- ============ 7. PROBLEMS ============ -->
+<section>
+  <h2 class="sec"><span class="num">7</span>ปัญหาที่พบและวิธีแก้ไข <span class="en">(Problems &amp; Solutions)</span></h2>
+  <div class="callout">
+    <span class="pb">ปัญหา 7.1:</span> ผลคำนวณสะสมใน Register R0 บวกเกินค่าจริง
+    <p><span class="sl">วิธีแก้ไข:</span> เกิดจาก Logic การเปลี่ยนผ่าน FSM ในส่วนตรวจสอบเงื่อนไข N ผิดพลาด ทำให้เมื่อ N=0 แล้ววงจรยังบวกสะสมต่อไปอีกหนึ่งรอบ Cycle ได้ทำการปรับแก้จุดเปลี่ยนผ่านใน Board Control Unit ให้เชื่อมเงื่อนไขตรวจสอบจาก Register R1 ตรงมายังการตรวจค่า 0 ทันที ทำให้สามารถตัดกระบวนการได้อย่างแม่นยำ</p>
+  </div>
+  <div class="callout">
+    <span class="pb">ปัญหา 7.2:</span> ข้อมูลใน Register สูญหายในจังหวะสลับเฟสการเขียน
+    <p><span class="sl">วิธีแก้ไข:</span> เนื่องจากจังหวะขาควบคุมสัญญาณการบันทึก (WE) ของ Register ขัดแย้งกับเฟสสัญญาณนาฬิกาหลัก จึงจัดสรรวงจรใหม่โดยเชื่อมสัญญาณ CLK หลักเข้าตรงที่อุปกรณ์ Register ทุกชุดโดยตรง และใช้สัญญาณขาควบคุมเฉพาะผ่าน Logic Gate ของหน่วย FSM เข้าสั่งเฉพาะขา Write Enable (WE) เท่านั้น</p>
+  </div>
+</section>
+
+<!-- ============ 8. CONCLUSION ============ -->
+<section style="page-break-before: always; break-before: always;">
+  <h2 class="sec"><span class="num">8</span>สรุปผล <span class="en">(Conclusion)</span></h2>
+  <p>การออกแบบและทดสอบวงจรคำนวณผลรวมสะสมจาก n ถึง 1 ด้วยโปรแกรม Logisim-Evolution ประสบความสำเร็จตามที่ตั้งเป้าหมายไว้ วงจรย่อยทุกส่วน ทั้งหน่วยประมวลผล (ALU) Register File (Register File) และวงจร Logic FSM ในส่วนควบคุม ทำงานร่วมกันแบบสอดประสานได้อย่างถูกต้อง สามารถประมวลผลการคำนวณและแสดงค่าสะสมขนาด 8 bit ได้สมบูรณ์และถูกต้องทุกจังหวะเวลา</p>
+  <p>ผู้เรียนได้ศึกษาและนำความรู้การออกแบบระบบแยกส่วนควบคุมและส่วนข้อมูล (Control Unit / Datapath) มาใช้อย่างเป็นรูปธรรม เข้าใจกระบวนการจัดส่ง Data Bus การระบุสถานะทางคำสั่ง FSM การอ่านและบันทึกค่าลง Register ซึ่งเป็นแนวคิดแกนหลักที่นิยมนำมาพัฒนาต่อยอดไปสู่การออกแบบ Processor ในระบบ Computer และชิปสมองกลฝังตัวระดับสูงขึ้นต่อไป</p>
+</section>
+
+<!-- ============ 9. APPENDIX ============ -->
+<section>
+  <h2 class="sec"><span class="num">9</span>ภาคผนวก <span class="en">(Appendix)</span></h2>
+  <p>รายละเอียดสัญญาณเสริมในวงจรคำนวณผลรวมสะสม n ถึง 1</p>
+  <table class="data">
+    <caption>ตารางที่ 3 รหัสเลือกการทำงานของ ALU (ALU Select) 8 Function</caption>
+    <thead><tr><th style="width:24%">รหัส (ALU2-0)</th><th style="width:30%">การทำหน้าที่ (Function)</th><th>คำอธิบาย Logic</th></tr></thead>
+    <tbody>
+      <tr><td>000</td><td>Pass A</td><td>ส่งผ่านข้อมูล A โดยไม่คำนวณ</td></tr>
+      <tr><td>001</td><td>AND</td><td>A AND B (Logic AND ระดับ bit)</td></tr>
+      <tr><td>010</td><td>OR</td><td>A OR B (Logic OR ระดับ bit)</td></tr>
+      <tr><td>011</td><td>NOT</td><td>NOT A (กลับ bit A ทั้งหมด)</td></tr>
+      <tr class="hl"><td>100</td><td>ADD</td><td>A + B (บวกข้อมูล 8 bit)</td></tr>
+      <tr><td>101</td><td>SUB</td><td>A - B (ลบข้อมูล 8 bit)</td></tr>
+      <tr><td>110</td><td>INC</td><td>A + 1 (เพิ่มข้อมูลขึ้นหนึ่ง)</td></tr>
+      <tr class="hl"><td>111</td><td>DEC</td><td>A - 1 (ลดข้อมูลลงหนึ่ง)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</body>
+</html>

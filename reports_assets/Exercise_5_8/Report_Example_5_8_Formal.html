@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>รายงานการทดลอง: การแปลงเลขฐานสิบหกเป็นทศนิยมด้วยวิธีลบซ้ำ (Example 5-8)</title>
+<style>
+  :root {
+    --ink: #1f2733;
+    --primary: #14496e;
+    --primary-2: #2b7bb9;
+    --accent: #0e9488;
+    --soft: #eef4f9;
+    --soft-2: #e5f3f1;
+    --line: #d5dee6;
+    --muted: #6b7785;
+    --amber: #b7791f;
+    --green: #1f7a4d;
+  }
+  @page {
+    size: A4;
+    margin: 18mm 16mm 16mm 16mm;
+    @bottom-center {
+      content: counter(page);
+      font-family: 'Sarabun', sans-serif;
+      font-size: 10pt;
+      color: #8a94a0;
+    }
+  }
+  
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Sarabun', 'TH Sarabun New', 'TH Sarabun PSK', sans-serif;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--ink);
+    margin: 0;
+    text-align: justify;
+  }
+  
+  /* Reset drop-cap for Thai text safety */
+  p::first-letter, span::first-letter {
+    font-size: inherit !important;
+    font-weight: inherit !important;
+    color: inherit !important;
+  }
+
+  p { margin: 0 0 6px 0; text-indent: 1.25cm; }
+  p.no-indent { text-indent: 0; }
+  
+  /* ---------- HEADER BLOCK ---------- */
+  .header-container {
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--primary);
+    border-radius: 8px;
+    padding: 12px 18px;
+    margin-bottom: 15px;
+    background: #fbfdff;
+  }
+  .header-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .header-table td {
+    padding: 2px 0;
+    vertical-align: top;
+    font-size: 13px;
+  }
+  .header-title {
+    font-size: 19px;
+    font-weight: 800;
+    color: var(--primary);
+    margin: 0 0 4px 0;
+    line-height: 1.3;
+  }
+  .header-subtitle {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--primary-2);
+    margin: 0 0 8px 0;
+  }
+  .members-title {
+    font-weight: 700;
+    color: var(--primary);
+    margin-top: 3px;
+  }
+  .members-list {
+    margin: 0;
+    padding-left: 18px;
+    font-size: 12.5px;
+    color: var(--ink);
+  }
+  .meta-info {
+    text-align: right;
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+  
+  /* ---------- SECTIONS ---------- */
+  h2.sec {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--primary);
+    margin: 15px 0 8px;
+    padding-bottom: 4px;
+    border-bottom: 2px solid var(--line);
+    break-after: avoid;
+    page-break-after: avoid;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  h2.sec .num {
+    flex: 0 0 auto;
+    width: 23px;
+    height: 23px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 5px;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+  }
+  
+  h3.sub {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 10px 0 4px;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  /* ---------- CODE BLOCKS ---------- */
+  pre.code {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 11.5px;
+    line-height: 1.45;
+    overflow-x: auto;
+    margin: 6px 0;
+    border-left: 4px solid var(--primary-2);
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  pre.code .comment { color: #6a9955; }
+  pre.code .directive { color: #569cd6; }
+  pre.code .instruction { color: #c586c0; }
+  pre.code .register { color: #9cdcfe; }
+  pre.code .label { color: #dcdcaa; font-weight: bold; }
+  pre.code .number { color: #b5cea8; }
+
+  /* ---------- TABLES ---------- */
+  table.data {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0;
+    font-size: 11.5px;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  table.data tr {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  table.data caption {
+    caption-side: top;
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 4px;
+    font-weight: 700;
+  }
+  table.data th {
+    background: var(--primary);
+    color: #fff;
+    font-weight: 700;
+    padding: 4px 6px;
+    text-align: center;
+    border: 1px solid #0f3a58;
+  }
+  table.data td {
+    padding: 3px 5px;
+    border: 1px solid var(--line);
+    vertical-align: middle;
+    text-align: center;
+  }
+  table.data tbody tr:nth-child(even) {
+    background: var(--soft);
+  }
+  .hex-address {
+    font-family: 'Consolas', monospace;
+    font-weight: bold;
+    color: var(--primary-2);
+  }
+  
+  /* ---------- DIAGRAM ---------- */
+  .diagram-container {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fbfdff;
+    padding: 6px;
+    margin: 8px 0;
+    text-align: center;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .diagram-container figcaption {
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-top: 5px;
+    font-weight: 700;
+  }
+  .diagram-container figcaption b {
+    color: var(--primary);
+  }
+
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER BLOCK ============ -->
+<div class="header-container">
+  <table class="header-table">
+    <tr>
+      <td style="width: 65%;">
+        <h1 class="header-title">รายงานการทดลอง: การแปลงเลขฐานสิบหกเป็นทศนิยมด้วยวิธีลบซ้ำ</h1>
+        <div class="header-subtitle">การวิเคราะห์และจำลองการคำนวณระดับคาบเวลาของคำสั่งคอมพิวเตอร์ (Example 5-8)</div>
+        <div class="members-title">ผู้จัดทำ:</div>
+        <ul class="members-list">
+          <li>นายดรัณภพ พิทักษ์กิจไพศาล (รหัสนักศึกษา 6710301007)</li>
+          <li>นายอภิสักก์ คงภักดี (รหัสนักศึกษา 6710301009)</li>
+          <li>นายธนัท จงธีรธนโชติ (รหัสนักศึกษา 6710301032)</li>
+        </ul>
+      </td>
+      <td style="width: 35%; text-align: right;">
+        <div class="meta-info">
+          <strong>วิชา:</strong> Embedded System Design<br>
+          <strong>เสนอ:</strong> อาจารย์คทาเทพ สวัสดิพิศาล<br>
+          <strong>ภาคการศึกษา:</strong> 1/2569<br>
+          <strong>สถาปัตยกรรม:</strong> AVR (ATmega328P)<br>
+          <strong>เครื่องมือ:</strong> Atmel Studio 7.0 &amp; Simulator
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<!-- ============ 1. LOGIC ANALYSIS ============ -->
+<section>
+  <h2 class="sec"><span class="num">1</span>การวิเคราะห์กลไกและขั้นตอนการทำงานของโปรแกรม <span style="color: var(--primary-2); font-size:13.5px; font-weight:700;">(Program Logic Analysis)</span></h2>
+  <p>ในสถาปัตยกรรมไมโครคอนโทรลเลอร์ขนาดเล็ก เช่น AVR ATmega328P ซึ่งจัดเป็นหน่วยประมวลผลแบบ RISC ไม่มีชุดคำสั่งฮาร์ดแวร์สำหรับหารเลข (Hardware Division) มาให้ในตัวชิป มีเพียงคำสั่งคูณ (MUL) เท่านั้น ดังนั้น การดำเนินการหารข้อมูลในระดับซอฟต์แวร์จึงมีความจำเป็น โดยวิธีพื้นฐานที่มีประสิทธิภาพและสิ้นเปลืองทรัพยากรระบบต่ำที่สุดสำหรับข้อมูลขนาด 8 บิต คือ <strong>วิธีการหักลบออกซ้ำ ๆ (Repeated Subtraction)</strong> ด้วยตัวหาร</p>
+  <p>โปรแกรมจำลอง Example 5-8 นี้ ทำหน้าที่แปลงข้อมูลเลขฐานสิบหกขนาด 8 บิต (ในที่นี้คือค่า <code>0xFD</code> หรือ 253 ในระบบเลขฐานสิบ) ซึ่งอ่านมาจากแรม SRAM ตำแหน่ง <code>0x315</code> ให้กลายเป็นเลขฐานสิบแยกหลัก BCD จำนวน 3 หลัก เพื่อนำไปเตรียมแสดงผล โดยหลักการทำงานจะแบ่งการคำนวณออกเป็น 2 รอบหลัก ดังนี้:</p>
+  <p><strong>1. การหารอบที่ 1 (หาหลักหน่วย):</strong> นำค่าตัวตั้งเริ่มต้น (253) มาหักลบออกด้วยตัวหารคงที่ 10 ไปเรื่อย ๆ ในลูป <code>L1</code> พร้อมทั้งนับจำนวนครั้งที่หักลบได้สะสมไว้ในตัวแปรผลหาร (Quotient) เมื่อผลลัพธ์การลบมีค่าต่ำกว่าศูนย์ (เกิด carry flag = 1 จากการกู้ยืม) วงจรจะออกจากลูป จากนั้นชดเชยค่าผลหารที่นับเกินไป 1 ครั้ง และบวกตัวหาร 10 คืนกลับไปที่ตัวตั้งเดิมเพื่อหาเศษที่เหลือ เศษลัพธ์สุดท้ายนี้คือ <strong>ตัวเลขหลักหน่วย (ค่า 3)</strong> ซึ่งจะบันทึกเก็บลงแรมตำแหน่ง <code>0x322</code> ส่วนผลหารรอบนี้ (ค่า 25) จะถูกส่งไปคำนวณในรอบถัดไป</p>
+  <p><strong>2. การหารอบที่ 2 (หาหลักสิบและร้อย):</strong> นำผลหารที่ได้จากรอบแรก (25) มาตั้งเป็นตัวตั้งใหม่ ทำการหักลบด้วยตัวหาร 10 ซ้ำในลูป <code>L2</code> ในลักษณะเดิม เศษที่เหลือหลังการลบจนเกิดค่ายืมจะกลายเป็น <strong>ตัวเลขหลักสิบ (ค่า 5)</strong> นำไปบันทึกที่ตำแหน่ง <code>0x323</code> และผลหารที่เหลือสุทธิรอบนี้จะกลายเป็น <strong>ตัวเลขหลักร้อย (ค่า 2)</strong> บันทึกลงตำแหน่ง <code>0x324</code> สิ้นสุดขั้นตอนโปรแกรม</p>
+
+  <div class="diagram-container" style="max-height: 380px; overflow: hidden;">
+    <svg viewBox="0 0 500 625" width="100%" height="100%" style="display: block; max-height: 350px; margin: 0 auto;">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#14496e" />
+        </marker>
+        <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+          <feDropShadow dx="1.5" dy="1.5" stdDeviation="1.5" flood-color="#a0b0c0" flood-opacity="0.3"/>
+        </filter>
+      </defs>
+
+      <!-- Start Block -->
+      <rect x="190" y="10" width="120" height="26" rx="13" ry="13" fill="#e5f3f1" stroke="#0e9488" stroke-width="1.5" filter="url(#shadow)" />
+      <text x="250" y="27" font-family="'Sarabun', sans-serif" font-size="11px" font-weight="bold" fill="#0e9488" text-anchor="middle">เริ่มต้น (Start)</text>
+      <path d="M 250 36 L 250 55" fill="none" stroke="#14496e" stroke-width="1.2" marker-end="url(#arrow)" />
+
+      <!-- Init block -->
+      <rect x="140" y="55" width="220" height="35" rx="4" ry="4" fill="#f0f5fa" stroke="#14496e" stroke-width="1.2" filter="url(#shadow)" />
+      <text x="250" y="69" font-family="'Sarabun', sans-serif" font-size="10.5px" fill="#1f2733" text-anchor="middle">NUM = SRAM [0x315] (0xFD)</text>
+      <text x="250" y="82" font-family="'Sarabun', sans-serif" font-size="10.5px" fill="#1f2733" text-anchor="middle">DENOM = 10, QUOT = 0</text>
+      <path d="M 250 90 L 250 100" fill="none" stroke="#14496e" stroke-width="1.2" marker-end="url(#arrow)" />
+
+      <!-- L1 Loop Block -->
+      <rect x="140" y="100" width="220" height="35" rx="4" ry="4" fill="#f0f5fa" stroke="#14496e" stroke-width="1.2" filter="url(#shadow)" />
+      <text x="250" y="114" font-family="'Sarabun', sans-serif" font-size="10.5px" font-weight="bold" fill="#14496e" text-anchor="middle">ลูป L1: เพิ่มค่าผลหารสะสม</text>
+      <text x="250" y="127" font-family="'Sarabun', sans-serif" font-size="10.5px" fill="#1f2733" text-anchor="middle">QUOT = QUOT + 1, NUM = NUM - 10</text>
+      <path d="M 250 135 L 250 150" fill="none" stroke="#14496e" stroke-width="1.2" marker-end="url(#arrow)" />
+
+      <!-- Condition L1 -->
+      <polygon points="250,150 295,172.5 250,195 205,172.5" fill="#fff9eb" stroke="#b7791f" stroke-width="1.2" filter="url(#shadow)" />
+      <text x="250" y="176" font-family="'Sarabun', sans-serif" font-size="10px" font-weight="bold" fill="#b7791f" text-anchor="middle">NUM &lt; 0 (C = 1)?</text>
+      
+      <!-- Loop back path (No) -->
+      <path d="M 295 172.5 L 380 172.5 L 380 117.5 L 360 117.5" fill="none" stroke="#b7791f" stroke-width="1.2" marker-end="url(#arrow)" />
+      <text x="345" y="167" font-family="'Sarabun', sans-serif" font-size="9.5px" fill="#b7791f" text-anchor="middle">ไม่ใช่ (C=0)</text>
+
+      <!-- Yes path to adjustment -->
+      <path d="M 250 195 L 250 215" fill="none" stroke="#14496e" stroke-width="1.2" marker-end="url(#arrow)" />
+      <text x="262" y="208" font-family="'Sarabun', sans-serif" font-size="9.5px" fill="#14496e" text-anchor="middle">ใช่ (C=1)</text>
+
+      <!-- L1 adjustment -->
+      <rect x="140" y="215" width="220" height="35" rx="4" ry="4" fill="#f0f5fa" stroke="#14496e" stroke-width="1.2" filter="url(#shadow)" />
+      <text x="250" y="229" font-family="'Sarabun', sans-serif" font-size="10.5px" fill="#1f2733" text-anchor="middle">ชดเชยค่า: QUOT = QUOT - 1</text>
+      <text x="250" y="242" font-family="'Sarabun', sans-serif" font-size="10.5px" fill="#1f2733" text-anchor="middle">คืนเศษที่ถูกต้อง: NUM = NUM + 10</text>
+      <path d="M 250 250 L 250 265" fill="none" stroke="#14496e" stroke-width="1.2" marker-end="url(#arrow)" />
+
+      <!-- Store digit 1 -->
+      <rect x="140" y="265" width="220" height="30" rx="4" ry="4" fill="#f0f5fa" stroke="#14496e" stroke-width="1.2" filter="url(#shadow)" />
+      <text x="250" y="284" font-family="'Sarabun', sans-serif" font-size="10.5px" fill="#1f7a4d" font-weight="bold" text-anchor="middle">SRAM [0x322] (หลักหน่วย) = NUM</text>
+      <path d="M 250 295 L 250 315" fill="none" stroke="#14496e" stroke-width="1.2" marker-end="url(#arrow)" />
+
+      <!-- Init L2 -->
+      <rect x="140" y="315" width="220" height="35" rx="4" ry="4" fill="#f0f5fa" stroke="#14496e" stroke-width="1.2" filter="url(#shadow)" />
+      <text x="250" y="329" font-family="'Sarabun', sans-serif" font-size="10.5px" fill="#1f2733" text-anchor="middle">ตั้งตัวตั้งใหม่: NUM = QUOTIENT</text>
+      <text x="250" y="342" font-family="'Sarabun', sans-serif" font-size="10.5px" fill="#1f2733" text-anchor="middle">ล้างค่าตัวสะสมผลหารใหม่: QUOT = 0</text>
+      <path d="M 250 350 L 250 365" fill="none" stroke="#14496e" stroke-width="1.2" marker-end="url(#arrow)" />
+
+      <!-- L2 Loop Block -->
+      <rect x="140" y="365" width="220" height="35" rx="4" ry="4" fill="#f0f5fa" stroke="#14496e" stroke-width="1.2" filter="url(#shadow)" />
+      <text x="250" y="379" font-family="'Sarabun', sans-serif" font-size="10.5px" font-weight="bold" fill="#14496e" text-anchor="middle">ลูป L2: เพิ่มค่าผลหารสะสม</text>
+      <text x="250" y="392" font-family="'Sarabun', sans-serif" font-size="10.5px" fill="#1f2733" text-anchor="middle">QUOT = QUOT + 1, NUM = NUM - 10</text>
+      <path d="M 250 400 L 250 415" fill="none" stroke="#14496e" stroke-width="1.2" marker-end="url(#arrow)" />
+
+      <!-- Condition L2 -->
+      <polygon points="250,415 295,437.5 250,460 205,437.5" fill="#fff9eb" stroke="#b7791f" stroke-width="1.2" filter="url(#shadow)" />
+      <text x="250" y="441" font-family="'Sarabun', sans-serif" font-size="10px" font-weight="bold" fill="#b7791f" text-anchor="middle">NUM &lt; 0 (C = 1)?</text>
+      
+      <!-- Loop back path L2 (No) -->
+      <path d="M 295 437.5 L 380 437.5 L 380 382.5 L 360 382.5" fill="none" stroke="#b7791f" stroke-width="1.2" marker-end="url(#arrow)" />
+      <text x="345" y="432" font-family="'Sarabun', sans-serif" font-size="9.5px" fill="#b7791f" text-anchor="middle">ไม่ใช่ (C=0)</text>
+
+      <!-- Yes path to L2 adjustment -->
+      <path d="M 250 460 L 250 480" fill="none" stroke="#14496e" stroke-width="1.2" marker-end="url(#arrow)" />
+      <text x="262" y="473" font-family="'Sarabun', sans-serif" font-size="9.5px" fill="#14496e" text-anchor="middle">ใช่ (C=1)</text>
+
+      <!-- L2 adjustment -->
+      <rect x="140" y="480" width="220" height="35" rx="4" ry="4" fill="#f0f5fa" stroke="#14496e" stroke-width="1.2" filter="url(#shadow)" />
+      <text x="250" y="494" font-family="'Sarabun', sans-serif" font-size="10.5px" fill="#1f2733" text-anchor="middle">ชดเชยค่า: QUOT = QUOT - 1</text>
+      <text x="250" y="507" font-family="'Sarabun', sans-serif" font-size="10.5px" fill="#1f2733" text-anchor="middle">คืนเศษที่ถูกต้อง: NUM = NUM + 10</text>
+      <path d="M 250 515 L 250 530" fill="none" stroke="#14496e" stroke-width="1.2" marker-end="url(#arrow)" />
+
+      <!-- Store digit 2 and 3 -->
+      <rect x="130" y="530" width="240" height="38" rx="4" ry="4" fill="#f0f5fa" stroke="#14496e" stroke-width="1.2" filter="url(#shadow)" />
+      <text x="250" y="544" font-family="'Sarabun', sans-serif" font-size="10.5px" fill="#1f7a4d" font-weight="bold" text-anchor="middle">SRAM [0x323] (หลักสิบ) = NUM</text>
+      <text x="250" y="559" font-family="'Sarabun', sans-serif" font-size="10.5px" fill="#1f7a4d" font-weight="bold" text-anchor="middle">SRAM [0x324] (หลักร้อย) = QUOT</text>
+      <path d="M 250 568 L 250 585" fill="none" stroke="#14496e" stroke-width="1.2" marker-end="url(#arrow)" />
+
+      <!-- End Block -->
+      <rect x="195" y="585" width="110" height="26" rx="13" ry="13" fill="#fde8e8" stroke="#e11d48" stroke-width="1.5" filter="url(#shadow)" />
+      <text x="250" y="602" font-family="'Sarabun', sans-serif" font-size="11px" font-weight="bold" fill="#e11d48" text-anchor="middle">จบการทำงาน (End)</text>
+    </svg>
+    <figcaption>รูปที่ 1 แผนผังลำดับขั้นตอนการทำงาน (Flowchart) ของโปรแกรมแยกหลัก BCD แบบลบซ้ำ</figcaption>
+  </div>
+</section>
+
+<!-- ============ PAGE BREAK FOR PRINTING ============ -->
+<div style="page-break-before: always; break-before: always;"></div>
+
+<!-- ============ 2. ASSEMBLY CODE ============ -->
+<section>
+  <h2 class="sec"><span class="num">2</span>โค้ดโปรแกรมภาษาแอสเซมบลีที่สมบูรณ์ <span style="color: var(--primary-2); font-size:13.5px; font-weight:700;">(AVR Assembly Program)</span></h2>
+  <p class="no-indent">ซอร์สโค้ดแอสเซมบลีสำหรับชิปไมโครคอนโทรลเลอร์ ATmega328P ซึ่งผ่านการตรวจสอบความถูกต้องและคอมไพล์สำเร็จ:</p>
+  <pre class="code">
+<span class="comment">;====================================================================
+; exercise_5_8.asm
+; แปลงค่า Hex 8 บิตที่ตำแหน่ง 0x315 เป็นตัวเลขทศนิยม (BCD) 3 หลักในแรม
+;====================================================================</span>
+
+<span class="directive">.include</span> "m328pdef.inc"    <span class="comment">; นำเข้าไฟล์ระบุนิยามของขาและรีจิสเตอร์ชิป</span>
+<span class="directive">.list</span>                      <span class="comment">; แสดงการออกไฟล์แจกแจงรายการคอมไพล์ (.lst)</span>
+
+    <span class="instruction">rjmp</span> <span class="label">main</span>              <span class="comment">; เริ่มต้นข้ามไปยังส่วนโปรแกรมหลักหลังสัญญาณ Reset</span>
+
+<span class="directive">.EQU</span> HEX_NUM = <span class="number">0x315</span>       <span class="comment">; ตำแหน่ง SRAM ที่เก็บเลขต้นทาง (0xFD = 253)</span>
+<span class="directive">.EQU</span> RMND_L  = <span class="number">0x322</span>       <span class="comment">; ตำแหน่ง SRAM เก็บเศษหลักหน่วย</span>
+<span class="directive">.EQU</span> RMND_M  = <span class="number">0x323</span>       <span class="comment">; ตำแหน่ง SRAM เก็บเศษหลักสิบ</span>
+<span class="directive">.EQU</span> RMND_H  = <span class="number">0x324</span>       <span class="comment">; ตำแหน่ง SRAM เก็บเศษหลักร้อย</span>
+
+<span class="directive">.DEF</span> NUM         = <span class="register">R20</span>     <span class="comment">; ตัวแปรเก็บตัวเลขคำนวณสะสม</span>
+<span class="directive">.DEF</span> DENOMINATOR = <span class="register">R21</span>     <span class="comment">; รีจิสเตอร์เก็บค่าคงที่ 10 (ตัวหาร)</span>
+<span class="directive">.DEF</span> QUOTIENT    = <span class="register">R22</span>     <span class="comment">; รีจิสเตอร์เก็บผลหารสะสมประจำรอบ</span>
+
+<span class="label">main:</span>
+    <span class="instruction">LDI</span>  <span class="register">R16</span>, <span class="number">0xFD</span>          <span class="comment">; โหลดตัวเลข 253 (0xFD) ลงใน R16</span>
+    <span class="instruction">STS</span>  HEX_NUM, <span class="register">R16</span>       <span class="comment">; บันทึกค่านำเข้าไว้ในหน่วยความจำตำแหน่ง 0x315</span>
+    <span class="instruction">LDS</span>  NUM, HEX_NUM       <span class="comment">; ดึงค่าจาก 0x315 มาพักในรีจิสเตอร์หลัก NUM</span>
+    <span class="instruction">LDI</span>  DENOMINATOR, <span class="number">10</span>    <span class="comment">; กำหนดค่าตัวหารคงที่เท่ากับ 10</span>
+    <span class="instruction">CLR</span>  QUOTIENT           <span class="comment">; ล้างค่าสะสมผลหารเริ่มแรกให้เป็น 0</span>
+
+<span class="label">L1:</span>
+    <span class="instruction">INC</span>  QUOTIENT           <span class="comment">; บวกเพิ่มผลหารประจำรอบขึ้น 1 ครั้ง</span>
+    <span class="instruction">SUB</span>  NUM, DENOMINATOR   <span class="comment">; ทำการลบตัวตั้งออกด้วยตัวหารคงที่ 10</span>
+    <span class="instruction">BRCC</span> <span class="label">L1</span>                 <span class="comment">; วนซ้ำลูป L1 หาก Carry Flag เป็น 0 (NUM >= 0)</span>
+    <span class="instruction">DEC</span>  QUOTIENT           <span class="comment">; หักลบชดเชยรอบผลหารที่เกินไป 1 ครั้ง</span>
+    <span class="instruction">ADD</span>  NUM, DENOMINATOR   <span class="comment">; บวกตัวหารกลับคืนเพื่อรับค่าเศษเหลือหลักหน่วย</span>
+    <span class="instruction">STS</span>  RMND_L, NUM        <span class="comment">; บันทึกผลหลักหน่วย (3) ไว้ที่ SRAM 0x322</span>
+
+    <span class="instruction">MOV</span>  NUM, QUOTIENT      <span class="comment">; ย้ายผลหารรอบที่แล้ว (25) มาตั้งเป็นตัวตั้งใหม่</span>
+    <span class="instruction">LDI</span>  QUOTIENT, <span class="number">0</span>        <span class="comment">; ล้างผลหารรอบใหม่เพื่อเตรียมตัวนับในลูป L2</span>
+
+<span class="label">L2:</span>
+    <span class="instruction">INC</span>  QUOTIENT           <span class="comment">; บวกเพิ่มผลหารประจำรอบขึ้น 1 ครั้ง</span>
+    <span class="instruction">SUB</span>  NUM, DENOMINATOR   <span class="comment">; หักลบออกด้วย 10 ซ้ำ</span>
+    <span class="instruction">BRCC</span> <span class="label">L2</span>                 <span class="comment">; วนซ้ำลูป L2 หาก Carry Flag เป็น 0</span>
+    <span class="instruction">DEC</span>  QUOTIENT           <span class="comment">; หักลบชดเชยรอบผลหารที่เกินไป 1 ครั้ง</span>
+    <span class="instruction">ADD</span>  NUM, DENOMINATOR   <span class="comment">; บวกคืนค่าคงที่ 10 เพื่อรับเศษเหลือหลักสิบ</span>
+    <span class="instruction">STS</span>  RMND_M, NUM        <span class="comment">; บันทึกผลหลักสิบ (5) ไว้ที่ SRAM 0x323</span>
+    <span class="instruction">STS</span>  RMND_H, QUOTIENT   <span class="comment">; บันทึกผลหลักร้อยสุทธิ (2) ไว้ที่ SRAM 0x324</span>
+
+<span class="label">here:</span>
+    <span class="instruction">rjmp</span> <span class="label">here</span>              <span class="comment">; วนจบลูปค้างไว้ตลอดไป</span></pre>
+</section>
+
+<!-- ============ PAGE BREAK FOR PRINTING ============ -->
+<div style="page-break-before: always; break-before: always;"></div>
+
+<!-- ============ 3. SIMULATION RESULTS ============ -->
+<section>
+  <h2 class="sec"><span class="num">3</span>ผลการจำลองการทำงานระดับคาบเวลาและหน่วยความจำ <span style="color: var(--primary-2); font-size:13.5px; font-weight:700;">(Simulation Results)</span></h2>
+  <p>การวิเคราะห์เชิงลึกผ่านการจำลองโปรแกรมจำลองของ Atmel Studio 7.0 พบพฤติกรรมของสเตตและรีจิสเตอร์ในจังหวะสำคัญ ๆ ดังตารางบันทึกการประมวลผล (SRAM Trace) ด้านล่าง:</p>
+  
+  <table class="data">
+    <caption>ตารางที่ 2 บันทึกการจำลองการทำงานของรีจิสเตอร์สำคัญตามคาบเวลาประมวลผล (สรุปส่วนจุดเปลี่ยนสำคัญ)</caption>
+    <thead>
+      <tr>
+        <th style="width: 10%;">คาบเวลา (Cycle)</th>
+        <th style="width: 8%;">PC</th>
+        <th style="width: 25%;">คำสั่ง (Instruction)</th>
+        <th style="width: 32%;">สถานะของรีจิสเตอร์</th>
+        <th style="width: 20%;">ค่าใน SRAM ปัจจุบัน</th>
+        <th style="width: 5%;">Carry</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="hl">
+        <td>0</td>
+        <td>-</td>
+        <td>- (ก่อนเริ่มโปรแกรม)</td>
+        <td>R16=00, NUM=00, DENOM=00, QUOT=00</td>
+        <td>-</td>
+        <td>0</td>
+      </tr>
+      <tr class="hl">
+        <td colspan="6"><strong>การคำนวณในลูป L1 (หักลบค่าครั้งที่ 1, 25 และ 26 ตามลำดับ)</strong></td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td>0x0007</td>
+        <td>INC QUOTIENT (รอบที่ 1)</td>
+        <td>R16=FD, NUM=253, DENOM=10, QUOT=01</td>
+        <td>[0x315] = 0xFD</td>
+        <td>0</td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td>0x0008</td>
+        <td>SUB NUM, DENOMINATOR</td>
+        <td>R16=FD, NUM=243, DENOM=10, QUOT=01</td>
+        <td>[0x315] = 0xFD</td>
+        <td>0</td>
+      </tr>
+      <tr>
+        <td>80</td>
+        <td>0x0008</td>
+        <td>SUB NUM, DENOMINATOR (รอบ 25)</td>
+        <td>R16=FD, NUM=3, DENOM=10, QUOT=25</td>
+        <td>[0x315] = 0xFD</td>
+        <td>0</td>
+      </tr>
+      <tr>
+        <td>82</td>
+        <td>0x0007</td>
+        <td>INC QUOTIENT (รอบที่ 26)</td>
+        <td>R16=FD, NUM=3, DENOM=10, QUOT=26</td>
+        <td>[0x315] = 0xFD</td>
+        <td>0</td>
+      </tr>
+      <tr class="hl">
+        <td>83</td>
+        <td>0x0008</td>
+        <td>SUB NUM, DENOMINATOR</td>
+        <td>R16=FD, NUM=249 (-7), DENOM=10, QUOT=26</td>
+        <td>[0x315] = 0xFD</td>
+        <td>1</td>
+      </tr>
+      <tr>
+        <td>84</td>
+        <td>0x0009</td>
+        <td>BRCC L1 (ไม่กระโดด)</td>
+        <td>R16=FD, NUM=249, DENOM=10, QUOT=26</td>
+        <td>[0x315] = 0xFD</td>
+        <td>1</td>
+      </tr>
+      <tr>
+        <td>85</td>
+        <td>0x000A</td>
+        <td>DEC QUOTIENT (ชดเชยรอบเกิน)</td>
+        <td>R16=FD, NUM=249, DENOM=10, QUOT=25</td>
+        <td>[0x315] = 0xFD</td>
+        <td>1</td>
+      </tr>
+      <tr>
+        <td>86</td>
+        <td>0x000B</td>
+        <td>ADD NUM, DENOMINATOR (คืนเศษบวก)</td>
+        <td>R16=FD, NUM=3 (เศษหลักหน่วย), DENOM=10, QUOT=25</td>
+        <td>[0x315] = 0xFD</td>
+        <td>0</td>
+      </tr>
+      <tr class="hl">
+        <td>88</td>
+        <td>0x000C</td>
+        <td>STS RMND_L, NUM</td>
+        <td>R16=FD, NUM=3, DENOM=10, QUOT=25</td>
+        <td>[0x322] = 0x03 (บันทึกหลักหน่วย)</td>
+        <td>0</td>
+      </tr>
+      <tr class="hl">
+        <td colspan="6"><strong>การคำนวณในลูป L2 (หารรอบที่สอง: นำ 25 มาหารต่อด้วย 10 ทั้งหมด 3 ครั้ง)</strong></td>
+      </tr>
+      <tr>
+        <td>89</td>
+        <td>0x000E</td>
+        <td>MOV NUM, QUOTIENT</td>
+        <td>R16=FD, NUM=25, DENOM=10, QUOT=25</td>
+        <td>[0x322] = 0x03</td>
+        <td>0</td>
+      </tr>
+      <tr>
+        <td>90</td>
+        <td>0x000F</td>
+        <td>LDI QUOTIENT, 0</td>
+        <td>R16=FD, NUM=25, DENOM=10, QUOT=00</td>
+        <td>[0x322] = 0x03</td>
+        <td>0</td>
+      </tr>
+      <tr>
+        <td>93</td>
+        <td>0x0011</td>
+        <td>SUB NUM, DENOMINATOR (รอบ 2)</td>
+        <td>R16=FD, NUM=5, DENOM=10, QUOT=02</td>
+        <td>[0x322] = 0x03</td>
+        <td>0</td>
+      </tr>
+      <tr class="hl">
+        <td>97</td>
+        <td>0x0011</td>
+        <td>SUB NUM, DENOMINATOR (รอบ 3)</td>
+        <td>R16=FD, NUM=251 (-5), DENOM=10, QUOT=03</td>
+        <td>[0x322] = 0x03</td>
+        <td>1</td>
+      </tr>
+      <tr>
+        <td>99</td>
+        <td>0x0013</td>
+        <td>DEC QUOTIENT (ชดเชยรอบเกิน)</td>
+        <td>R16=FD, NUM=251, DENOM=10, QUOT=02</td>
+        <td>[0x322] = 0x03</td>
+        <td>1</td>
+      </tr>
+      <tr>
+        <td>100</td>
+        <td>0x0014</td>
+        <td>ADD NUM, DENOMINATOR (คืนเศษบวก)</td>
+        <td>R16=FD, NUM=5 (เศษหลักสิบ), DENOM=10, QUOT=02</td>
+        <td>[0x322] = 0x03</td>
+        <td>0</td>
+      </tr>
+      <tr class="hl">
+        <td>102</td>
+        <td>0x0015</td>
+        <td>STS RMND_M, NUM</td>
+        <td>R16=FD, NUM=5, DENOM=10, QUOT=02</td>
+        <td>[0x322]=03, [0x323]=05</td>
+        <td>0</td>
+      </tr>
+      <tr class="hl">
+        <td>104</td>
+        <td>0x0017</td>
+        <td>STS RMND_H, QUOTIENT</td>
+        <td>R16=FD, NUM=5, DENOM=10, QUOT=02</td>
+        <td>[0x322]=03, [0x323]=05, [0x324]=02</td>
+        <td>0</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">3.1 ผลลัพธ์ข้อมูลจำลองบนระบบ SRAM (SRAM Memory Map Dump)</h3>
+  <p class="no-indent">ผลลัพธ์การบันทึกค่าลงหน่วยความจำประเภท SRAM ณ สิ้นสุดการจำลองของโปรแกรม ซึ่งแยกหลักออกมาเป็น BCD ได้ถูกต้อง:</p>
+  
+  <table class="data" style="width: auto; margin: 6px auto;">
+    <thead>
+      <tr>
+        <th>ช่วงตำแหน่งแรม (Address Block)</th>
+        <th class="hex-address">+0</th>
+        <th class="hex-address">+1</th>
+        <th class="hex-address">+2</th>
+        <th class="hex-address">+3</th>
+        <th class="hex-address">+4</th>
+        <th class="hex-address">+5</th>
+        <th class="hex-address">+6</th>
+        <th class="hex-address">+7</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="hex-address">0x0310</td>
+        <td>00</td>
+        <td>00</td>
+        <td>00</td>
+        <td>00</td>
+        <td>00</td>
+        <td style="background: var(--soft-2); font-weight: bold; color: var(--primary);">FD</td>
+        <td>00</td>
+        <td>00</td>
+      </tr>
+      <tr>
+        <td class="hex-address">0x0320</td>
+        <td>00</td>
+        <td>00</td>
+        <td style="background: var(--soft-2); font-weight: bold; color: var(--green);">03</td>
+        <td style="background: var(--soft-2); font-weight: bold; color: var(--green);">05</td>
+        <td style="background: var(--soft-2); font-weight: bold; color: var(--green);">02</td>
+        <td>00</td>
+        <td>00</td>
+        <td>00</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="no-indent" style="font-size: 12px; color: var(--muted); text-align: center; margin-top: -3px;">
+    *หมายเหตุ: ที่อยู่ <code>0x315</code> เก็บค่านำเข้า <code>FD</code> (253) และเก็บผลลัพธ์แยกหลัก 3, 5, 2 ที่หน่วยความจำ <code>0x322</code>, <code>0x323</code>, <code>0x324</code> ตามลำดับ
+  </p>
+
+  <!-- ============ PAGE BREAK FOR PRINTING ============ -->
+  <div style="page-break-before: always; break-before: always;"></div>
+
+  <h3 class="sub" style="margin-top: 15px;">3.2 ภาพถ่ายบันทึกผลการจำลองหน่วยความจำ (Simulation memory screenshots)</h3>
+  <p class="no-indent">ภาพแสดงตำแหน่งหน่วยความจำที่เกี่ยวข้องจากการจำลองการทำงานจริงใน Atmel Studio 7.0 Memory Window:</p>
+  <div class="image-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; break-inside: avoid; page-break-inside: avoid;">
+    <div style="text-align: center; border: 1px solid var(--line); border-radius: 6px; padding: 4px; background: #fff;">
+      <img src="report_img/memory_0x0315.png" style="width: 100%; height: auto; border-radius: 4px;" />
+      <div style="font-size: 11px; color: var(--muted); margin-top: 4px; font-weight: 700;">รูปที่ 2.1 แสดงค่าในแรมเริ่มจากที่อยู่ 0x0315 (ค่าตั้งต้น 0xFD และผล BCD)</div>
+    </div>
+    <div style="text-align: center; border: 1px solid var(--line); border-radius: 6px; padding: 4px; background: #fff;">
+      <img src="report_img/memory_0x0322.png" style="width: 100%; height: auto; border-radius: 4px;" />
+      <div style="font-size: 11px; color: var(--muted); margin-top: 4px; font-weight: 700;">รูปที่ 2.2 แสดงหลักหน่วยเริ่มจากที่อยู่ 0x0322 (0x03)</div>
+    </div>
+    <div style="text-align: center; border: 1px solid var(--line); border-radius: 6px; padding: 4px; background: #fff;">
+      <img src="report_img/memory_0x0323.png" style="width: 100%; height: auto; border-radius: 4px;" />
+      <div style="font-size: 11px; color: var(--muted); margin-top: 4px; font-weight: 700;">รูปที่ 2.3 แสดงหลักสิบเริ่มจากที่อยู่ 0x0323 (0x05)</div>
+    </div>
+    <div style="text-align: center; border: 1px solid var(--line); border-radius: 6px; padding: 4px; background: #fff;">
+      <img src="report_img/memory_0x0324.png" style="width: 100%; height: auto; border-radius: 4px;" />
+      <div style="font-size: 11px; color: var(--muted); margin-top: 4px; font-weight: 700;">รูปที่ 2.4 แสดงหลักร้อยเริ่มจากที่อยู่ 0x0324 (0x02)</div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>รายงานการทดลองที่ 3: Proteus and AVR Microcontroller</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
+
+    :root {
+      --primary: #14496e;
+      --primary-2: #0f3a58;
+      --accent: #0e9488;
+      --ink: #1e293b;
+      --line: #e2e8f0;
+      --soft-1: #f1f5f9;
+      --soft-2: #f8fafc;
+      --muted: #64748b;
+    }
+
+    /* Page size & margins */
+    @page {
+      size: A4 portrait;
+      margin: 12mm 20mm;
+    }
+
+    @page :first {
+      margin: 0;
+    }
+
+    html[lang="th"] {
+      font-size: 106.25%; /* Optimize Thai and Latin heights */
+    }
+
+    body {
+      font-family: 'Sarabun', 'TH Sarabun New', 'TH Sarabun PSK', sans-serif;
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--ink);
+      text-align: left;
+      margin: 0;
+      padding: 0;
+    }
+
+    p::first-letter, span::first-letter, li::first-letter {
+      all: unset;
+    }
+
+    p {
+      margin: 0 0 10px 0;
+      text-indent: 1.25cm;
+    }
+
+    /* Headings */
+    h1 {
+      font-size: 20pt;
+      color: var(--primary);
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 5px;
+    }
+
+    h2 {
+      font-size: 16pt;
+      color: var(--accent);
+      font-weight: bold;
+      margin-top: 5px;
+      margin-bottom: 12px;
+      border-left: 5px solid var(--primary);
+      padding-left: 12px;
+      break-after: avoid;
+      page-break-after: avoid;
+    }
+
+    h3 {
+      font-size: 14.5pt;
+      color: var(--primary-2);
+      font-weight: bold;
+      margin-top: 20px;
+      margin-bottom: 8px;
+      break-after: avoid;
+      page-break-after: avoid;
+    }
+
+    h4 {
+      font-size: 13pt;
+      color: var(--ink);
+      font-weight: bold;
+      margin-top: 15px;
+      margin-bottom: 6px;
+      break-after: avoid;
+      page-break-after: avoid;
+    }
+
+    /* Cover Page */
+    .cover {
+      min-height: 247mm;
+      height: auto;
+      page-break-after: always;
+      break-after: always;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 30mm 20mm;
+      box-sizing: border-box;
+      background-color: var(--soft-2);
+      border-top: 10px solid var(--primary);
+      border-bottom: 10px solid var(--accent);
+    }
+
+    .cover-header {
+      text-align: center;
+    }
+
+    .cover-header h1.en {
+      font-size: 18pt;
+      color: var(--muted);
+      margin-top: 5px;
+      font-weight: normal;
+    }
+
+    .cover-middle {
+      text-align: center;
+      margin: 20mm 0;
+    }
+
+    .cover-middle .subtitle {
+      font-size: 16pt;
+      color: var(--primary-2);
+      font-weight: bold;
+    }
+
+    .cover-middle .course {
+      font-size: 14pt;
+      color: var(--ink);
+      margin-top: 10px;
+    }
+
+    .cover-footer {
+      margin-top: auto;
+      text-align: center;
+    }
+
+    .cover-footer .sub-title {
+      font-size: 13pt;
+      font-weight: bold;
+      color: var(--primary-2);
+      margin-bottom: 12px;
+      text-indent: 0;
+    }
+
+    .members {
+      width: 80%;
+      margin: 0 auto 20px auto;
+      border-collapse: collapse;
+      font-size: 13pt;
+    }
+
+    .members td {
+      padding: 6px 12px;
+      border: none;
+      text-indent: 0;
+    }
+
+    .members td.num {
+      width: 10%;
+      text-align: right;
+      font-weight: bold;
+      color: var(--accent);
+    }
+
+    .members td.name {
+      width: 60%;
+      text-align: left;
+    }
+
+    .members td.id {
+      width: 30%;
+      text-align: left;
+      font-family: Consolas, monospace;
+      color: var(--muted);
+    }
+
+    .instructor {
+      font-size: 13pt;
+      font-weight: 500;
+      color: var(--ink);
+      margin-top: 25px;
+      text-indent: 0;
+    }
+
+    .semester {
+      font-size: 11pt;
+      color: var(--muted);
+      margin-top: 8px;
+      text-indent: 0;
+    }
+
+    /* Table of Contents */
+    .toc {
+      page-break-after: always;
+      break-after: always;
+      padding: 10mm 5mm;
+    }
+
+    .toc ul {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+    }
+
+    .toc li {
+      margin-bottom: 10px;
+      text-indent: 0;
+    }
+
+    .toc li.lv1 {
+      font-weight: bold;
+      margin-top: 15px;
+    }
+
+    .toc li.lv2 {
+      padding-left: 20px;
+      font-weight: normal;
+    }
+
+    .toc a {
+      display: flex;
+      align-items: baseline;
+      text-decoration: none;
+      color: var(--ink);
+    }
+
+    .toc .title {
+      flex-shrink: 0;
+    }
+
+    .toc .dots {
+      flex-grow: 1;
+      border-bottom: 2px dotted var(--line);
+      margin: 0 10px;
+      position: relative;
+      top: -4px;
+    }
+
+    .toc .page {
+      flex-shrink: 0;
+      font-weight: bold;
+      color: var(--primary);
+    }
+
+    /* Content styling */
+    .section-content {
+      margin-bottom: 25px;
+    }
+
+    /* Code Blocks */
+    pre.code-block {
+      background-color: var(--soft-2);
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--primary);
+      padding: 8px 12px;
+      font-family: Consolas, Monaco, 'Courier New', monospace;
+      font-size: 10.5pt;
+      line-height: 1.35;
+      overflow-x: auto;
+      margin: 8px 0;
+      border-radius: 0 4px 4px 0;
+      text-indent: 0;
+    }
+
+    /* Tables */
+    table.data-table {
+      width: 100%;
+      margin: 15px 0;
+      border-collapse: collapse;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    table.data-table th, table.data-table td {
+      border: 1px solid var(--line);
+      padding: 8px 12px;
+      font-size: 12pt;
+      text-align: left;
+      text-indent: 0;
+    }
+
+    table.data-table th {
+      background-color: var(--primary);
+      color: white;
+      font-weight: bold;
+    }
+
+    table.data-table tr:nth-child(even) {
+      background-color: var(--soft-1);
+    }
+
+    table.explanation-table {
+      width: 100%;
+      margin: 15px 0 25px 0;
+      border-collapse: collapse;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    table.explanation-table th, table.explanation-table td {
+      border: 1px solid var(--line);
+      padding: 8px 12px;
+      font-size: 11.5pt;
+      text-indent: 0;
+    }
+
+    table.explanation-table th {
+      background-color: var(--primary-2);
+      color: white;
+      font-weight: bold;
+    }
+
+    table.explanation-table td.code-cell {
+      font-family: Consolas, monospace;
+      font-weight: 500;
+      color: var(--primary);
+      width: 30%;
+    }
+
+    table.explanation-table tr:nth-child(even) {
+      background-color: var(--soft-2);
+    }
+
+    /* Callouts */
+    .callout {
+      background-color: var(--soft-2);
+      border-left: 4px solid var(--accent);
+      padding: 12px 18px;
+      margin: 15px 0;
+      border-radius: 0 4px 4px 0;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .callout p {
+      margin: 0;
+      text-indent: 0;
+    }
+
+    /* Figures and Diagrams */
+    figure {
+      text-align: center;
+      margin: 20px 0;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    figure img {
+      max-width: 90%;
+      max-height: 380px;
+      height: auto;
+      border: 1px solid var(--line);
+      padding: 5px;
+      background-color: white;
+    }
+
+    figcaption {
+      font-size: 11.5pt;
+      color: var(--muted);
+      margin-top: 8px;
+      font-weight: 500;
+    }
+
+    .diagram-container {
+      max-width: 480px;
+      margin: 0 auto;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    /* Specific layout splits for PDF printing */
+    .page-break {
+      page-break-before: always;
+      break-before: page;
+    }
+
+    .screenshot-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin: 20px 0;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .screenshot-grid figure {
+      margin: 0;
+    }
+
+    .screenshot-grid img {
+      width: 100%;
+      height: auto;
+      max-height: 200px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ 1. COVER ============ -->
+  <div class="cover">
+    <div class="cover-header">
+      <h1>รายงานการทดลองที่ 3</h1>
+      <h1 class="en">Lab 3: Proteus and The AVR Microcontroller</h1>
+    </div>
+    
+    <div class="cover-middle">
+      <span class="subtitle">การทดสอบระบบจำลองวงจรและไมโครคอนโทรลเลอร์ AVR</span>
+      <div class="course">รายวิชา Embedded System Design</div>
+    </div>
+    
+    <div class="cover-footer">
+      <div class="sub-title">จัดทำโดย</div>
+      <table class="members">
+        <tr>
+          <td class="num">1.</td>
+          <td class="name">นายดรัณภพ พิทักษ์กิจไพศาล</td>
+          <td class="id">6710301007</td>
+        </tr>
+        <tr>
+          <td class="num">2.</td>
+          <td class="name">นายอภิสักก์ คงภักดี</td>
+          <td class="id">6710301009</td>
+        </tr>
+        <tr>
+          <td class="num">3.</td>
+          <td class="name">นายธนัท จงธีรธนโชติ</td>
+          <td class="id">6710301032</td>
+        </tr>
+      </table>
+      
+      <div class="instructor">เสนอ &nbsp;อาจารย์คทาเทพ สวัสดิพิศาล</div>
+      <div class="semester">ภาคการศึกษาที่ 1 ปีการศึกษา 2569</div>
+    </div>
+  </div>
+
+  <!-- ============ 2. TABLE OF CONTENTS ============ -->
+  <div class="toc">
+    <h1>สารบัญ</h1>
+    <ul>
+      <li class="lv1"><a href="#s1"><span class="title">1. บทนำ</span><span class="dots"></span><span class="page">3</span></a></li>
+      <li class="lv1"><a href="#s2"><span class="title">2. วัตถุประสงค์ของการทดลอง</span><span class="dots"></span><span class="page">3</span></a></li>
+      <li class="lv1"><a href="#s3"><span class="title">3. เครื่องมือและอุปกรณ์</span><span class="dots"></span><span class="page">3</span></a></li>
+      <li class="lv1"><a href="#s4"><span class="title">4. แนวคิดการออกแบบและทดสอบ</span><span class="dots"></span><span class="page">4</span></a></li>
+      <li class="lv1"><a href="#s5"><span class="title">5. การทำงานส่วนย่อย</span><span class="dots"></span><span class="page">4</span></a></li>
+      <li class="lv1"><a href="#s6"><span class="title">6. โครงสร้างโปรแกรมและคำอธิบายโค้ด</span><span class="dots"></span><span class="page">5</span></a></li>
+      <li class="lv2"><a href="#s6-1"><span class="title">6.1 รหัสต้นฉบับภาษา Assembly (แบบดั้งเดิม)</span><span class="dots"></span><span class="page">5</span></a></li>
+      <li class="lv2"><a href="#s6-2"><span class="title">6.2 รหัสต้นฉบับภาษา Assembly (แบบแก้ไขเพิ่มเติม)</span><span class="dots"></span><span class="page">7</span></a></li>
+      <li class="lv2"><a href="#s6-3"><span class="title">6.3 รหัสต้นฉบับภาษา C (งานการบ้าน)</span><span class="dots"></span><span class="page">10</span></a></li>
+      <li class="lv1"><a href="#s7"><span class="title">7. ผลการจำลองการทำงาน</span><span class="dots"></span><span class="page">13</span></a></li>
+      <li class="lv1"><a href="#s8"><span class="title">8. ขั้นตอนการทดลองและจำลองสถานการณ์</span><span class="dots"></span><span class="page">14</span></a></li>
+      <li class="lv1"><a href="#s9"><span class="title">9. ข้อสังเกตและข้อควรระวัง</span><span class="dots"></span><span class="page">15</span></a></li>
+      <li class="lv1"><a href="#s10"><span class="title">10. สรุปผลการทดลอง</span><span class="dots"></span><span class="page">15</span></a></li>
+      <li class="lv1"><a href="#s11"><span class="title">11. เอกสารอ้างอิง</span><span class="dots"></span><span class="page">15</span></a></li>
+    </ul>
+  </div>
+
+  <!-- ============ 3. CONTENT ============ -->
+  <div class="section-content page-break" id="s1">
+    <h2>1. บทนำ</h2>
+    <p>การพัฒนาโครงงานอิเล็กทรอนิกส์และระบบสมองกลฝังตัวในยุคปัจจุบัน จำเป็นต้องอาศัยซอฟต์แวร์จำลองสถานการณ์ก่อนสร้างต้นแบบจริง เพื่อเพิ่มความเร็วในการทดสอบระบบและลดความเสียหายที่อาจเกิดขึ้นกับฮาร์ดแวร์จริง ซอฟต์แวร์ Proteus VSM (Virtual System Modeling) เป็นเครื่องมือจำลองประสิทธิภาพสูงที่มีบทบาทสำคัญในการทดสอบปฏิสัมพันธ์ระหว่างซอฟต์แวร์ที่ทำงานบนไมโครคอนโทรลเลอร์กับวงจรสัญญาณอนาล็อกและดิจิทัลรอบตัวเสมือนใช้งานบนบอร์ดฮาร์ดแวร์จริง</p>
+    <p>ในการทดลองนี้ เรามุ่งศึกษาชิปไมโครคอนโทรลเลอร์ AVR รุ่น ATmega328P ซึ่งเป็นแกนประมวลผลขนาด 8 Bit ที่ได้รับความนิยมอย่างแพร่หลาย โดยประยุกต์ใช้งานร่วมกับ Atmel Studio 7 ในการเขียนและพัฒนาซอร์สโค้ดทั้งภาษา Assembly และภาษา C รวมถึงคอมไพล์โค้ดเป็นรหัสเครื่องในรูปไฟล์ประเภท Intel Hex เพื่อป้อนให้กับระบบจำลอง Proteus ต่อไป</p>
+  </div>
+
+  <div class="section-content" id="s2">
+    <h2>2. วัตถุประสงค์ของการทดลอง</h2>
+    <p>1) เพื่อศึกษาและทำความเข้าใจกระบวนการพัฒนาซอฟต์แวร์บน Atmel Studio 7 ทั้งภาษา Assembly และ C</p>
+    <p>2) เพื่อเรียนรู้ขั้นตอนการต่อวงจรและออกแบบระบบไมโครคอนโทรลเลอร์ ATmega328P บนระบบ Proteus VSM</p>
+    <p>3) เพื่อทำความเข้าใจวิธีการนำไฟล์สัญญาอนุญาต Intel Hex ไปใช้และตั้งค่า Parameter ต่างๆ ของชิปจำลองในโปรแกรม Proteus</p>
+    <p>4) เพื่อฝึกทักษะการวิเคราะห์ พัฒนา และแก้ไขโปรแกรมควบคุมไฟกระพริบเพื่อแก้ปัญหาเฉพาะหน้าตามโจทย์ที่ได้รับมอบหมาย</p>
+  </div>
+
+  <div class="section-content" id="s3">
+    <h2>3. เครื่องมือและอุปกรณ์</h2>
+    <p>การทดลองนี้เป็นการปฏิบัติการบนซอฟต์แวร์จำลองคอมพิวเตอร์ทั้งหมด ประกอบด้วยเครื่องมือดังรายการต่อไปนี้:</p>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ประเภท</th>
+          <th>ชื่อเครื่องมือ / อุปกรณ์</th>
+          <th>เวอร์ชัน / รายละเอียด</th>
+          <th>หน้าที่ในการทดลอง</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Software IDE</td>
+          <td>Atmel Studio 7.0</td>
+          <td>7.0.2389 (Full Package)</td>
+          <td>ใช้สำหรับเขียนโปรแกรม ประกอบโค้ดภาษา Assembly และ C รวมถึงการ Build และ Debug โค้ด</td>
+        </tr>
+        <tr>
+          <td>Software Simulator</td>
+          <td>Proteus Professional / Demo</td>
+          <td>9.2.44740 (Demonstration)</td>
+          <td>ใช้วาดแผนผังวงจรอิเล็กทรอนิกส์และจำลองการประมวลผลระดับสัญญาณเวฟฟอร์มร่วมกับ Hex File</td>
+        </tr>
+        <tr>
+          <td>Microcontroller</td>
+          <td>ATmega328P</td>
+          <td>8-bit AVR microcontroller (Virtual Model)</td>
+          <td>ชิปเป้าหมายหลักในระบบประมวลผล</td>
+        </tr>
+        <tr>
+          <td>Peripherals</td>
+          <td>LEDs and Resistors</td>
+          <td>Active LEDs, Resistors 220 &Omega;</td>
+          <td>ชุดทดสอบสัญญาณไฟกระพริบแสดงผลที่พอร์ต I/O ของไมโครคอนโทรลเลอร์</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-content page-break" id="s4">
+    <h2>4. แนวคิดการออกแบบและทดสอบ</h2>
+    <p>การควบคุมสัญญาณขาออกของไมโครคอนโทรลเลอร์ ATmega328P เริ่มจากการตั้งค่าทิศทางการไหลของข้อมูลที่ Data Direction Register (เช่น DDRB และ DDRD) เพื่อกำหนดให้ขาแต่ละพินทำงานเป็นพอร์ต Output จากนั้นจึงป้อนระดับลอจิกแรงดันไฟฟ้ากระแสตรงผ่านพอร์ตข้อมูล (เช่น PORTB และ PORTD)</p>
+    <p>สำหรับในโปรแกรม AssemblyBlink1.asm เราทำการเขียนค่า 0xFF ไปยัง DDRB และ DDRD เพื่อให้พอร์ตทั้งหมดเป็นพอร์ต Output และเขียนโปรแกรมย่อยสำหรับหน่วงเวลา (Delay Subroutine) โดยสร้างโครงสร้าง nested loop 3 ชั้นด้วยรีจิสเตอร์ R20, R21, และ R22 เพื่อให้สัญญาณความถี่ระดับ 16 MHz บนฮาร์ดแวร์หน่วงนานพอที่ตาเปล่าของมนุษย์สามารถสังเกตความถี่การกระพริบได้</p>
+    <p>ในโปรแกรมเวอร์ชัน C (GccAppBlink1.c) เราได้กำหนดให้ขาของ PORTB พิน PB0-PB5 และ PORTD พิน PD0-PD7 ทำงานเป็น Output และจำลองหน่วงเวลาด้วยโครงสร้างลูปสองชั้นที่ควบคุมค่าความล่าช้าด้วยจำนวนตัวแปรเพื่อสร้างจังหวะกระพริบที่ไม่สมมาตร (ON นานกว่า OFF) ร่วมกับไฟของบอร์ด Arduino บนขา PB5</p>
+  </div>
+
+  <div class="section-content" id="s5">
+    <h2>5. การทำงานส่วนย่อย</h2>
+    <p>วงจรและระบบประกอบไปด้วยโครงสร้างการเชื่อมต่อหลักสองพอร์ต คือ พอร์ต B และพอร์ต D ดังนี้:</p>
+    <p><strong>1) พอร์ต B (PORTB):</strong> ในทางฮาร์ดแวร์ พอร์ต B ของ ATmega328P มีขาสัญญาณใช้งานดิจิทัล 6 พินหลัก (PB0 ถึง PB5) ส่วนขา PB6 และ PB7 มักถูกผูกไว้กับคริสตัลภายนอกในการจับคาบจังหวะสัญญาณนาฬิกา ในโปรแกรมภาษา C จึงต้องกำหนดค่าทิศทาง `DDRB = 0x3F` (บิต 0-5 เป็น Output) เพื่อความปลอดภัยและหลีกเลี่ยงผลกระทบต่อสัญญาณนาฬิกาภายนอก</p>
+    <p><strong>2) พอร์ต D (PORTD):</strong> มีขาสัญญาณใช้งานดิจิทัลเต็มรูปแบบ 8 พิน (PD0 ถึง PD7) ในโปรแกรมจึงสามารถกำหนดให้ทำงานในโหมด Output ร่วมกันทั้งหมดได้โดยการตั้งค่ารีจิสเตอร์ทิศทางเป็น `DDRD = 0xFF` ซึ่งส่งผลให้เราสามารถต่อ LED แสดงสถานะสัญญาณลอจิกได้เต็มพอร์ต</p>
+    <p><strong>3) วงจรปุ่มรีเซ็ตและชุดสัญญาณนาฬิกา (Reset & Clock Circuit):</strong> ในระบบ Proteus ชิปจำลองจะกำหนดค่าความถี่สัญญาณนาฬิกาภายในตัวคุณสมบัติ Component Edit ไว้ล่วงหน้า ทำให้เราไม่จำเป็นต้องต่อ Crystal Oscillator และตัวเก็บประจุภายนอกเข้าขารุ่นทางกายภาพจริงเพื่อลดทรัพยากรการประมวลผลของเครื่องคอมพิวเตอร์ ส่วนปุ่ม Reset จะถูกต่อพูลอัพ (Pull-up) ไว้ที่ระดับแรงดัน VCC เพื่อให้ตัวชิปประมวลผลอย่างต่อเนื่องตลอดเวลา</p>
+  </div>
+
+  <div class="section-content page-break" id="s6">
+    <h2>6. โครงสร้างโปรแกรมและคำอธิบายโค้ด</h2>
+    
+    <h3 id="s6-1">6.1 รหัสต้นฉบับภาษา Assembly (แบบดั้งเดิม)</h3>
+    <p>โปรแกรม AssemblyBlink1.asm เป็นโค้ดจำลองระบบไฟกระพริบของพอร์ต B และ D แบบสว่างและดับไปพร้อมๆ กันทุกพิน มีรายละเอียดโครงสร้างของโปรแกรมดังแสดงด้านล่าง:</p>
+    
+    <pre class="code-block">
+.nolist
+.include "m328pdef.inc"
+.list
+
+rjmp main
+
+main:
+    ldi r16, 0xFF       ; โหลดค่า 0xFF ลงในรีจิสเตอร์ R16
+    out DDRB, r16       ; กำหนดให้ PORTB ทุกพินเป็น Output
+    out DDRD, r16       ; กำหนดให้ PORTD ทุกพินเป็น Output
+    ldi r16, 0x00       ; ล้างค่ารีจิสเตอร์ R16 เป็น 0x00
+
+loop:
+    com r16             ; สลับระดับบิตใน R16 (กลับบิต 0 เป็น 1 และ 1 เป็น 0)
+    out PORTB, r16      ; ส่งค่าใน R16 ออกไปยัง PORTB
+    out PORTD, r16      ; ส่งค่า in R16 ออกไปยัง PORTD
+    call MY_DELAY       ; เรียกฟังก์ชันหน่วงเวลาก่อนเริ่มงานรอบใหม่
+    rjmp loop           ; วนกลับไปทำงานที่ label loop เสมอ
+
+MY_DELAY:
+    ldi r20, 8          ; ลูปนอกสุดวน 8 รอบ
+L1:
+    ldi r21, 200        ; ลูปกลางวน 200 รอบ
+L2:
+    ldi r22, 250        ; ลูปในสุดวน 250 รอบ
+L3:
+    dec r22             ; ลดค่า R22 ลง 1
+    brne L3             ; วนลูปในสุดต่อไปถ้า R22 ยังไม่เป็น 0
+    dec r21             ; ลดค่า R21 ลง 1
+    brne L2             ; วนลูปรองต่อไปถ้า R21 ยังไม่เป็น 0
+    dec r20             ; ลดค่า R20 ลง 1
+    brne L1             ; วนลูปนอกสุดต่อไปถ้า R20 ยังไม่เป็น 0
+    ret                 ; กลับไปยังตำแหน่งเรียกใช้
+    </pre>
+
+    <h4>คำอธิบายโปรแกรมทีละบรรทัด (Line-by-Line Explanation):</h4>
+    <table class="explanation-table">
+      <thead>
+        <tr>
+          <th>คำสั่ง / บรรทัด</th>
+          <th>คำอธิบายหน้าที่การทำงานอย่างเป็นทางการ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="code-cell">.nolist</td>
+          <td>ปิดการแสดงข้อมูลของตัวประกอบในไฟล์แสดงการคอมไพล์ (.lss) เพื่อความเป็นระเบียบ</td>
+        </tr>
+        <tr>
+          <td class="code-cell">.include "m328pdef.inc"</td>
+          <td>นำเข้าไฟล์คำจำกัดความของขา พอร์ต และ Memory Map ของชิป ATmega328P</td>
+        </tr>
+        <tr>
+          <td class="code-cell">.list</td>
+          <td>เปิดการแสดงผลประกอบการทำงานปกติหลังอ่านค่าเสร็จสิ้น</td>
+        </tr>
+        <tr>
+          <td class="code-cell">rjmp main</td>
+          <td>กระโดดแบบสัมพันธ์ (Relative Jump) ไปที่ป้ายชื่อ main เพื่อเริ่มต้นกระบวนการประมวลผล</td>
+        </tr>
+        <tr>
+          <td class="code-cell">main:</td>
+          <td>กำหนดป้ายชื่อระบุส่วนเริ่มเขียนโปรแกรมหลัก</td>
+        </tr>
+        <tr>
+          <td class="code-cell">ldi r16, 0xFF</td>
+          <td>โหลดค่าลอจิกสูง 8 บิต (0xFF) เข้าเก็บไว้ใน working Register R16</td>
+        </tr>
+        <tr>
+          <td class="code-cell">out DDRB, r16</td>
+          <td>กำหนดทิศทางข้อมูลพอร์ต B โดยตั้งค่าขาสัญญาณทุกพินเป็น Output ตามค่าใน R16</td>
+        </tr>
+        <tr>
+          <td class="code-cell">out DDRD, r16</td>
+          <td>กำหนดทิศทางข้อมูลพอร์ต D โดยตั้งค่าขาสัญญาณทุกพินเป็น Output ตามค่าใน R16</td>
+        </tr>
+        <tr>
+          <td class="code-cell">ldi r16, 0x00</td>
+          <td>เคลียร์ค่าใน R16 ให้เริ่มต้นที่ 0x00 สำหรับใช้สลับไฟช่วงวนลูป</td>
+        </tr>
+        <tr>
+          <td class="code-cell">loop:</td>
+          <td>ระบุจุดวนซ้ำเพื่อกระพริบไฟอย่างต่อเนื่อง</td>
+        </tr>
+        <tr>
+          <td class="code-cell">com r16</td>
+          <td>ทำ One's Complement (กลับบิต 0 เป็น 1 และ 1 เป็น 0) ของ R16</td>
+        </tr>
+        <tr>
+          <td class="code-cell">out PORTB, r16</td>
+          <td>ส่งระดับแรงดันลอจิกใน R16 ออกไปยังพอร์ตเอาต์พุตพอร์ต B</td>
+        </tr>
+        <tr>
+          <td class="code-cell">out PORTD, r16</td>
+          <td>ส่งระดับแรงดันลอจิกใน R16 ออกไปยังพอร์ตเอาต์พุตพอร์ต D</td>
+        </tr>
+        <tr>
+          <td class="code-cell">call MY_DELAY</td>
+          <td>เรียก subroutine ย่อยหน่วงเวลาเพื่อรอให้ลอจิกแสดงค่านานพอสังเกตได้</td>
+        </tr>
+        <tr>
+          <td class="code-cell">rjmp loop</td>
+          <td>วนกลับไปทำที่ป้ายชื่อ loop เพื่อสลับระดับไฟอย่างต่อเนื่องไม่มีวันสิ้นสุด</td>
+        </tr>
+        <tr>
+          <td class="code-cell">MY_DELAY:</td>
+          <td>ป้ายชื่อ subroutine เริ่มต้นระบบหน่วงเวลาแบบ nested loop 3 ชั้น</td>
+        </tr>
+        <tr>
+          <td class="code-cell">ldi r20, 8</td>
+          <td>กำหนดรอบของลูปนอกสุดทำงานจำนวน 8 รอบ</td>
+        </tr>
+        <tr>
+          <td class="code-cell">dec r22 / brne L3</td>
+          <td>ลดค่าลงทีละ 1 / หากยังไม่เป็น 0 ให้วนกลับมาทำงานที่ L3 ต่อไปจนครบรอบ</td>
+        </tr>
+        <tr>
+          <td class="code-cell">ret</td>
+          <td>คืนค่าตำแหน่งคำสั่งและดึงที่อยู่กลับไปทำงานต่อในส่วนโปรแกรมหลักที่เพิ่งเรียกใช้</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="diagram-container">
+      <figure>
+        <!-- Flowchart 1: AssemblyBlink1.asm -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 540" width="100%">
+          <rect x="10" y="10" width="380" height="520" fill="#f8fafc" stroke="#e2e8f0" rx="8"/>
+          <!-- Title -->
+          <text x="200" y="35" font-family="'Sarabun', sans-serif" font-size="14" font-weight="bold" fill="#14496e" text-anchor="middle">Flowchart 1: AssemblyBlink1.asm</text>
+          
+          <!-- Start -->
+          <rect x="140" y="60" width="120" height="40" rx="20" fill="#0f3a58" stroke="#14496e"/>
+          <text x="200" y="85" font-family="'Sarabun', sans-serif" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">START</text>
+          <path d="M 200 100 L 200 130" stroke="#14496e" stroke-width="2" fill="none"/>
+          <polygon points="200,130 196,122 204,122" fill="#14496e"/>
+          
+          <!-- Init -->
+          <rect x="100" y="130" width="200" height="60" fill="#f1f5f9" stroke="#14496e" rx="4"/>
+          <text x="200" y="153" font-family="Consolas, monospace" font-size="11" fill="#1e293b" text-anchor="middle">DDRB = 0xFF, DDRD = 0xFF</text>
+          <text x="200" y="173" font-family="Consolas, monospace" font-size="11" fill="#1e293b" text-anchor="middle">R16 = 0x00</text>
+          <path d="M 200 190 L 200 220" stroke="#14496e" stroke-width="2" fill="none"/>
+          <polygon points="200,220 196,212 204,212" fill="#14496e"/>
+          
+          <!-- Loop Begin (Label) -->
+          <rect x="130" y="220" width="140" height="35" rx="4" fill="#0e9488" stroke="#0e9488"/>
+          <text x="200" y="242" font-family="'Sarabun', sans-serif" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">loop:</text>
+          <path d="M 200 255 L 200 280" stroke="#14496e" stroke-width="2" fill="none"/>
+          <polygon points="200,280 196,272 204,272" fill="#14496e"/>
+          
+          <!-- Actions -->
+          <rect x="100" y="280" width="200" height="85" fill="#ffffff" stroke="#14496e" rx="4"/>
+          <text x="200" y="302" font-family="Consolas, monospace" font-size="11" fill="#1e293b" text-anchor="middle">R16 = ~R16 (com)</text>
+          <text x="200" y="322" font-family="Consolas, monospace" font-size="11" fill="#1e293b" text-anchor="middle">PORTB = R16</text>
+          <text x="200" y="342" font-family="Consolas, monospace" font-size="11" fill="#1e293b" text-anchor="middle">PORTD = R16</text>
+          <path d="M 200 365 L 200 390" stroke="#14496e" stroke-width="2" fill="none"/>
+          <polygon points="200,390 196,382 204,382" fill="#14496e"/>
+          
+          <!-- Delay -->
+          <rect x="120" y="390" width="160" height="40" fill="#f1f5f9" stroke="#14496e" rx="4"/>
+          <text x="200" y="415" font-family="Consolas, monospace" font-size="11" fill="#1e293b" text-anchor="middle">call MY_DELAY</text>
+          <path d="M 200 430 L 200 460" stroke="#14496e" stroke-width="2" fill="none"/>
+          <polygon points="200,460 196,452 204,452" fill="#14496e"/>
+          
+          <!-- RJMP -->
+          <rect x="120" y="460" width="160" height="35" rx="4" fill="#0f3a58" stroke="#14496e"/>
+          <text x="200" y="482" font-family="Consolas, monospace" font-size="11" fill="#ffffff" text-anchor="middle">rjmp loop</text>
+          
+          <!-- Loop Back Line -->
+          <path d="M 120 477 L 60 477 L 60 237 L 130 237" stroke="#14496e" stroke-width="2" fill="none"/>
+          <polygon points="130,237 122,233 122,241" fill="#14496e"/>
+        </svg>
+        <figcaption>ภาพที่ 3.1 ผังการไหล (Flowchart) ของโปรแกรมไฟกระพริบภาษา Assembly ดั้งเดิม</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <div class="section-content" id="s6-2">
+    <h2>6.2 รหัสต้นฉบับภาษา Assembly (แบบแก้ไขเพิ่มเติม)</h2>
+    <p>ตามโจทย์ Exercise 1 ใน Procedures II โปรแกรมได้รับการดัดแปลงระบบสลับลอจิกของ PORTB และ PORTD ให้แสดงผลต่างเฟสสลับกัน โดยมีรายละเอียดโค้ดและผังการไหลที่แก้ไขแล้วดังนี้:</p>
+    
+    <pre class="code-block">
+.nolist
+.include "m328pdef.inc"
+.list
+
+rjmp main
+
+main:
+    ldi r16, 0xFF       ; โหลดค่า 0xFF เพื่อเปิดการทำพอร์ต Output
+    out DDRB, r16       
+    out DDRD, r16       
+    ldi r16, 0x00       ; เริ่มต้นกำหนดให้ R16 เป็น 0x00
+
+loop:
+    com r16             ; สลับลอจิกใน R16 (0x00 &harr; 0xFF)
+    out PORTB, r16      ; ส่งค่า R16 ออกไปยัง PORTB (PB0-PB7 จะติด/ดับ ตาม R16)
+    
+    mov r17, r16        ; คัดลอกค่า R16 ไปยัง R17
+    com r17             ; สลับลอจิกใน R17 เพื่อสร้างสถานะตรงข้าม
+    out PORTD, r17      ; ส่งระดับลอจิกที่กลับขั้วแล้วออกพอร์ต D (PD0-PD7 จะกลับด้าน)
+    
+    call MY_DELAY       ; หน่วงสัญญาณการกระพริบ
+    rjmp loop
+
+MY_DELAY:
+    ldi r20, 8          ; กำหนดความถี่ปริมาณการหน่วงภายนอก
+L1:
+    ldi r21, 200
+L2:
+    ldi r22, 250
+L3:
+    dec r22
+    brne L3
+    dec r21
+    brne L2
+    dec r20
+    brne L1
+    ret
+    </pre>
+
+    <h4>คำอธิบายโค้ดส่วนที่แก้ไขเพิ่มเติม (Explanation of Modifications):</h4>
+    <p>ส่วนงานดัดแปลงเน้นไปที่ท่อน label <code>loop</code> เพื่อป้อนค่าตรงกันข้ามให้แก่พอร์ตแสดงผลทั้งสองฝั่ง:</p>
+    <table class="explanation-table">
+      <thead>
+        <tr>
+          <th>คำสั่ง / บรรทัด</th>
+          <th>คำอธิบายการประมวลผลหลังดัดแปลง</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="code-cell">com r16</td>
+          <td>ทำการ toggle บิตภายใน R16 เพื่อสลับระหว่างสถานะ 0x00 และ 0xFF ในแต่ละรอบสัญญาณ</td>
+        </tr>
+        <tr>
+          <td class="code-cell">out PORTB, r16</td>
+          <td>ส่งระดับลอจิกใน R16 ไปแสดงผลที่พอร์ต B ตรงๆ (ทำให้ไฟพอร์ต B ติด/ดับ ตามค่าของ R16)</td>
+        </tr>
+        <tr>
+          <td class="code-cell">mov r17, r16</td>
+          <td>คัดลอกค่าสถานะของพอร์ต B (R16) ลงรีจิสเตอร์ R17 ชั่วคราวเพื่อนำมาประมวลผลส่วนกลับ</td>
+        </tr>
+        <tr>
+          <td class="code-cell">com r17</td>
+          <td>ทำ One's Complement ใน R17 เพื่อเปลี่ยนระดับบิตให้อยู่ในสถานะตรงข้าม (ตรงข้ามกับ PORTB เสมอ)</td>
+        </tr>
+        <tr>
+          <td class="code-cell">out PORTD, r17</td>
+          <td>ส่งระดับลอจิกใน R17 ออกไปยังพอร์ต D (พอร์ต D จะทำงานสลับกับพอร์ต B ทันทีตามตรรกะที่สลับไว้)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="diagram-container">
+      <figure>
+        <!-- Flowchart 2: AssemblyBlink1_modified.asm -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 570" width="100%">
+          <rect x="10" y="10" width="380" height="550" fill="#f8fafc" stroke="#e2e8f0" rx="8"/>
+          <!-- Title -->
+          <text x="200" y="35" font-family="'Sarabun', sans-serif" font-size="14" font-weight="bold" fill="#14496e" text-anchor="middle">Flowchart 2: AssemblyBlink1_modified.asm</text>
+          
+          <!-- Start -->
+          <rect x="140" y="60" width="120" height="40" rx="20" fill="#0f3a58" stroke="#14496e"/>
+          <text x="200" y="85" font-family="'Sarabun', sans-serif" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">START</text>
+          <path d="M 200 100 L 200 130" stroke="#14496e" stroke-width="2" fill="none"/>
+          <polygon points="200,130 196,122 204,122" fill="#14496e"/>
+          
+          <!-- Init -->
+          <rect x="100" y="130" width="200" height="60" fill="#f1f5f9" stroke="#14496e" rx="4"/>
+          <text x="200" y="153" font-family="Consolas, monospace" font-size="11" fill="#1e293b" text-anchor="middle">DDRB = 0xFF, DDRD = 0xFF</text>
+          <text x="200" y="173" font-family="Consolas, monospace" font-size="11" fill="#1e293b" text-anchor="middle">R16 = 0x00</text>
+          <path d="M 200 190 L 200 220" stroke="#14496e" stroke-width="2" fill="none"/>
+          <polygon points="200,220 196,212 204,212" fill="#14496e"/>
+          
+          <!-- Loop Begin (Label) -->
+          <rect x="130" y="220" width="140" height="35" rx="4" fill="#0e9488" stroke="#0e9488"/>
+          <text x="200" y="242" font-family="'Sarabun', sans-serif" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">loop:</text>
+          <path d="M 200 255 L 200 280" stroke="#14496e" stroke-width="2" fill="none"/>
+          <polygon points="200,280 196,272 204,272" fill="#14496e"/>
+          
+          <!-- Actions -->
+          <rect x="90" y="280" width="220" height="110" fill="#ffffff" stroke="#14496e" rx="4"/>
+          <text x="200" y="302" font-family="Consolas, monospace" font-size="11" fill="#1e293b" text-anchor="middle">R16 = ~R16 (com)</text>
+          <text x="200" y="322" font-family="Consolas, monospace" font-size="11" fill="#1e293b" text-anchor="middle">PORTB = R16</text>
+          <text x="200" y="342" font-family="Consolas, monospace" font-size="11" fill="#1e293b" text-anchor="middle">R17 = R16</text>
+          <text x="200" y="362" font-family="Consolas, monospace" font-size="11" fill="#1e293b" text-anchor="middle">R17 = ~R17 (opposite)</text>
+          <text x="200" y="382" font-family="Consolas, monospace" font-size="11" fill="#1e293b" text-anchor="middle">PORTD = R17</text>
+          <path d="M 200 390 L 200 420" stroke="#14496e" stroke-width="2" fill="none"/>
+          <polygon points="200,420 196,412 204,412" fill="#14496e"/>
+          
+          <!-- Delay -->
+          <rect x="120" y="420" width="160" height="40" fill="#f1f5f9" stroke="#14496e" rx="4"/>
+          <text x="200" y="445" font-family="Consolas, monospace" font-size="11" fill="#1e293b" text-anchor="middle">call MY_DELAY</text>
+          <path d="M 200 460 L 200 490" stroke="#14496e" stroke-width="2" fill="none"/>
+          <polygon points="200,490 196,482 204,482" fill="#14496e"/>
+          
+          <!-- RJMP -->
+          <rect x="120" y="490" width="160" height="35" rx="4" fill="#0f3a58" stroke="#14496e"/>
+          <text x="200" y="512" font-family="Consolas, monospace" font-size="11" fill="#ffffff" text-anchor="middle">rjmp loop</text>
+          
+          <!-- Loop Back Line -->
+          <path d="M 120 507 L 50 507 L 50 237 L 130 237" stroke="#14496e" stroke-width="2" fill="none"/>
+          <polygon points="130,237 122,233 122,241" fill="#14496e"/>
+        </svg>
+        <figcaption>ภาพที่ 3.2 ผังการไหล (Flowchart) ของโปรแกรมไฟสลับพอร์ต B และ D ภาษา Assembly ที่แก้ไขแล้ว</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <div class="section-content page-break" id="s6-3">
+    <h2>6.3 รหัสต้นฉบับภาษา C (งานการบ้าน)</h2>
+    <p>รหัสโปรแกรมไฟกระพริบภาษา C (GccAppBlink1.c) ประกอบด้วยโครงสร้างควบคุมการหน่วงเวลาแบบอสมมาตร และการใช้งานรีจิสเตอร์พอร์ตตามข้อกำหนดในโจทย์การบ้านดังแสดงด้านล่าง:</p>
+    
+    <pre class="code-block">
+#include &lt;avr/io.h&gt;
+
+int main(void)
+{
+    unsigned int i, j;
+    
+    DDRD = 0xFF;        // ตั้งค่าพอร์ต D ทุกพิน (PD0-PD7) เป็น Output
+    DDRB = 0x3F;        // ตั้งค่าพอร์ต B พิน PB0-PB5 เป็น Output (0b00111111)
+    
+    // ลูปหน่วงเวลาเริ่มต้น 1 รอบ
+    for (j = 0; j &lt; 1; j++)
+    {
+        for (i = 0; i &lt; 42150; i++)
+        {
+            // หน่วงเวลาเริ่มต้น
+        }
+    }
+    
+    PORTD = 0x00;       // ล้างค่าสัญญาณ PORTD เริ่มต้นเป็น LOW
+    PORTB = 0x00;       // ล้างค่าสัญญาณ PORTB เริ่มต้นเป็น LOW
+    
+    while (1)
+    {
+        PORTD = 0xFF;                   // ป้อนสัญญาณ HIGH ออกพอร์ต D
+        PORTB = PORTB | 0b00100000;     // ตั้งค่าบิตที่ 5 (PB5) เป็น HIGH
+        
+        // หน่วงเวลาช่วงเปิดไฟ 5 คาบ
+        for (j = 0; j &lt; 5; j++)
+        {
+            for (i = 0; i &lt; 42150; i++)
+            {
+                // หน่วงเวลาระหว่างติดไฟ
+            }
+        }
+        
+        PORTD = 0x00;                   // ป้อนสัญญาณ LOW ออกพอร์ต D
+        PORTB = PORTB & ~0b00100000;    // ตั้งค่าบิตที่ 5 (PB5) เป็น LOW
+        
+        // หน่วงเวลาช่วงดับไฟ 2 คาบ
+        for (j = 0; j &lt; 2; j++)
+        {
+            for (i = 0; i &lt; 42150; i++)
+            {
+                // หน่วงเวลาระหว่างดับไฟ
+            }
+        }
+    }
+    
+    return 0;
+}
+    </pre>
+
+    <h4>คำอธิบายโครงสร้างโปรแกรมภาษา C (C Program Structure Explanation):</h4>
+    <p>โปรแกรมภาษา C อาศัยการเข้าถึงพอร์ตข้อมูลผ่าน Register ของคอมไพเลอร์ <code>avr/io.h</code> ดังนี้:</p>
+    <table class="explanation-table">
+      <thead>
+        <tr>
+          <th>โครงสร้าง / คำสั่ง</th>
+          <th>คำอธิบายทางวิชาการ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="code-cell">#include &lt;avr/io.h&gt;</td>
+          <td>โหลดไลบรารีสําหรับเข้าถึง Input/Output Register ทางกายภาพของไมโครคอนโทรลเลอร์ AVR</td>
+        </tr>
+        <tr>
+          <td class="code-cell">DDRD = 0xFF; / DDRB = 0x3F;</td>
+          <td>DDRD = 0xFF ตั้งค่าทุกพินของ PORTD เป็น Output; DDRB = 0x3F ตั้งค่าพิน 0 ถึง 5 (PB0-PB5) ของ PORTB เป็น Output</td>
+        </tr>
+        <tr>
+          <td class="code-cell">PORTB | 0b00100000</td>
+          <td>การทำ bitwise OR เพื่อบังคับเขียนลอจิกเป็น HIGH เฉพาะที่บิต 5 (PB5) โดยรักษาสถานะดั้งเดิมของบิตอื่น</td>
+        </tr>
+        <tr>
+          <td class="code-cell">PORTB &amp; ~0b00100000</td>
+          <td>การทำ bitwise AND กับบิตกลับขั้ว เพื่อล้างลอจิกเป็น LOW เฉพาะที่บิต 5 (PB5) เท่านั้น</td>
+        </tr>
+        <tr>
+          <td class="code-cell">for (j = 0; j &lt; 5; j++) ...</td>
+          <td>สร้างลูปหน่วงเวลาซ้อน โดยลูปในรันจำนวน 42,150 รอบ คาบเวลารวมหน่วงทั้งหมด 5 รอบลูปจำลองสภาวะติดไฟสว่าง</td>
+        </tr>
+        <tr>
+          <td class="code-cell">for (j = 0; j &lt; 2; j++) ...</td>
+          <td>รันปริมาณการหน่วงรอบละ 42,150 จำนวน 2 คาบ ทำให้ LED ดับในคาบที่สั้นกว่า (อัตราส่วนสว่าง:ดับ อยู่ที่ 5:2)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="diagram-container">
+      <figure>
+        <!-- Flowchart 3: GccAppBlink1.c -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 580" width="100%">
+          <rect x="10" y="10" width="380" height="560" fill="#f8fafc" stroke="#e2e8f0" rx="8"/>
+          <!-- Title -->
+          <text x="200" y="35" font-family="'Sarabun', sans-serif" font-size="14" font-weight="bold" fill="#14496e" text-anchor="middle">Flowchart 3: GccAppBlink1.c</text>
+          
+          <!-- Start -->
+          <rect x="140" y="60" width="120" height="40" rx="20" fill="#0f3a58" stroke="#14496e"/>
+          <text x="200" y="85" font-family="'Sarabun', sans-serif" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">START</text>
+          <path d="M 200 100 L 200 130" stroke="#14496e" stroke-width="2" fill="none"/>
+          <polygon points="200,130 196,122 204,122" fill="#14496e"/>
+          
+          <!-- Init Ports -->
+          <rect x="90" y="130" width="220" height="60" fill="#f1f5f9" stroke="#14496e" rx="4"/>
+          <text x="200" y="153" font-family="Consolas, monospace" font-size="11" fill="#1e293b" text-anchor="middle">DDRD = 0xFF</text>
+          <text x="200" y="173" font-family="Consolas, monospace" font-size="11" fill="#1e293b" text-anchor="middle">DDRB = 0x3F</text>
+          <path d="M 200 190 L 200 220" stroke="#14496e" stroke-width="2" fill="none"/>
+          <polygon points="200,220 196,212 204,212" fill="#14496e"/>
+          
+          <!-- Init Delay & Clear -->
+          <rect x="90" y="220" width="220" height="75" fill="#ffffff" stroke="#14496e" rx="4"/>
+          <text x="200" y="240" font-family="'Sarabun', sans-serif" font-size="10.5" fill="#1e293b" text-anchor="middle">หน่วงเวลาเริ่มต้น 1 รอบ (42150)</text>
+          <text x="200" y="260" font-family="Consolas, monospace" font-size="11" fill="#1e293b" text-anchor="middle">PORTD = 0x00</text>
+          <text x="200" y="280" font-family="Consolas, monospace" font-size="11" fill="#1e293b" text-anchor="middle">PORTB = 0x00</text>
+          <path d="M 200 295 L 200 320" stroke="#14496e" stroke-width="2" fill="none"/>
+          <polygon points="200,320 196,312 204,312" fill="#14496e"/>
+          
+          <!-- While(1) Loop Node -->
+          <rect x="110" y="320" width="180" height="35" rx="4" fill="#0e9488" stroke="#0e9488"/>
+          <text x="200" y="342" font-family="'Sarabun', sans-serif" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">while(1):</text>
+          <path d="M 200 355 L 200 380" stroke="#14496e" stroke-width="2" fill="none"/>
+          <polygon points="200,380 196,372 204,372" fill="#14496e"/>
+          
+          <!-- State ON & Delay 5 -->
+          <rect x="80" y="380" width="240" height="75" fill="#ffffff" stroke="#14496e" rx="4"/>
+          <text x="200" y="400" font-family="Consolas, monospace" font-size="11" fill="#1e293b" text-anchor="middle">PORTD = 0xFF, PORTB |= 0x20</text>
+          <text x="200" y="420" font-family="'Sarabun', sans-serif" font-size="10.5" fill="#1e293b" text-anchor="middle">หน่วงเวลาเปิดไฟ 5 รอบ (5 x 42150)</text>
+          <path d="M 200 455 L 200 480" stroke="#14496e" stroke-width="2" fill="none"/>
+          <polygon points="200,480 196,472 204,472" fill="#14496e"/>
+          
+          <!-- State OFF & Delay 2 -->
+          <rect x="80" y="480" width="240" height="75" fill="#ffffff" stroke="#14496e" rx="4"/>
+          <text x="200" y="500" font-family="Consolas, monospace" font-size="11" fill="#1e293b" text-anchor="middle">PORTD = 0x00, PORTB &= ~0x20</text>
+          <text x="200" y="520" font-family="'Sarabun', sans-serif" font-size="10.5" fill="#1e293b" text-anchor="middle">หน่วงเวลาดับไฟ 2 รอบ (2 x 42150)</text>
+          
+          <!-- Loop Back to While(1) -->
+          <path d="M 200 555 L 200 560 L 50 560 L 50 337 L 110 337" stroke="#14496e" stroke-width="2" fill="none"/>
+          <polygon points="110,337 102,333 102,341" fill="#14496e"/>
+        </svg>
+        <figcaption>ภาพที่ 3.3 ผังการไหล (Flowchart) ของโปรแกรมไฟกระพริบหน่วงอสมมาตรภาษา C</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <!-- ============ 7. SIMULATION RESULTS ============ -->
+  <div class="section-content page-break" id="s7">
+    <h2>7. ผลการจำลองการทำงาน</h2>
+    <p>การวิเคราะห์ระดับลอจิกและเวลาในการจำลองการทำงานของวงจรควบคุม มีรายละเอียดและสถานะลอจิกทางเอาต์พุตสรุปได้ตามตารางจำลองด้านล่างนี้:</p>
+    
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>คาบ / ขั้นตอนการทำงาน</th>
+          <th>คำสั่งลูป / วนซ้ำ</th>
+          <th>ระดับลอจิกพอร์ต B (PB0-PB5)</th>
+          <th>ระดับลอจิกพอร์ต D (PD0-PD7)</th>
+          <th>ผลลัพธ์ของ LED บนพอร์ต B</th>
+          <th>ผลลัพธ์ของ LED บนพอร์ต D</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Assembly ดั้งเดิม (เฟสติด)</td>
+          <td><code>com R16</code> (R16 &rarr; 0xFF)</td>
+          <td>0xFF (HIGH ทุกพิน)</td>
+          <td>0xFF (HIGH ทุกพิน)</td>
+          <td>LED สว่างทุกดวง</td>
+          <td>LED สว่างทุกดวง</td>
+        </tr>
+        <tr>
+          <td>Assembly ดั้งเดิม (เฟสดับ)</td>
+          <td><code>com R16</code> (R16 &rarr; 0x00)</td>
+          <td>0x00 (LOW ทุกพิน)</td>
+          <td>0x00 (LOW ทุกพิน)</td>
+          <td>LED ดับทุกดวง</td>
+          <td>LED ดับทุกดวง</td>
+        </tr>
+        <tr style="border-top: 2px solid var(--accent);">
+          <td>Assembly ดัดแปลง (บิตติด/ดับ)</td>
+          <td><code>PORTB = R16</code> (0xFF)</td>
+          <td>0xFF (HIGH ทุกพิน)</td>
+          <td>0x00 (LOW ทุกพิน)</td>
+          <td>LED สว่างทุกดวง</td>
+          <td>LED ดับทุกดวง</td>
+        </tr>
+        <tr>
+          <td>Assembly ดัดแปลง (บิตดับ/ติด)</td>
+          <td><code>PORTB = R16</code> (0x00)</td>
+          <td>0x00 (LOW ทุกพิน)</td>
+          <td>0xFF (HIGH ทุกพิน)</td>
+          <td>LED ดับทุกดวง</td>
+          <td>LED สว่างทุกดวง</td>
+        </tr>
+        <tr style="border-top: 2px solid var(--primary-2);">
+          <td>โปรแกรม C (ช่วงติดยาว 5 คาบ)</td>
+          <td>PORTB Bit 5 = 1, PORTD = 0xFF</td>
+          <td>0x20 (PB5 HIGH, อื่นๆ LOW)</td>
+          <td>0xFF (HIGH ทุกพิน)</td>
+          <td>LED ขา 13 (PB5) ติด</td>
+          <td>LED สว่างทุกดวง</td>
+        </tr>
+        <tr>
+          <td>โปรแกรม C (ช่วงดับสั้น 2 คาบ)</td>
+          <td>PORTB Bit 5 = 0, PORTD = 0x00</td>
+          <td>0x00 (LOW ทุกพิน)</td>
+          <td>0x00 (LOW ทุกพิน)</td>
+          <td>LED ขา 13 (PB5) ดับ</td>
+          <td>LED ดับทุกดวง</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="screenshot-grid">
+      <figure>
+        <img src="report_img/assembly_original.png" alt="AssemblyBlink1 Original Simulation">
+        <figcaption>ภาพที่ 3.4 วงจร AssemblyBlink1 ดั้งเดิมขณะจำลองระดับสัญญาณลอจิก</figcaption>
+      </figure>
+      <figure>
+        <img src="report_img/assembly_modified.png" alt="AssemblyBlink1 Modified Simulation">
+        <figcaption>ภาพที่ 3.5 วงจร AssemblyBlink1 ดัดแปลงทำงานสลับเฟสตรงข้าม</figcaption>
+      </figure>
+    </div>
+    
+    <div class="screenshot-grid">
+      <figure style="grid-column: span 2;">
+        <img src="report_img/c_asymmetric.png" alt="GccAppBlink1 C Simulation" style="max-height: 280px; object-fit: contain;">
+        <figcaption>ภาพที่ 3.6 การจำลองวงจรรหัสภาษา C แสดงสถานะจังหวะไฟกระพริบอสมมาตร</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <!-- ============ 8. EXPERIMENTAL PROCEDURES ============ -->
+  <div class="section-content" id="s8">
+    <h2>8. ขั้นตอนการทดลองและจำลองสถานการณ์</h2>
+    <p>การดำเนินการทดลองจัดขึ้นเป็นลำดับขั้นตอนการปฏิบัติการดังรายการต่อไปนี้:</p>
+    <p><strong>ขั้นที่ 1: การเขียนโปรแกรม Assembly ใน Atmel Studio:</strong> สร้างโปรเจกต์ใหม่ เลือกเป้าหมาย ATmega328P เขียนชุดคำสั่งเดิมของรูป Figure 3.2 ลงในตัวคอมไพเลอร์ และใช้ Assembler Tool ในการสังเคราะห์โค้ด ดำเนินการดีบักตรวจสอบรีจิสเตอร์เพื่อยืนยันว่าการเก็บค่า R16 เปลี่ยนแปลงถูกต้อง</p>
+    <p><strong>ขั้นที่ 2: การวาดแผนผังวงจรใน Proteus:</strong> ใช้ ISIS สร้างโปรเจกต์และวางชิปไมโครคอนโทรลเลอร์ ATmega328P ต่อกลุ่มหลอดไดโอดเปล่งแสง (LED) ร่วมกับตัวต้านทาน 220 &Omega; บนพอร์ต PORTB (PB0-PB7) และ PORTD (PD0-PD7) ปลายสายอีกฝั่งเชื่อมลงกราวด์จำลองให้เรียบร้อย</p>
+    <p><strong>ขั้นที่ 3: การเชื่อมโยงไฟล์ HEX และกำหนดค่า Fuses:</strong> ดับเบิลคลิกชิปในโปรแกรมจำลอง นำเข้าไฟล์ Hex ที่บันทึกมาจาก Atmel Studio ใน Program File และตั้งค่า CKSEL Fuses เป็นแบบ internal oscillator ตามที่แล็บกำหนด</p>
+    <p><strong>ขั้นที่ 4: การแก้ไขปรับปรุงระดับโค้ด Assembly:</strong> แก้ไขคำสั่งส่วน `loop` ให้สลับเฟสการเขียนค่าตรงข้ามกันไปยังพอร์ต B และ D ทำการบิวด์และอัปเดตไฟล์ HEX ซ้ำในวงจรเพื่อบันทึกผลการกระพริบแบบไขว้</p>
+    <p><strong>ขั้นที่ 5: การพัฒนาและทดสอบรหัสต้นฉบับภาษา C:</strong> สร้างโปรเจกต์ C Executable เขียนโค้ดกระพริบช่วงเวลาอสมมาตรตาม Figure 3.7 ทำการคอมไพล์ด้วย GNU Compiler Collection (GCC) นำรหัสไฟล์ Hex ไปป้อนเข้าชิปเป้าหมายตัวเดิมเพื่อสังเกตการกระพริบในวงจรจำลอง</p>
+  </div>
+
+  <div class="section-content page-break" id="s9">
+    <h2>9. ข้อสังเกตและข้อควรระวัง</h2>
+    <p><strong>1) ข้อจำกัดของ Proteus Demo Version:</strong> ชิปโปรแกรมและวงจรที่วาดขึ้นจะไม่สามารถจัดเก็บลงฮาร์ดดิสก์เพื่อใช้งานใหม่ในอนาคตได้ นักศึกษาจึงควรบันทึกภาพถ่ายหน้าจอเก็บผลลัพธ์เป็นระยะและรักษาโปรแกรมวงจรจำลองให้ทำงานอยู่ตลอดเวลาระหว่างปฏิบัติการทดลองเพื่อป้องกันข้อมูลวงจรสูญหาย</p>
+    <p><strong>2) ค่าของสัญญาณนาฬิกาและความเร็วจำลอง:</strong> สัญญาณนาฬิกาและลูป Delay แบบ nested ในภาษา Assembly ออกแบบมาสำหรับความถี่ระดับเมกะเฮิรตซ์ (MHz) หากมีภาระประมวลผลสูง ความเร็วจำลองอาจคลาดเคลื่อนไปจากเวลาจริง นักศึกษาควรปรับปรุงตัวแปรจำนวนลูปให้ยืดหยุ่นเหมาะกับเครื่องที่ใช้ปฏิบัติการ</p>
+    <p><strong>3) การเว้นพินควบคุมสัญญาณนาฬิกาของพอร์ต B:</strong> บิตที่ 6 และ 7 (PB6, PB7) มักต่อกับ Crystal ภายนอก หากกำหนดบิตที่เจาะจงให้เป็นเอาต์พุตทั่วไปทั้งหมดใน C (เช่น `DDRB = 0xFF`) อาจเกิดข้อขัดแย้งของสัญญาณการทำงานในบอร์ดจริง จึงควรล็อกทิศทางเฉพาะพิน 0-5 (`DDRB = 0x3F`) เท่านั้น</p>
+  </div>
+
+  <div class="section-content" id="s10">
+    <h2>10. สรุปผลการทดลอง</h2>
+    <p>การทดลองนี้ยืนยันประสิทธิภาพของเครื่องมือจำลอง Proteus VSM ในการเลียนแบบกระบวนการทำงานจริงของซอฟต์แวร์บนไมโครคอนโทรลเลอร์ AVR ATmega328P โดยได้ตรวจสอบและคอมไพล์ภาษา Assembly และภาษา C สำเร็จสมบูรณ์ ในส่วนของตัวจำลองการทดลอง ผลการเขียนคำสั่งควบคุมการออกพอร์ตทำงานตรงตามตรรกะทฤษฎี ไฟกระพริบกระทำคู่ขนานตามคาบหน่วงเวลา และสลับเฟสการติดได้อย่างถูกต้องเมื่อป้อนสัญญาณลอจิกส่วนกลับให้แก่รีจิสเตอร์</p>
+    <p>ในการประยุกต์เขียนโปรแกรม C การหน่วงเวลาด้วย nested loop ปริมาณ 42150 รอบ สามารถชดเชยค่าความล่าช้าในระดับเสมือนจริง โดยการควบคุมสัญญาณพอร์ตของขา PB5 และ PORTD ให้ผลลัพธ์การสว่างและดับไม่สมมาตรตามอัตราส่วนวนหน่วง 5:2 คาบเวลา ถือว่าการเชื่อมโยงระบบการพัฒนาซอฟต์แวร์ Atmel Studio เข้ากับวงจรจำลอง Proteus ช่วยลดขั้นตอนจัดเตรียมและป้องกันความเสียหายของพอร์ตสัญญาณได้อย่างน่าพึงพอใจ</p>
+  </div>
+
+  <div class="section-content" id="s11">
+    <h2>11. เอกสารอ้างอิง</h2>
+    <p>[1] Microchip Technology. (2018). <i>ATmega328P 8-bit AVR Microcontroller with 32K Bytes In-System Programmable Flash Datasheet</i>. retrieved from Microchip Technology Document Library.</p>
+    <p>[2] Khatathap Swatdipisal. (2013). <i>Lab 3 - Proteus and The AVR Microcontroller Laboratory Sheets</i>. Department of Computer Engineering.</p>
+    <p>[3] Mazidi, M. A., Naimi, S., &amp; Naimi, S. (2011). <i>The AVR Microcontroller and Embedded Systems: Using Assembly and C</i>. Prentice Hall.</p>
+  </div>
+
+</body>
+</html>

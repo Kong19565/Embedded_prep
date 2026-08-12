@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>รายงาน การวิเคราะห์ ออกแบบ และจำลองการทำงานของ Microprocessor EC-1 (The EC-1 Microprocessor)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+
+  html[lang="th"] { font-size: 106.25%; }
+  :root{
+    --ink:#1f2733; --primary:#14496e; --primary-2:#2b7bb9; --accent:#0e9488;
+    --soft:#eef4f9; --soft-2:#e5f3f1; --line:#d5dee6; --muted:#6b7785;
+    --amber:#b7791f; --green:#1f7a4d;
+  }
+  @page{
+    size:A4; margin:20mm 18mm 18mm 18mm;
+    @bottom-center{ content:counter(page); font-family:'Sarabun',sans-serif; font-size:10pt; color:#8a94a0; }
+  }
+  @page:first{ margin:0; @bottom-center{ content:normal; } }
+
+  *{ box-sizing:border-box; }
+  p::first-letter, span::first-letter, li::first-letter { all: unset; }
+  body{ font-family:'Sarabun', 'TH Sarabun New', 'TH Sarabun PSK', sans-serif; font-size:15.5px; line-height:1.75; color:var(--ink); margin:0; text-align:left; }
+  p{ margin:0 0 9px 0; text-indent:1.25cm; }
+  .cover p { text-align: center; text-indent: 0; }
+  .callout p, .note p, table p, td, th { text-indent: 0; }
+
+  /* ---------- COVER ---------- */
+  .cover{ min-height:247mm; height:auto; page-break-after:always; break-after:always; display:flex; flex-direction:column; text-align:center; padding-top:1.5cm; }
+  .cover .topbar{ height:14mm; background:linear-gradient(90deg,var(--primary),var(--primary-2) 60%,var(--accent)); }
+  .cover .botbar{ height:8mm; background:linear-gradient(90deg,var(--accent),var(--primary-2) 40%,var(--primary)); margin-top:auto; }
+  .cover .inner{ padding:0 24mm; flex:1; display:flex; flex-direction:column; justify-content:center; }
+  .cover .kicker{ align-self:center; letter-spacing:2px; font-size:13px; color:var(--primary-2); font-weight:700;
+    border:1.5px solid var(--primary-2); border-radius:20px; padding:3px 16px; margin-bottom:16px; }
+  .cover h1{ font-size:33px; line-height:1.28; font-weight:800; color:var(--primary); margin:0 0 6px; }
+  .cover .en{ font-size:23px; font-weight:700; color:var(--primary-2); margin:0 0 4px; }
+  .cover .tool{ font-size:19px; font-weight:700; color:var(--ink); margin:0; }
+  .cover .subtitle{ font-size:14.5px; color:var(--muted); margin:12px auto 0; max-width:150mm; line-height:1.6; }
+  .cover .divider{ width:60mm; height:3px; background:var(--accent); border-radius:2px; margin:26px auto; }
+  .cover .card{ border:1px solid var(--line); border-top:4px solid var(--primary-2); border-radius:12px;
+    background:var(--soft); padding:18px 26px; max-width:150mm; margin:0 auto; }
+  .cover .card h3{ margin:0 0 12px; font-size:16px; color:var(--primary); letter-spacing:.5px; }
+  table.members{ width:100%; border-collapse:collapse; }
+  table.members td{ padding:5px 8px; font-size:15px; text-align:left; vertical-align:middle; }
+  table.members td.no{ width:26px; color:var(--primary-2); font-weight:700; text-align:center; }
+  table.members td.sid{ width:38mm; text-align:right; color:var(--muted); font-variant-numeric:tabular-nums; }
+  .cover .submit{ margin-top:22px; font-size:15px; line-height:2.1; }
+  .cover .submit .lbl{ font-weight:700; color:var(--primary); }
+
+  /* ---------- SECTIONS ---------- */
+  h2.sec{ font-size:19px; font-weight:800; color:var(--primary); margin:22px 0 12px; padding-bottom:7px;
+    border-bottom:2px solid var(--line); break-after:avoid; page-break-after:avoid; display:flex; align-items:center; gap:11px; }
+  h2.sec .num{ flex:0 0 auto; width:29px; height:29px; background:var(--primary); color:#fff; border-radius:8px;
+    font-size:15px; display:inline-flex; align-items:center; justify-content:center; font-weight:700; }
+  h2.sec .en{ color:var(--primary-2); font-weight:700; font-size:16px; }
+  h3.sub{ font-size:16px; font-weight:700; color:var(--accent); margin:15px 0 5px; break-after:avoid; page-break-after:avoid; }
+  ul.clean{ margin:4px 0 10px; padding-left:0; list-style:none; }
+  ul.clean li{ position:relative; padding-left:22px; margin-bottom:7px; text-align:left; }
+  ul.clean li::before{ content:""; position:absolute; left:4px; top:11px; width:7px; height:7px;
+    border-radius:50%; background:var(--primary-2); }
+  b.term{ color:var(--primary); }
+
+  ol.objlist{ margin:6px 0 10px; padding-left:0; list-style:none; counter-reset:obj; }
+  ol.objlist li{ position:relative; padding-left:30px; margin-bottom:8px; text-align:left; counter-increment:obj; }
+  ol.objlist li::before{ content:counter(obj) "."; position:absolute; left:3px; top:0;
+    font-weight:700; color:var(--primary-2); }
+  ol.refs{ margin:6px 0 10px; padding-left:24px; }
+  ol.refs li{ margin-bottom:10px; text-align:left; }
+
+  /* ---------- FRONT MATTER ---------- */
+  .front{ break-after:page; page-break-after:always; }
+  h2.plain{ font-size:20px; font-weight:800; color:var(--primary); text-align:center; letter-spacing:1px;
+    margin:0 0 20px; padding-bottom:9px; border-bottom:2px solid var(--line); }
+  .toc ul{ list-style:none; margin:0; padding:0; }
+  .toc li{ margin:1px 0; line-height:1.62; }
+  .toc a{ text-decoration:none; color:var(--ink); display:flex; align-items:baseline; }
+  .toc .title { flex-shrink: 0; }
+  .toc .dots { flex-grow: 1; border-bottom: 2px dotted var(--line); margin: 0 8px; position: relative; top: -3px; }
+  .toc .page { flex-shrink: 0; color: var(--muted); font-variant-numeric: tabular-nums; font-weight: 700; }
+  .toc .lv1 a{ font-weight:700; color:var(--primary); }
+  .toc .lv2{ padding-left:24px; font-size:13.8px; }
+  .toc .lv2 a{ color:var(--ink); font-weight: normal; }
+  .toc h3{ font-size:15.5px; font-weight:700; color:var(--accent); margin:15px 0 4px; }
+  .toc .lv2{ line-height:1.55; }
+
+  /* ---------- TABLES ---------- */
+  table, table.data{ width:100%; border-collapse:collapse; margin:8px 0 6px; font-size:14.5px; break-inside:avoid; page-break-inside:avoid; }
+  table tr, table.data tr{ break-inside:avoid; page-break-inside:avoid; }
+  table.data caption{ caption-side:top; text-align:center; font-size:14px; color:var(--muted); margin-bottom:6px; font-weight:600; }
+  table.data th{ background:var(--primary); color:#fff; font-weight:700; padding:8px 10px; text-align:center; border:1px solid #0f3a58; }
+  table.data td{ padding:7px 10px; border:1px solid var(--line); vertical-align:middle; text-align:center; }
+  table.data tbody tr:nth-child(even){ background:var(--soft); }
+  table.data .lead{ text-align:left; }
+  table.tight{ font-size:13px; }
+  table.tight th{ padding:6px 4px; font-size:13px; }
+  table.tight td{ padding:4px 4px; }
+  .bin{ font-family:'Menlo','DejaVu Sans Mono',monospace; letter-spacing:1.5px; font-size:13px; white-space:nowrap; }
+  table.tight .bin{ letter-spacing:0.5px; font-size:12px; }
+  .hl td{ background:var(--soft-2) !important; font-weight:700; }
+  .badge-reset{ color:var(--accent); font-weight:700; }
+
+  /* ---------- FIGURES ---------- */
+  figure.fig{ margin:14px 0 16px; break-inside:avoid; text-align:center; }
+  figure.fig img{ max-width:100%; border:1px solid var(--line); border-radius:10px; }
+  figcaption{ text-align:center; font-size:13px; color:var(--muted); margin-top:8px; }
+  figcaption b{ color:var(--primary); }
+  .diagram{ border:1px solid var(--line); border-radius:12px; background:#fbfdff; padding:14px 10px 6px; break-inside:avoid; }
+  .diagram svg{ width:100%; height:auto; display:block; }
+
+  /* ---------- CALLOUT / NOTE ---------- */
+  .callout{ border:1px solid var(--line); border-left:5px solid var(--primary-2); border-radius:8px;
+    background:#fbfdff; padding:11px 15px; margin:9px 0; break-inside:avoid; }
+  .callout .pb{ font-weight:700; color:var(--amber); }
+  .callout .sl{ font-weight:700; color:var(--green); }
+  .callout p{ margin:3px 0 0; }
+  .note{ background:var(--soft-2); border-radius:8px; padding:10px 15px; margin:10px 0; font-size:14.5px; break-inside:avoid; }
+  .tblwrap{ break-inside:avoid; page-break-inside:avoid; margin:8px 0 6px; }
+  .tblwrap.split, table.data.split{ break-inside:auto; page-break-inside:auto; }
+  table.data.split thead{ display:table-header-group; }
+  figure.diagfig{ margin:14px 0 16px; break-inside:avoid; page-break-inside:avoid; }
+  .eq{ font-family:'Menlo','DejaVu Sans Mono',monospace; font-size:12.6px; background:#fbfdff; border:1px solid var(--line);
+       border-radius:8px; padding:10px 14px; margin:6px 0; line-height:1.8; text-align:left; break-inside:avoid; }
+
+  /* ---------- MICROINSTRUCTION BIT MAP ---------- */
+  table.bitmap{ width:100%; border-collapse:collapse; margin:10px 0 4px; break-inside:avoid; }
+  table.bitmap td{ border:1px solid var(--primary); padding:9px 4px; text-align:center; }
+  table.bitmap .bnum{ border:none; font-size:12px; color:var(--muted); font-weight:700; padding-bottom:3px; }
+  table.bitmap .bname{ font-weight:800; font-size:15px; color:var(--primary); }
+  table.bitmap .bdesc{ border:none; font-size:12px; color:var(--muted); line-height:1.45; padding-top:5px; }
+  .b7{ background:#dbe8f5; } .b6{ background:#dcefe9; } .b5{ background:#f7dede; }
+  .b4{ background:#fbeed3; } .b30{ background:#e9eef3; }
+  
+  #s4-3, #s6-2, #s7 { page-break-before: always; break-before: page; }
+</style>
+</head>
+<body>
+
+<!-- ============ COVER ============ -->
+<div class="cover">
+  <div class="topbar"></div>
+  <div class="inner">
+    <div class="kicker">รายงานการทดลอง</div>
+    <h1>การวิเคราะห์ ออกแบบ และจำลองการทำงานของ Microprocessor EC-1</h1>
+    <p class="en">(Lab 2 : The EC-1 Microprocessor)</p>
+    <p class="tool">ด้วยโปรแกรม Logisim-Evolution</p>
+    <p class="subtitle">การศึกษาโครงสร้างสถาปัตยกรรมของส่วนประมวลผลข้อมูล (Datapath) และหน่วยควบคุม (Control Unit) แบบ Hardwired FSM ที่พัฒนาด้วยวงจร Logic เชิงผสมร่วมกับ D Flip-Flop</p>
+    <div class="divider"></div>
+    <div class="card">
+      <h3>จัดทำโดย</h3>
+      <table class="members">
+        <tr><td class="no">1</td><td>นายดรัณภพ&nbsp;&nbsp;พิทักษ์กิจไพศาล</td><td class="sid">6710301007</td></tr>
+        <tr><td class="no">2</td><td>นายอภิสักก์&nbsp;&nbsp;คงภักดี</td><td class="sid">6710301009</td></tr>
+        <tr><td class="no">3</td><td>นายธนัท&nbsp;&nbsp;จงธีรธนโชติ</td><td class="sid">6710301032</td></tr>
+      </table>
+    </div>
+    <div class="submit">
+      <div><span class="lbl">เสนอ</span>&nbsp;&nbsp;อาจารย์คทาเทพ&nbsp;&nbsp;สวัสดิพิศาล</div>
+      <div>รายวิชา Embedded System Design&nbsp;&nbsp;ภาคการศึกษาที่ 1&nbsp;&nbsp;ปีการศึกษา 2569</div>
+    </div>
+  </div>
+  <div class="botbar"></div>
+</div>
+
+<!-- ============ คำนำ ============ -->
+<div class="front">
+  <h2 class="plain" id="sec-pref">คำนำ</h2>
+  <p>รายงานฉบับนี้จัดทำขึ้นเพื่อนำเสนอผลการศึกษาและปฏิบัติงานในการทดลองที่ 2 หัวข้อ <b class="term">Microprocessor EC-1 (The EC-1 Microprocessor)</b> ในรายวิชา Embedded System Design (010153521) โดยมีวัตถุประสงค์หลักเพื่อให้นักศึกษาเข้าใจสถาปัตยกรรมคอมพิวเตอร์อย่างลึกซึ้ง ผ่านการสร้าง Hardware และควบคุมทิศทางข้อมูลของ Microprocessor จำลองขนาดเล็ก</p>
+  <p>Microprocessor EC-1 เป็นสถาปัตยกรรมขนาด 8 Bit ที่มีโครงสร้างเรียบง่ายแต่ครบถ้วนตามหลักการของ Von Neumann Architecture ซึ่งประกอบด้วยหน่วยควบคุม (Control Unit) แบบใช้ LogicHardware (Hardwired FSM) และส่วนประมวลผลข้อมูล (Datapath) ที่เชื่อมต่อกันอย่างเป็นระบบ การสร้างระบบดังกล่าวบน Software Logisim-Evolution จะช่วยให้นักศึกษาสามารถเชื่อมโยงความรู้เชิงทฤษฎีในเรื่องของสัญญาณนาฬิกา (Clock Cycle), Register (Register), และหน่วยความจำ (ROM) เข้ากับการทำโปรแกรมระดับต่ำ (Assembly Language) ได้อย่างเป็นรูปธรรม</p>
+  <p>คณะผู้จัดทำหวังเป็นอย่างยิ่งว่ารายงานฉบับนี้จะเป็นแนวทางและประโยชน์สำหรับผู้ที่กำลังศึกษาเกี่ยวกับการออกแบบสถาปัตยกรรมคอมพิวเตอร์และระบบสมองกลฝังตัว ขอขอบพระคุณอาจารย์คทาเทพ สวัสดิพิศาล ที่ได้กรุณาให้ความรู้ คำปรึกษา และการชี้แนะข้อบกพร่องต่าง ๆ ในการทดลองนี้จนเสร็จสมบูรณ์</p>
+  <p style="text-align:right; margin-top:20px;"><b class="term">คณะผู้จัดทำ</b></p>
+</div>
+
+<!-- ============ สารบัญ ============ -->
+<div class="front toc">
+  <h2 class="plain" id="sec-toc">สารบัญ</h2>
+  <ul>
+    <li class="lv1"><a href="#s1"><span class="title">1 &nbsp;บทนำ</span><span class="dots"></span><span class="page">4</span></a></li>
+    <li class="lv1"><a href="#s2"><span class="title">2 &nbsp;วัตถุประสงค์</span><span class="dots"></span><span class="page">4</span></a></li>
+    <li class="lv1"><a href="#s3"><span class="title">3 &nbsp;เครื่องมือและอุปกรณ์ที่ใช้</span><span class="dots"></span><span class="page">5</span></a></li>
+    <li class="lv2"><a href="#s3-1"><span class="title">3.1 &nbsp;โปรแกรมจำลองการทำงาน</span><span class="dots"></span><span class="page">5</span></a></li>
+    <li class="lv2"><a href="#s3-2"><span class="title">3.2 &nbsp;รายการอุปกรณ์ทั้งหมดในวงจร</span><span class="dots"></span><span class="page">5</span></a></li>
+    <li class="lv1"><a href="#s4"><span class="title">4 &nbsp;แนวคิดการออกแบบวงจร</span><span class="dots"></span><span class="page">5</span></a></li>
+    <li class="lv2"><a href="#s4-1"><span class="title">4.1 &nbsp;ขั้นตอนรอบการประมวลผล (3-Stage Cycle)</span><span class="dots"></span><span class="page">5</span></a></li>
+    <li class="lv2"><a href="#s4-2"><span class="title">4.2 &nbsp;แผนภาพเส้นทางข้อมูล (Block Diagram)</span><span class="dots"></span><span class="page">5</span></a></li>
+    <li class="lv2"><a href="#s4-3"><span class="title">4.3 &nbsp;รูปแบบของ Bit ชุดคำสั่ง (Instruction Format)</span><span class="dots"></span><span class="page">7</span></a></li>
+    <li class="lv1"><a href="#s5"><span class="title">5 &nbsp;การทำงานของแต่ละส่วนย่อย</span><span class="dots"></span><span class="page">7</span></a></li>
+    <li class="lv2"><a href="#s5-1"><span class="title">5.1 &nbsp;รายละเอียด Block ข้อมูลย่อยใน ec1_datapath</span><span class="dots"></span><span class="page">7</span></a></li>
+    <li class="lv2"><a href="#s5-2"><span class="title">5.2 &nbsp;โครงสร้าง FSM และ Logic Gate ใน ec1_control</span><span class="dots"></span><span class="page">8</span></a></li>
+    <li class="lv1"><a href="#s6"><span class="title">6 &nbsp;โปรแกรมใน ROM และผังการไหล</span><span class="dots"></span><span class="page">9</span></a></li>
+    <li class="lv2"><a href="#s6-1"><span class="title">6.1 &nbsp;ตารางถอดรหัส ROM Program</span><span class="dots"></span><span class="page">9</span></a></li>
+    <li class="lv2"><a href="#s6-2"><span class="title">6.2 &nbsp;ผังการไหลของโปรแกรม (Flowchart)</span><span class="dots"></span><span class="page">10</span></a></li>
+    <li class="lv1"><a href="#s7"><span class="title">7 &nbsp;ตารางการทำงานทีละคาบสัญญาณนาฬิกา</span><span class="dots"></span><span class="page">11</span></a></li>
+    <li class="lv1"><a href="#s8"><span class="title">8 &nbsp;วิธีทดลองใน Logisim-Evolution</span><span class="dots"></span><span class="page">12</span></a></li>
+    <li class="lv1"><a href="#s9"><span class="title">9 &nbsp;ข้อสังเกตและจุดที่ควรระวัง</span><span class="dots"></span><span class="page">13</span></a></li>
+    <li class="lv2"><a href="#s9-1"><span class="title">9.1 &nbsp;ความผิดพลาดทั่วไปของการต่อสายสัญญาณและการถอดสมการ Boolean (Hardware Bugs)</span><span class="dots"></span><span class="page">13</span></a></li>
+    <li class="lv2"><a href="#s9-2"><span class="title">9.2 &nbsp;การวิเคราะห์ความพร้อมและความปลอดภัยในการทำงานของหน่วยความจำ</span><span class="dots"></span><span class="page">13</span></a></li>
+    <li class="lv2"><a href="#s9-3"><span class="title">9.3 &nbsp;การดัดแปลงและต่อขยายชุดคำสั่ง INC A (Extended Instruction Design)</span><span class="dots"></span><span class="page">14</span></a></li>
+    <li class="lv1"><a href="#s10"><span class="title">10 &nbsp;สรุปผล</span><span class="dots"></span><span class="page">14</span></a></li>
+    <li class="lv1"><a href="#s11"><span class="title">11 &nbsp;เอกสารอ้างอิง</span><span class="dots"></span><span class="page">14</span></a></li>
+  </ul>
+  
+  <h3>สารบัญตาราง</h3>
+  <ul>
+    <li class="lv2"><a href="#t1"><span class="title">ตารางที่ 1 &nbsp;รายการอุปกรณ์ทั้งหมดในวงจรและหน้าที่</span><span class="dots"></span><span class="page">5</span></a></li>
+    <li class="lv2"><a href="#t4"><span class="title">ตารางที่ 2 &nbsp;ตารางการถอดรหัส ROM Program</span><span class="dots"></span><span class="page">9</span></a></li>
+    <li class="lv2"><a href="#t5-1"><span class="title">ตารางที่ 3 &nbsp;การทำงานทีละคาบสัญญาณนาฬิกา (คาบที่ 1–17)</span><span class="dots"></span><span class="page">11</span></a></li>
+    <li class="lv2"><a href="#t5-2"><span class="title">ตารางที่ 4 &nbsp;การทำงานทีละคาบสัญญาณนาฬิกา (คาบที่ 18–34)</span><span class="dots"></span><span class="page">12</span></a></li>
+  </ul>
+
+  <h3>สารบัญรูปภาพ</h3>
+  <ul>
+    <li class="lv2"><a href="#f1"><span class="title">รูปที่ 1 &nbsp;BlockDiagram แสดงเส้นทางข้อมูล (Datapath) ของ Microprocessor EC-1</span><span class="dots"></span><span class="page">5</span></a></li>
+    <li class="lv2"><a href="#f2"><span class="title">รูปที่ 2 &nbsp;รูปแบบ Bit ของ Instruction Format ของ Microprocessor EC-1</span><span class="dots"></span><span class="page">7</span></a></li>
+    <li class="lv2"><a href="#f3"><span class="title">รูปที่ 3 &nbsp;วงจรอุปกรณ์และเส้นทางประมวลผล (ec1_datapath) ใน Logisim-Evolution</span><span class="dots"></span><span class="page">8</span></a></li>
+    <li class="lv2"><a href="#f4"><span class="title">รูปที่ 4 &nbsp;แผนภาพแสดงสถานะและเงื่อนไขการทำงาน (FSM State Diagram)</span><span class="dots"></span><span class="page">8</span></a></li>
+    <li class="lv2"><a href="#f5"><span class="title">รูปที่ 5 &nbsp;ผังการไหล (Flowchart) แสดงขั้นตอนการประมวลผลโปรแกรมนับถอยหลัง</span><span class="dots"></span><span class="page">10</span></a></li>
+    <li class="lv2"><a href="#f6"><span class="title">รูปที่ 6 &nbsp;วงจรภาพรวมระดับสูงสุด (main) ของ Microprocessor EC-1</span><span class="dots"></span><span class="page">13</span></a></li>
+  </ul>
+</div>
+
+<!-- ============ 1 บทนำ ============ -->
+<h2 class="sec" id="s1"><span class="num">1</span> บทนำ <span class="en">(Introduction)</span></h2>
+<p>ในการออกแบบ Microprocessor สถาปัตยกรรมของหน่วยควบคุม (Control Unit: CU) มีความสำคัญสูงสุดในการบริหารจัดการและจัดลำดับสัญญาณในการประมวลผลคำสั่งต่าง ๆ โดยโครงสร้างการออกแบบดั้งเดิมสามารถจำแนกออกได้เป็นสองวิธีหลักคือ <b class="term">Hardwired Control Unit</b> และ <b class="term">Microprogrammed Control Unit</b> ซึ่งทั้งสองระบบนี้ได้รับการออกแบบเพื่อแก้ปัญหาระบบคำสั่งที่มีความแตกต่างกันอย่างมีนัยสำคัญ</p>
+<p>ระบบ Hardwired Control Unit จะอาศัยวงจร Logic เชิงผสม (Combinational Logic Gate) และหน่วยความจำสถานะ (Flip-Flop) ในการออกแบบเป็น Finite State Machine (FSM) เพื่อขับสัญญาณควบคุมออกมาโดยตรง จุดเด่นของระบบนี้คือความเร็วในการประมวลผลสูงสุดและการสิ้นเปลืองพื้นที่ Hardware ต่ำมาก เนื่องจากไม่มีความจำเป็นต้องดึงรหัสสัญญาณจากหน่วยความจำย่อย แต่มีข้อจำกัดที่ใหญ่ที่สุดคือไม่มีความยืดหยุ่น หากมีคำสั่งใหม่เพิ่มเข้ามาหรือต้องการแก้ไขพฤติกรรม จะต้องทำการออกแบบตัวแปรสัญญาณในรูปสมการ Boolean (Boolean Equations) และจัดวาง Gate ใหม่ทั้งหมดในระดับโครงสร้าง Hardware</p>
+<p>ในทางกลับกัน ระบบ Microprogrammed Control Unit (ซึ่งได้ทดลองใน Lab 1) จะแก้ปัญหาความยืดหยุ่นนี้โดยการเปลี่ยนสัญญาณควบคุมต่าง ๆ ให้เป็นรหัสข้อมูล (Microprogram) และนำไปเก็บไว้ใน ROM (เรียกว่า Control Store) การทำงานย่อยในแต่ละจังหวะสัญญาณนาฬิกาจะอาศัยการอ่านรหัสสัญญาณคำสั่ง (Microinstruction) จาก Control Store ออกมาใช้งานโดยตรง วิธีนี้มีความยืดหยุ่นสูงมากเนื่องจากสามารถแก้ไขโครงสร้างชุดคำสั่งหรือปรับพฤติกรรมการควบคุม Hardware ได้ง่ายเพียงเปลี่ยนข้อมูลใน ROM โดยไม่ต้องดัดแปลงการต่อสาย Logic Gate แต่ระบบจะช้ากว่าเนื่องจากต้องใช้รอบการอ่านหน่วยความจำ (Memory Access Time) เสมอ</p>
+<p>ในการทดลองนี้ จะศึกษาการออกแบบและสร้าง Microprocessor จำลองขนาดเล็กชื่อ <b class="term">EC-1 (The EC-1 Microprocessor)</b> ซึ่งเป็นสถาปัตยกรรมแบบย่อส่วน (Minimal CPU Architecture) ขนาดข้อมูล 8 Bit และ Address หน่วยความจำ 4 Bit ที่ขับเคลื่อนสัญญาณด้วยตัวควบคุมประเภท Hardwired FSM ที่พัฒนาด้วย Combinational Logic Gates ร่วมกับ D Flip-Flop</p>
+
+<!-- ============ 2 วัตถุประสงค์ ============ -->
+<h2 class="sec" id="s2"><span class="num">2</span> วัตถุประสงค์ <span class="en">(Objectives)</span></h2>
+<ol class="objlist">
+  <li>เพื่อทำความเข้าใจการเชื่อมต่อและการถ่ายโอนข้อมูลของส่วนประมวลผลข้อมูล (Datapath) ของ Microprocessor จำลองผ่านโปรแกรม Logisim-Evolution</li>
+  <li>เพื่อศึกษาขั้นตอนการวิเคราะห์สถานะ การเขียนผังเชื่อมโยงสถานะ (State Diagram) และการถอดสมการควบคุม (Next-state / Output Equations) ของ Finite State Machine (FSM) สำหรับสถาปัตยกรรมคอมพิวเตอร์ระดับ Hardware</li>
+  <li>เพื่อพัฒนาความรู้ในการทำโปรแกรมระดับต่ำ (Assembly Language) รวมถึงการแปลงให้เป็นรหัสเครื่อง (Machine Code) เพื่อจัดเก็บลงในหน่วยความจำ ROM และจำลองสัญญาณการทำงานรอบนาฬิกาทีละขั้นตอน (Cycle-by-Cycle Execution)</li>
+</ol>
+
+<!-- ============ 3 เครื่องมือ ============ -->
+<h2 class="sec" id="s3"><span class="num">3</span> เครื่องมือและอุปกรณ์ที่ใช้ <span class="en">(Tools and Components)</span></h2>
+
+<h3 class="sub" id="s3-1">3.1 โปรแกรมจำลองการทำงาน</h3>
+<ul class="clean">
+  <li><b class="term">Logisim-Evolution v4.1.0</b> — โปรแกรมระบบจำลองการทำงานทางดิจิทัลและ Logic ใช้ในการออกแบบ จำลองสถานะ และตรวจสอบพฤติกรรมการแลกเปลี่ยนข้อมูลภายในโครงสร้าง Microprocessor ไฟล์หลักคือ <b class="term">Lab2_ec1_microprocessor.circ</b></li>
+  <li><b class="term">เครื่องมือ Poke Tool</b> — ใช้ในการกระตุ้นสัญญาณนาฬิกา (CLK) และขา Reset (RESET) หรือป้อนค่า Input แบบเรียลไทม์เพื่อสังเกตสัญญาณควบคุม</li>
+  <li><b class="term">Function Auto-Tick</b> — ใช้ในการรันจังหวะสัญญาณนาฬิกาโดยอัตโนมัติด้วยความถี่คงที่เพื่อจำลองการรันโปรแกรมจนสิ้นสุด</li>
+</ul>
+
+<h3 class="sub" id="s3-2">3.2 รายการอุปกรณ์ทั้งหมดในวงจร</h3>
+<p>ชิ้นส่วน Hardware และ Module ทั้งหมดที่ใช้สร้าง Microprocessor EC-1 ได้วิเคราะห์จากไฟล์วงจรหลัก สรุปได้ดังตารางที่ 1</p>
+
+<div class="tblwrap split">
+  <table class="data split" id="t1">
+    <caption>ตารางที่ 1 รายการอุปกรณ์ทั้งหมดในวงจรและหน้าที่</caption>
+    <thead>
+      <tr><th style="width:25%">อุปกรณ์</th><th style="width:20%">Module / พิกัด</th><th style="width:18%">การตั้งค่า</th><th>หน้าที่การทำงาน</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="lead"><b class="term">Register PC</b></td><td class="bin">ec1_datapath (190,260)</td><td class="bin">4 Bit</td><td class="lead">หน่วยนับคำสั่งชี้ Address หน่วยความจำ ROM</td></tr>
+      <tr><td class="lead"><b class="term">Register IR</b></td><td class="bin">ec1_datapath (370,180)</td><td class="bin">8 Bit</td><td class="lead">ล็อกข้อมูลคำสั่งจาก ROM เพื่อจ่ายสัญญาณถอดรหัส</td></tr>
+      <tr><td class="lead"><b class="term">Register A</b></td><td class="bin">ec1_datapath (680,180)</td><td class="bin">8 Bit</td><td class="lead">Accumulator พักและสะสมผลลัพธ์การประมวลผล</td></tr>
+      <tr><td class="lead"><b class="term">Program ROM</b></td><td class="bin">ec1_datapath (270,180)</td><td class="bin">16 × 8 Bit</td><td class="lead">หน่วยความจำโปรแกรมเก็บรหัสเครื่อง 8 Bit</td></tr>
+      <tr><td class="lead"><b class="term">Subtractor</b></td><td class="bin">ec1_datapath (830,190)</td><td class="bin">8 Bit</td><td class="lead">ตัวลบค่าสะสมด้วยค่าคงที่ 1 (A &larr; A - 1)</td></tr>
+      <tr><td class="lead"><b class="term">Zero Comparator</b></td><td class="bin">ec1_datapath (760,250)</td><td class="bin">8 Bit</td><td class="lead">วงจรตรวจสอบเงื่อนไขหาค่าศูนย์ (A &ne; 0)</td></tr>
+      <tr><td class="lead"><b class="term">Tri-state Buffer</b></td><td class="bin">ec1_datapath (690,120)</td><td class="bin">8 Bit</td><td class="lead">Buffer คุมช่อง Output ภายนอก OUTPUT_A</td></tr>
+      <tr><td class="lead"><b class="term">Multiplexer (IN_mux)</b></td><td class="bin">ec1_datapath (600,180)</td><td class="bin">2 &rarr; 1, 8 Bit</td><td class="lead">เลือกค่าสะสมระหว่าง INPUT_A หรือ A - 1</td></tr>
+      <tr><td class="lead"><b class="term">Multiplexer (JNZ_mux)</b></td><td class="bin">ec1_datapath (120,280)</td><td class="bin">2 &rarr; 1, 4 Bit</td><td class="lead">เลือก Address PC ถัดไประหว่าง PC + 1 หรือ Target</td></tr>
+      <tr><td class="lead"><b class="term">D Flip-Flops (Q2, Q1, Q0)</b></td><td class="bin">ec1_control</td><td class="bin">1 Bit (x3)</td><td class="lead">หน่วยเก็บสถานะปัจจุบันของหน่วยควบคุม FSM</td></tr>
+      <tr><td class="lead"><b class="term">Logic Gates</b></td><td class="bin">ec1_control</td><td class="bin">AND, OR, NOT</td><td class="lead">Combinational Logic ถอดสมการ FSM</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============ 4 แนวคิดการออกแบบ ============ -->
+<h2 class="sec" id="s4"><span class="num">4</span> แนวคิดการออกแบบวงจร <span class="en">(Design Concept)</span></h2>
+
+<h3 class="sub" id="s4-1">4.1 ขั้นตอนรอบการประมวลผล (3-Stage Cycle)</h3>
+<p>การประมวลผลสัญญาณคำสั่งและรอบควบคุมการถ่ายโอนข้อมูลของซีพียู EC-1 จะแบ่งออกเป็นรอบการทำคำสั่งย่อย 3 ขั้นตอนดังนี้</p>
+<ol class="objlist">
+  <li><b>FETCH (ขั้นตอนการดึงคำสั่ง):</b> หน่วย PC จะชี้ไปที่ Address เป้าหมายใน ROM จากนั้นอ่านข้อมูลคำสั่งขนาด 8 Bit มาจัดเก็บที่ Register IR พร้อมกับคำนวณบวกเพิ่มค่าใน PC ถัดไปเตรียมรอไว้ (`PC &larr; PC + 1`)</li>
+  <li><b>DECODE (ขั้นตอนการถอดรหัสคำสั่ง):</b> สัญญาณ Opcode 3 Bit จาก IR (`IR[7:5]`) จะถูกส่งให้กับ FSM ในหน่วยควบคุม เพื่อนำไปพิจารณาสถานะปัจจุบันและกระตุ้นสายควบคุมในรอบถัดไป</li>
+  <li><b>EXECUTE (ขั้นตอนการดำเนินการคำสั่ง):</b> ขับสัญญาณการโหลดข้อมูล สลับค่าตัวเลือก Input หรือควบคุมกระโดด Address ตามที่ FSM ประมวลผล จากนั้นจะวนกลับส่งสถานะเริ่มวงรอบ FETCH คำสั่งถัดไป</li>
+</ol>
+
+<h3 class="sub" id="s4-2">4.2 แผนภาพเส้นทางข้อมูล (Block Diagram)</h3>
+<p>โครงสร้างสถาปัตยกรรมภายนอกและการถ่ายโอนข้อมูลระหว่างส่วนของ Datapath และ Control Unit แสดงดังรูปที่ 1</p>
+
+<figure class="fig" id="f1">
+  <img src="report_img/ec1_conceptual_datapath.png" alt="EC-1 Conceptual Datapath" style="max-height: 380px; width: auto;">
+  <figcaption><b>รูปที่ 1</b> — BlockDiagram แสดงเส้นทางข้อมูล (Datapath) ของ Microprocessor EC-1</figcaption>
+</figure>
+
+<h3 class="sub" id="s4-3">4.3 รูปแบบของ Bit ชุดคำสั่ง (Instruction Format)</h3>
+<p>คำสั่งขนาด 8 Bit ของ EC-1 ถูกจัดสรร Bandwidth ออกเป็น 3 ส่วนหลักเพื่อจ่ายหน้าที่สัญญาณตามรูปที่ 2</p>
+
+<figure class="fig" id="f2">
+  <table class="bitmap">
+    <tr>
+      <td class="bnum">bit 7 … bit 5</td><td class="bnum">bit 4</td><td class="bnum">bit 3 … bit 0</td>
+    </tr>
+    <tr>
+      <td class="bname b7">OPCODE (IR[7:5])</td>
+      <td class="bname b6" style="background:#fbeed3;">UNUSED (IR[4])</td>
+      <td class="bname b5" style="background:#dcefe9;">OPERAND / TARGET ADDRESS (IR[3:0])</td>
+    </tr>
+    <tr>
+      <td class="bdesc"><b>Opcode (3 Bit)</b><br>ระบุคำสั่งการทำงานหลัก (IN, OUT, DEC, JNZ, HALT)</td>
+      <td class="bdesc"><b>Don't-care (1 Bit)</b><br>Bit ที่ไม่ได้นำไปถอดสมการควบคุมใน FSM</td>
+      <td class="bdesc"><b>Address เป้าหมาย (4 Bit)</b><br>ตำแหน่งข้อมูลที่ต้องกระโดดไปเมื่อเงื่อนไข JNZ ทำงาน</td>
+    </tr>
+  </table>
+  <figcaption><b>รูปที่ 2</b> — รูปแบบ Bit ของ Instruction Format ของ Microprocessor EC-1</figcaption>
+</figure>
+
+<!-- ============ 5 การทำงานส่วนย่อย ============ -->
+<h2 class="sec" id="s5"><span class="num">5</span> การทำงานของแต่ละส่วนย่อย <span class="en">(Detailed Operation)</span></h2>
+
+<h3 class="sub" id="s5-1">5.1 รายละเอียด Block ข้อมูลย่อยใน ec1_datapath</h3>
+<p>Module ทางเดินข้อมูล `ec1_datapath` มีส่วนประมวลผลและการโอนถ่ายข้อมูลย่อยที่มีกลไกการควบคุมร่วมกับสัญญาณสถานะดังนี้</p>
+<ul class="clean">
+  <li><b class="term">Program Counter (PC)</b> — Register ขนาด 4 Bit ทำหน้าที่เก็บ Address ใน ROM สำหรับดึงคำสั่งปัจจุบัน เมื่อขอบสัญญาณนาฬิกาขยับขึ้น หากสาย `PC_load = 1` ตัวชี้จะ Update ค่าจากช่อง MUX โดยเลือกช่อง 0 (`PC + 1`) หรือช่อง 1 (`Target` Address กระโดด) ขึ้นอยู่กับการประมวลของ `JNZ_mux`</li>
+  <li><b class="term">Instruction Register (IR)</b> — Register ขนาด 8 Bit รับสัญญาณข้อมูลโปรแกรมดิบที่คายออกมาจาก Program ROM และล็อกสัญญาณไว้อุปกรณ์เมื่อควบคุมได้รับ Logic `IR_load = 1` เพื่อส่งออก Opcode 3 Bit ไประดับถัดไป</li>
+  <li><b class="term">Program ROM</b> — Address หน่วยความจำขนาด 16 × 8 Bit ทำหน้าที่บรรจุรหัสเครื่องสำหรับการทดลอง การดึง Address จะตอบสนองทันทีตามค่า PC โดยไม่ต้องอาศัยคาบ Clock ช่วยหน่วง</li>
+  <li><b class="term">Accumulator A (Register A)</b> — Register ขนาด 8 Bit สำหรับทำหน้าที่พักข้อมูลการประมวลผลหลัก โหลดค่าเมื่อ `A_load = 1` ข้อมูลภายในจะเลือกมาจาก Multiplexer `IN_mux`</li>
+  <li><b class="term">Subtractor & Zero Comparator</b> — ชุด Hardware ลบข้อมูลแบบอัตโนมัติ ทำการลบค่าจากสะสมลงหนึ่งค่า (`A - 1`) ตลอดเวลาเพื่อรอป้อนกลับ และวงจรเปรียบเทียบขนาด 8 Bit จะสร้างระดับ Logic สถานะเดี่ยว `A_neq_0` เพื่อส่งให้กับ FSM คอยวิเคราะห์การข้ามสถานะ</li>
+  <li><b class="term">Tri-state Output Buffer</b> — อุปกรณ์จำกัดและขับเคลื่อนไฟฟ้า สัญญาณข้อมูลของ Accumulator A จะส่งออกไปยังภายนอก `OUTPUT_A` ก็ต่อเมื่อได้สัญญาณเปิดสถานะ `OUT_E = 1` เท่านั้น</li>
+</ul>
+
+<figure class="fig" id="f3">
+  <img src="report_img/ec1_reference_datapath.png" alt="EC-1 Reference Datapath in Logisim" style="max-height: 200px; width: auto;">
+  <figcaption><b>รูปที่ 3</b> — วงจรอุปกรณ์และเส้นทางประมวลผล (ec1_datapath) ใน Logisim-Evolution</figcaption>
+</figure>
+
+<h3 class="sub" id="s5-2">5.2 โครงสร้าง FSM และ Logic Gate ใน ec1_control</h3>
+<p>ส่วนควบคุม `ec1_control` ใช้ D Flip-Flops 3-bit (`Q2 Q1 Q0`) เก็บรักษาและระบุค่าของวงจรรอบการทำงาน โดยโครงสร้างการแมป Opcode เข้ากับหมายเลขสถานะช่วยอำนวยความสะดวกในการจัดรูปแบบ Combinational Logic ของวงจร Logic ควบคุม สมผังวิเคราะห์ FSM ในรูปที่ 4</p>
+
+<figure class="fig diagfig" id="f4">
+  <div class="diagram">
+    <svg width="600" height="260" viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
+      <!-- States -->
+      <circle cx="80" cy="130" r="28" fill="#14496e" stroke="#fff" stroke-width="2"/>
+      <text x="80" y="134" font-family="'Sarabun',sans-serif" font-size="10.5px" fill="#fff" font-weight="bold" text-anchor="middle">FETCH (000)</text>
+      
+      <circle cx="210" cy="130" r="28" fill="#14496e" stroke="#fff" stroke-width="2"/>
+      <text x="210" y="134" font-family="'Sarabun',sans-serif" font-size="10.5px" fill="#fff" font-weight="bold" text-anchor="middle">DECODE (001)</text>
+
+      <circle cx="390" cy="40" r="26" fill="#0e9488" stroke="#fff" stroke-width="2"/>
+      <text x="390" y="44" font-family="'Sarabun',sans-serif" font-size="10.5px" fill="#fff" font-weight="bold" text-anchor="middle">INPUT (011)</text>
+
+      <circle cx="490" cy="90" r="26" fill="#0e9488" stroke="#fff" stroke-width="2"/>
+      <text x="490" y="94" font-family="'Sarabun',sans-serif" font-size="10.5px" fill="#fff" font-weight="bold" text-anchor="middle">OUTPUT (100)</text>
+
+      <circle cx="490" cy="170" r="26" fill="#0e9488" stroke="#fff" stroke-width="2"/>
+      <text x="490" y="174" font-family="'Sarabun',sans-serif" font-size="10.5px" fill="#fff" font-weight="bold" text-anchor="middle">DEC (101)</text>
+
+      <circle cx="390" cy="220" r="26" fill="#0e9488" stroke="#fff" stroke-width="2"/>
+      <text x="390" y="224" font-family="'Sarabun',sans-serif" font-size="10.5px" fill="#fff" font-weight="bold" text-anchor="middle">JNZ (110)</text>
+
+      <circle cx="210" cy="220" r="26" fill="#b7791f" stroke="#fff" stroke-width="2"/>
+      <text x="210" y="224" font-family="'Sarabun',sans-serif" font-size="10.5px" fill="#fff" font-weight="bold" text-anchor="middle">HALT (111)</text>
+
+      <!-- Arrows -->
+      <path d="M 108 130 L 182 130" stroke="#1f2733" stroke-width="1.5" marker-end="url(#arrow)"/>
+      
+      <!-- Decode Transitions -->
+      <path d="M 234 116 L 366 48" stroke="#1f2733" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <text x="300" y="70" font-family="'Sarabun',sans-serif" font-size="9px" fill="#1f2733" text-anchor="middle">Op=011 (IN)</text>
+      
+      <path d="M 236 120 L 464 90" stroke="#1f2733" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <text x="330" y="103" font-family="'Sarabun',sans-serif" font-size="9px" fill="#1f2733" text-anchor="middle">Op=100 (OUT)</text>
+      
+      <path d="M 236 140 L 464 170" stroke="#1f2733" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <text x="330" y="163" font-family="'Sarabun',sans-serif" font-size="9px" fill="#1f2733" text-anchor="middle">Op=101 (DEC)</text>
+      
+      <path d="M 234 144 L 366 212" stroke="#1f2733" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <text x="300" y="195" font-family="'Sarabun',sans-serif" font-size="9px" fill="#1f2733" text-anchor="middle">Op=110 (JNZ)</text>
+      
+      <path d="M 210 158 L 210 194" stroke="#1f2733" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <text x="225" y="180" font-family="'Sarabun',sans-serif" font-size="9px" fill="#1f2733" text-anchor="middle">Op=111</text>
+      
+      <!-- Unused Opcode to FETCH -->
+      <path d="M 196 112 C 160 80, 120 80, 94 104" fill="none" stroke="#6b7785" stroke-dasharray="3,3" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <text x="140" y="80" font-family="'Sarabun',sans-serif" font-size="9px" fill="#6b7785" text-anchor="middle">Op=00x (Unused)</text>
+
+      <!-- Returns to FETCH -->
+      <path d="M 370 26 C 240 -10, 140 20, 92 102" fill="none" stroke="#14496e" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <path d="M 474 76 C 380 0, 200 10, 88 102" fill="none" stroke="#14496e" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <path d="M 474 182 C 380 270, 200 240, 88 158" fill="none" stroke="#14496e" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <path d="M 368 226 C 250 250, 140 220, 90 158" fill="none" stroke="#14496e" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+      <!-- HALT self loop -->
+      <path d="M 226 234 C 235 245, 235 255, 218 248" fill="none" stroke="#b7791f" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+      <!-- Markers -->
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f2733"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+  <figcaption><b>รูปที่ 4</b> — แผนภาพแสดงสถานะและเงื่อนไขการทำงาน (FSM State Diagram) ของหน่วยควบคุม EC-1</figcaption>
+</figure>
+
+<p>สมการ Logic สำหรับการข้ามเปลี่ยนสถานะ (Next-state Equations) ที่ถอดได้จาก FSM มีรูปแบบความสัมพันธ์ดังนี้:</p>
+<div class="eq">
+  D2 = Decode &middot; O2 + Halt <br>
+  D1 = Decode &middot; O1 + Halt <br>
+  D0 = Fetch + Decode &middot; O0 &middot; (O2 + O1) + Halt
+</div>
+
+<p>สัญญาณควบคุมภายนอกสำหรับการส่งให้ระบบ Datapath มี FunctionLogic ความสัมพันธ์กับรหัสสถานะดังต่อไปนี้:</p>
+<div class="eq">
+  IR_load = Fetch <br>
+  PC_load = Fetch + JNZ &middot; A_neq_0 <br>
+  IN_mux = Input <br>
+  A_load = Input + Dec <br>
+  JNZ_mux = JNZ <br>
+  Out_E = Output <br>
+  Halt = Halt
+</div>
+
+<!-- ============ 6 โปรแกรมใน ROM ============ -->
+<h2 class="sec" id="s6"><span class="num">6</span> โปรแกรมใน ROM และผังการไหล <span class="en">(ROM Program & Flowchart)</span></h2>
+
+<h3 class="sub" id="s6-1">6.1 ตารางถอดรหัส ROM Program</h3>
+<p>รหัสคำสั่งสำหรับการทดลองการนับถอยหลังของ Accumulator A มี Parameter การแมปไบนารีและรหัส Hex ดังตารางที่ 2</p>
+
+<div class="tblwrap split">
+  <table class="data split" id="t4">
+    <caption>ตารางที่ 2 ตารางการถอดรหัส ROM Program</caption>
+    <thead>
+      <tr><th style="width:12%">ROM Addr</th><th style="width:22%">Assembly Mnemonic</th><th style="width:20%">Machine Code (Hex)</th><th style="width:14%">Opcode (Bin)</th><th style="width:14%">Operand (Bin)</th><th>ความหมายการทำงาน</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="bin">0x0</td><td>IN A</td><td class="bin">0x60</td><td class="bin">011</td><td class="bin">0000</td><td class="lead">รอข้อมูลจาก Input Port ภายนอก แล้วนำมาตั้งค่าให้สะสมใน A</td></tr>
+      <tr><td class="bin">0x1</td><td>OUT A</td><td class="bin">0x80</td><td class="bin">100</td><td class="bin">0000</td><td class="lead">แสดงค่าข้อมูลจาก Accumulator A ออกที่ Output Port ภายนอก</td></tr>
+      <tr><td class="bin">0x2</td><td>DEC A</td><td class="bin">0xA0</td><td class="bin">101</td><td class="bin">0000</td><td class="lead">ลดค่าใน Accumulator A ลง 1 ค่า (A &larr; A - 1)</td></tr>
+      <tr><td class="bin">0x3</td><td>JNZ 0x1</td><td class="bin">0xC1</td><td class="bin">110</td><td class="bin">0001</td><td class="lead">หากค่าใน Accumulator A &ne; 0 ให้เปลี่ยน PC ย้อนกลับไป Address 0x1</td></tr>
+      <tr><td class="bin">0x4</td><td>HALT</td><td class="bin">0xE0</td><td class="bin">111</td><td class="bin">0000</td><td class="lead">สั่งหยุดการขยับสถานะของซีพียูเข้าสู่สถานะหยุดทำงานถาวร</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3 class="sub" id="s6-2">6.2 ผังการไหลของโปรแกรม (Flowchart)</h3>
+<p>ผังการประมวลผลคำสั่งเชิงโปรแกรม (Software Execution Flow) เพื่อการลดค่า countdown แสดงไว้ในรูปที่ 5</p>
+
+<figure class="fig diagfig" id="f5">
+  <div class="diagram" style="max-width: 480px; margin: 0 auto;">
+    <svg width="220" height="300" viewBox="0 0 220 300" style="padding: 10px;">
+      <rect x="60" y="10" width="100" height="25" rx="12" fill="#14496e" stroke="#fff" stroke-width="1.5"/>
+      <text x="110" y="26" font-family="'Sarabun',sans-serif" font-size="10.5px" fill="#fff" font-weight="bold" text-anchor="middle">Start</text>
+      
+      <polygon points="110,50 170,62 110,75 50,62" fill="#0e9488" stroke="#fff" stroke-width="1.5"/>
+      <text x="110" y="66" font-family="'Sarabun',sans-serif" font-size="10.5px" fill="#fff" font-weight="bold" text-anchor="middle">Input -> A</text>
+
+      <rect x="60" y="95" width="100" height="25" fill="#0e9488" stroke="#fff" stroke-width="1.5"/>
+      <text x="110" y="111" font-family="'Sarabun',sans-serif" font-size="10.5px" fill="#fff" font-weight="bold" text-anchor="middle">Output <- A</text>
+
+      <rect x="60" y="140" width="100" height="25" fill="#0e9488" stroke="#fff" stroke-width="1.5"/>
+      <text x="110" y="156" font-family="'Sarabun',sans-serif" font-size="10.5px" fill="#fff" font-weight="bold" text-anchor="middle">A <- A - 1</text>
+
+      <polygon points="110,185 160,202 110,220 60,202" fill="#b7791f" stroke="#fff" stroke-width="1.5"/>
+      <text x="110" y="206" font-family="'Sarabun',sans-serif" font-size="9.5px" fill="#fff" font-weight="bold" text-anchor="middle">Is A == 0?</text>
+
+      <rect x="60" y="255" width="100" height="25" rx="12" fill="#1f2733" stroke="#fff" stroke-width="1.5"/>
+      <text x="110" y="271" font-family="'Sarabun',sans-serif" font-size="10.5px" fill="#fff" font-weight="bold" text-anchor="middle">Halt</text>
+
+      <!-- Arrows -->
+      <path d="M 110 35 L 110 50" stroke="#1f2733" stroke-width="1.2" marker-end="url(#f-arrow)"/>
+      <path d="M 110 75 L 110 95" stroke="#1f2733" stroke-width="1.2" marker-end="url(#f-arrow)"/>
+      <path d="M 110 120 L 110 140" stroke="#1f2733" stroke-width="1.2" marker-end="url(#f-arrow)"/>
+      <path d="M 110 165 L 110 185" stroke="#1f2733" stroke-width="1.2" marker-end="url(#f-arrow)"/>
+      
+      <!-- Condition Yes -->
+      <path d="M 110 220 L 110 255" stroke="#1f2733" stroke-width="1.2" marker-end="url(#f-arrow)"/>
+      <text x="120" y="235" font-family="'Sarabun',sans-serif" font-size="9px" fill="#1f2733">Yes</text>
+
+      <!-- Condition No -->
+      <path d="M 160 202 L 185 202 L 185 107 L 160 107" fill="none" stroke="#1f2733" stroke-width="1.2" marker-end="url(#f-arrow)"/>
+      <text x="175" y="195" font-family="'Sarabun',sans-serif" font-size="9px" fill="#1f2733" text-anchor="middle">No</text>
+
+      <defs>
+        <marker id="f-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f2733"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+  <figcaption><b>รูปที่ 5</b> — ผังการไหล (Flowchart) แสดงขั้นตอนการประมวลผลโปรแกรมนับถอยหลัง</figcaption>
+</figure>
+
+<!-- ============ 7 ตารางทีละคาบ ============ -->
+<h2 class="sec" id="s7"><span class="num">7</span> ตารางการทำงานทีละคาบสัญญาณนาฬิกา <span class="en">(Cycle-by-Cycle Trace)</span></h2>
+<p>การจำลองการเปลี่ยนแปลงทางข้อมูลและสัญญาณคุมระบบในรอบสัญญาณนาฬิกา (Cycle-by-Cycle Trace) โดยเริ่มจากการป้อนค่าคงที่ Input เป้าหมายล่วงหน้าคือ `INPUT_A = 3` สามารถระบุ Parameter สัญญาณขาออก ณ ขอบสัญญาณขาขึ้นของแต่ละจังหวะเวลาได้ดังนี้</p>
+
+<div class="tblwrap">
+  <table class="data split tight" id="t5-1">
+    <caption>ตารางที่ 3 การทำงานทีละคาบสัญญาณนาฬิกา (คาบที่ 1–17)</caption>
+    <thead>
+      <tr><th>Cycle</th><th>FSM State</th><th>Q210</th><th>PC</th><th>IR</th><th>A</th><th>Output</th><th>JNZmx</th><th>INmx</th><th>Aload</th><th>PCload</th><th>IRload</th><th>OutE</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="bin">1</td><td>FETCH</td><td class="bin">000</td><td class="bin">0</td><td class="bin">00</td><td class="bin">0</td><td>Hi-Z</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">1</td><td class="bin">1</td><td class="bin">0</td></tr>
+      <tr><td class="bin">2</td><td>DECODE</td><td class="bin">001</td><td class="bin">1</td><td class="bin">60</td><td class="bin">0</td><td>Hi-Z</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td></tr>
+      <tr class="hl"><td class="bin">3</td><td>INPUT</td><td class="bin">011</td><td class="bin">1</td><td class="bin">60</td><td class="bin">0</td><td>Hi-Z</td><td class="bin">0</td><td class="bin">1</td><td class="bin">1</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td></tr>
+      <tr><td class="bin">4</td><td>FETCH</td><td class="bin">000</td><td class="bin">1</td><td class="bin">60</td><td class="bin">3</td><td>Hi-Z</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">1</td><td class="bin">1</td><td class="bin">0</td></tr>
+      <tr><td class="bin">5</td><td>DECODE</td><td class="bin">001</td><td class="bin">2</td><td class="bin">80</td><td class="bin">3</td><td>Hi-Z</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td></tr>
+      <tr class="hl"><td class="bin">6</td><td>OUTPUT</td><td class="bin">100</td><td class="bin">2</td><td class="bin">80</td><td class="bin">3</td><td class="bin">3</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">1</td></tr>
+      <tr><td class="bin">7</td><td>FETCH</td><td class="bin">000</td><td class="bin">2</td><td class="bin">80</td><td class="bin">3</td><td>Hi-Z</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">1</td><td class="bin">1</td><td class="bin">0</td></tr>
+      <tr><td class="bin">8</td><td>DECODE</td><td class="bin">001</td><td class="bin">3</td><td class="bin">A0</td><td class="bin">3</td><td>Hi-Z</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td></tr>
+      <tr class="hl"><td class="bin">9</td><td>DEC</td><td class="bin">101</td><td class="bin">3</td><td class="bin">A0</td><td class="bin">3</td><td>Hi-Z</td><td class="bin">0</td><td class="bin">0</td><td class="bin">1</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td></tr>
+      <tr><td class="bin">10</td><td>FETCH</td><td class="bin">000</td><td class="bin">3</td><td class="bin">A0</td><td class="bin">2</td><td>Hi-Z</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">1</td><td class="bin">1</td><td class="bin">0</td></tr>
+      <tr><td class="bin">11</td><td>DECODE</td><td class="bin">001</td><td class="bin">4</td><td class="bin">C1</td><td class="bin">2</td><td>Hi-Z</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td></tr>
+      <tr class="hl"><td class="bin">12</td><td>JNZ</td><td class="bin">110</td><td class="bin">4</td><td class="bin">C1</td><td class="bin">2</td><td>Hi-Z</td><td class="bin">1</td><td class="bin">0</td><td class="bin">0</td><td class="bin">1</td><td class="bin">0</td><td class="bin">0</td></tr>
+      <tr><td class="bin">13</td><td>FETCH</td><td class="bin">000</td><td class="bin">1</td><td class="bin">C1</td><td class="bin">2</td><td>Hi-Z</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">1</td><td class="bin">1</td><td class="bin">0</td></tr>
+      <tr><td class="bin">14</td><td>DECODE</td><td class="bin">001</td><td class="bin">2</td><td class="bin">80</td><td class="bin">2</td><td>Hi-Z</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td></tr>
+      <tr class="hl"><td class="bin">15</td><td>OUTPUT</td><td class="bin">100</td><td class="bin">2</td><td class="bin">80</td><td class="bin">2</td><td class="bin">2</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">1</td></tr>
+      <tr><td class="bin">16</td><td>FETCH</td><td class="bin">000</td><td class="bin">2</td><td class="bin">80</td><td class="bin">2</td><td>Hi-Z</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">1</td><td class="bin">1</td><td class="bin">0</td></tr>
+      <tr><td class="bin">17</td><td>DECODE</td><td class="bin">001</td><td class="bin">3</td><td class="bin">A0</td><td class="bin">2</td><td>Hi-Z</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="tblwrap">
+  <table class="data split tight" id="t5-2">
+    <caption>ตารางที่ 4 การทำงานทีละคาบสัญญาณนาฬิกา (คาบที่ 18–34)</caption>
+    <thead>
+      <tr><th>Cycle</th><th>FSM State</th><th>Q210</th><th>PC</th><th>IR</th><th>A</th><th>Output</th><th>JNZmx</th><th>INmx</th><th>Aload</th><th>PCload</th><th>IRload</th><th>OutE</th></tr>
+    </thead>
+    <tbody>
+      <tr class="hl"><td class="bin">18</td><td>DEC</td><td class="bin">101</td><td class="bin">3</td><td class="bin">A0</td><td class="bin">2</td><td>Hi-Z</td><td class="bin">0</td><td class="bin">0</td><td class="bin">1</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td></tr>
+      <tr><td class="bin">19</td><td>FETCH</td><td class="bin">000</td><td class="bin">3</td><td class="bin">A0</td><td class="bin">1</td><td>Hi-Z</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">1</td><td class="bin">1</td><td class="bin">0</td></tr>
+      <tr><td class="bin">20</td><td>DECODE</td><td class="bin">001</td><td class="bin">4</td><td class="bin">C1</td><td class="bin">1</td><td>Hi-Z</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td></tr>
+      <tr class="hl"><td class="bin">21</td><td>JNZ</td><td class="bin">110</td><td class="bin">4</td><td class="bin">C1</td><td class="bin">1</td><td>Hi-Z</td><td class="bin">1</td><td class="bin">0</td><td class="bin">0</td><td class="bin">1</td><td class="bin">0</td><td class="bin">0</td></tr>
+      <tr><td class="bin">22</td><td>FETCH</td><td class="bin">000</td><td class="bin">1</td><td class="bin">C1</td><td class="bin">1</td><td>Hi-Z</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">1</td><td class="bin">1</td><td class="bin">0</td></tr>
+      <tr><td class="bin">23</td><td>DECODE</td><td class="bin">001</td><td class="bin">2</td><td class="bin">80</td><td class="bin">1</td><td>Hi-Z</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td></tr>
+      <tr class="hl"><td class="bin">24</td><td>OUTPUT</td><td class="bin">100</td><td class="bin">2</td><td class="bin">80</td><td class="bin">1</td><td class="bin">1</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">1</td></tr>
+      <tr><td class="bin">25</td><td>FETCH</td><td class="bin">000</td><td class="bin">2</td><td class="bin">80</td><td class="bin">1</td><td>Hi-Z</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">1</td><td class="bin">1</td><td class="bin">0</td></tr>
+      <tr><td class="bin">26</td><td>DECODE</td><td class="bin">001</td><td class="bin">3</td><td class="bin">A0</td><td class="bin">1</td><td>Hi-Z</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td></tr>
+      <tr class="hl"><td class="bin">27</td><td>DEC</td><td class="bin">101</td><td class="bin">3</td><td class="bin">A0</td><td class="bin">1</td><td>Hi-Z</td><td class="bin">0</td><td class="bin">0</td><td class="bin">1</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td></tr>
+      <tr><td class="bin">28</td><td>FETCH</td><td class="bin">000</td><td class="bin">3</td><td class="bin">A0</td><td class="bin">0</td><td>Hi-Z</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">1</td><td class="bin">1</td><td class="bin">0</td></tr>
+      <tr><td class="bin">29</td><td>DECODE</td><td class="bin">001</td><td class="bin">4</td><td class="bin">C1</td><td class="bin">0</td><td>Hi-Z</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td></tr>
+      <tr class="hl"><td class="bin">30</td><td>JNZ</td><td class="bin">110</td><td class="bin">4</td><td class="bin">C1</td><td class="bin">0</td><td>Hi-Z</td><td class="bin">1</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td></tr>
+      <tr><td class="bin">31</td><td>FETCH</td><td class="bin">000</td><td class="bin">4</td><td class="bin">C1</td><td class="bin">0</td><td>Hi-Z</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">1</td><td class="bin">1</td><td class="bin">0</td></tr>
+      <tr><td class="bin">32</td><td>DECODE</td><td class="bin">001</td><td class="bin">5</td><td class="bin">E0</td><td class="bin">0</td><td>Hi-Z</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td></tr>
+      <tr class="hl"><td class="bin">33</td><td>HALT</td><td class="bin">111</td><td class="bin">5</td><td class="bin">E0</td><td class="bin">0</td><td>Hi-Z</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td></tr>
+      <tr class="hl"><td class="bin">34</td><td>HALT</td><td class="bin">111</td><td class="bin">5</td><td class="bin">E0</td><td class="bin">0</td><td>Hi-Z</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td><td class="bin">0</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============ 8 วิธีทดลอง ============ -->
+<h2 class="sec" id="s8"><span class="num">8</span> วิธีทดลองใน Logisim-Evolution <span class="en">(Simulation Procedure)</span></h2>
+<p>การจำลองการทำงานระดับปฏิบัติการของโครงสร้าง Hardware ซีพียู EC-1 มีกระบวนการดำเนินงานหลักดังนี้:</p>
+<ol class="objlist">
+  <li><b>การเตรียมโครงสร้างวงจร (Main Design Sheet):</b> ทำการลาก Module `ec1_datapath` และ `ec1_control` มาเชื่อมต่อร่วมกับปุ่ม RESET และสัญญาณนาฬิกาหลักของ Sheet `main`</li>
+  <li><b>การแก้ไขรหัสโปรแกรมใน ROM:</b> คลิกขวาที่ ROM ของ Datapath และพิมพ์รหัส Hex ของโปรแกรม: <b class="term">60 80 a0 c1 e0</b> แล้วเคลียร์ค่า Address ที่เหลือเป็น 00 ทั้งหมด</li>
+  <li><b>การเริ่มทำงานและเตรียมข้อมูล Input:</b> ใช้เครื่องมือ Poke Tool ตั้งค่าเริ่มต้นที่ Port `INPUT_A` (ตัวอย่าง: ตั้งค่าเป็น 3) จากนั้นกดขา Reset Reset ให้เป็น 1 แล้วกลับเป็น 0 เพื่อเริ่มวงรอบ PC จากตำแหน่งแรก</li>
+  <li><b>การขยับจังหวะสัญญาณนาฬิกา:</b> สลับระดับสัญญาณ Clock 0 &harr; 1 ต่อเนื่อง หรือผ่านเมนู <b class="term">Simulate &rarr; Auto-Tick Enabled</b> สังเกต Output และเช็คสถานะหยุดการทำงานที่ขา HALT</li>
+</ol>
+
+<figure class="fig" id="f6">
+  <img src="report_img/ec1_micro_top_level.png" alt="EC-1 Top-Level Circuit Integration" style="max-height: 200px; width: auto;">
+  <figcaption><b>รูปที่ 6</b> — วงจรภาพรวมระดับสูงสุด (main) ของ Microprocessor EC-1 พร้อมจอแสดงผล Hex</figcaption>
+</figure>
+
+<!-- ============ 9 ข้อสังเกตและข้อควรระวัง ============ -->
+<h2 class="sec" id="s9"><span class="num">9</span> ข้อสังเกตและจุดที่ควรระวัง <span class="en">(Observations and Caveats)</span></h2>
+
+<h3 class="sub" id="s9-1">9.1 ความผิดพลาดทั่วไปของการต่อสายสัญญาณและการถอดสมการ Boolean (Hardware Bugs)</h3>
+<ul class="clean">
+  <li><b class="term">การสูญเสียการตัดสินใจกระโดดมีเงื่อนไข JNZ ในการคุม PC:</b> จุดที่ควรระวังสูงสุดคือหากนักศึกษาปรับลดทอนสัญญาณโดยนำสมการ `PC_load` ควบเข้ากับเงื่อนไข FETCH เท่านั้น สัญญาณตัดสินใจกระโดดแบบมีเงื่อนไขของคำสั่ง `JNZ` จะไม่ส่งผลกระโดด ทำให้โปรแกรม countdown ไม่ย้อน Loop ขึ้นไปประมวลผล Output ซ้ำ ผลลัพธ์บน Hex Display จะแสดงเลขตัวแรกเพียงครั้งเดียวแล้วจบทำงานทันที</li>
+  <li><b class="term">การประชด Bit ในช่วงขอบสัญญาณนาฬิกา (Race Conditions):</b> เนื่องจากตำแหน่ง PC และ Register IR รับสัญญาณโหลดที่ขอบขาขึ้นร่วมกัน ทว่าการจำลองวงจรในระดับ LogicSoftware อุปกรณ์ ROM จะยังคายรหัสคำสั่งเดิมของ Address เก่าก่อนการเพิ่มขึ้นของ PC ได้อย่างถูกต้องและทันท่วงที</li>
+</ul>
+
+<h3 class="sub" id="s9-2">9.2 การวิเคราะห์ความพร้อมและความปลอดภัยในการทำงานของหน่วยความจำ (Instruction Wrap-Around)</h3>
+<p>ในโปรแกรม countdown Loop ประมวลผลถูกออกแบบให้ตรวจเช็คด้วยตัวแปรเปรียบเทียบ `A != 0` เมื่อ Accumulator A ลดค่าลงถึงศูนย์ คำสั่ง `JNZ` จะไม่ส่งผลกระโดด แต่หาก FSM ถูกป้อนค่าและสั่งควบคุมลบข้อมูลย้อนกลับต่อเนื่องไปเรื่อย ๆ โดยไม่มีการจำกัดรอบ ค่าของ Accumulator A จะเกิดเหตุการณ์ <b class="term">Wrap-around (หรือ Underflow)</b> จาก `0x00` ข้ามไปเป็นค่าล้นบนสุด `0xFF` (หรือ 255) ทันที ซึ่งอาจก่อให้เกิดจุดบกพร่องร้ายแรงในโปรแกรมระดับบนได้</p>
+
+<h3 class="sub" id="s9-3">9.3 การดัดแปลงและต่อขยายชุดคำสั่ง INC A (Extended Instruction Design)</h3>
+<p>หน่วยควบคุม FSM ของ EC-1 มี Slot ว่างของ Opcode ที่สามารถขยายเพื่อรองรับคำสั่งเพิ่มขึ้นได้ ในที่นี้เสนอการเพิ่มคำสั่งใหม่ <b class="term">INC A (Increment Accumulator A: A &larr; A + 1)</b> โดยการจัดสรรและถอดรูป Boolean ควบคุมมีโครงสร้างดังนี้:</p>
+
+<div class="callout">
+  <p><b class="sl">สมการ Logic ระดับ FSM ที่ผ่านการขยายเพื่อรองรับ INC A:</b></p>
+  <div class="eq">
+    D2 = Decode &middot; O2 + Halt <br>
+    D1 = Decode &middot; O1 + Halt <br>
+    D0 = Fetch + Decode &middot; O0 &middot; (O2 + O1) + Halt
+  </div>
+  <p style="margin-top: 10px;"><b>สัญญาณควบคุมการเชื่อมทางเดินข้อมูลแบบใหม่:</b></p>
+  <p>เพิ่มชุดตัวเลือก Multiplexer จากเดิม 2:1 เป็น 3:1 เพื่อรวมสายสัญญาณ `A + 1` เข้ามาด้วย โดยมีสมการควบคุมดังนี้:</p>
+  <p style="padding-left: 20px; font-style: italic;">
+    - IN_mux1 = State_2 (รหัสสถานะ Step คำสั่ง INC)<br>
+    - IN_mux0 = State_3 (รหัสสถานะ Step คำสั่ง INPUT)<br>
+    - A_load = State_2 + State_3 + State_5 (INC + INPUT + DEC)
+  </p>
+</div>
+
+<!-- ============ 10 สรุปผล ============ -->
+<h2 class="sec" id="s10"><span class="num">10</span> สรุปผล <span class="en">(Conclusion)</span></h2>
+<p>การปฏิบัติการทดลองวิเคราะห์และสร้างระบบคำสั่งใน Microprocessor EC-1 ประสบผลสำเร็จด้วยดี ผลการจำลองการทดสอบร่วมกับโปรแกรม countdown เลข 3 ถึง 1 สอดคล้องตามทฤษฎีในตาราง Trace คาบเวลาอย่างสม่ำเสมอ โดยระบบส่งผ่านทิศทางข้อมูลของ Accumulator A ไปลดค่าและย้อน Loop กลับมาพิมพ์สัญญาณได้ตามสัญญาณ `A_neq_0` และเข้าสู่สถานะ Halt ตลอดช่วงการปิดวงจร ณ คาบเวลาสัญญาณนาฬิกาที่ 33 พอดี</p>
+<p>ความแตกต่างระหว่างการทดลองรอบนี้กับ Lab 1 สะท้อนให้เห็นว่า การพัฒนา Microprocessor จำลองที่มี FSM ร่วมกับชุดคำสั่ง Assembly ช่วยเอื้อความสะดวกสำหรับนักพัฒนาระดับ Software ในการปรับเขียนโค้ดโดยไม่ต้องกังวลกับการจัดการคำสัญญาณ Logic ระดับควบคุมเชิงไฟฟ้า (Control Signals) โดยตรงแบบเครื่องใน Lab 1 ตัว FSM ทำหน้าที่เป็นมิดเดิลแวร์ซ่อนความซับซ้อนของทางสัญญานผ่านรหัสถอดรหัส Opcode สี่งผลให้การเชื่อมโยงระบบสมองกลฝังตัวมีความเป็นระบบและมีประสิทธิภาพในการประมวลผลสูงขึ้นอย่างเด่นชัด</p>
+
+<!-- ============ 11 เอกสารอ้างอิง ============ -->
+<h2 class="sec" id="s11"><span class="num">11</span> เอกสารอ้างอิง <span class="en">(References)</span></h2>
+<ol class="refs">
+  <li>คทาเทพ สวัสดิพิศาล, "คู่มือการปฏิบัติการทดลองที่ 2: The EC-1 Microprocessor," ภาควิชาวิศวกรรมคอมพิวเตอร์ คณะวิศวกรรมศาสตร์ สถาบันเทคโนโลยีพระจอมเกล้าพระนครเหนือ, 2569.</li>
+  <li>E. O. Hwang, <i>Digital Logic and Microprocessor Design with Interfacing</i>, 2nd ed. Boston, MA: Cengage Learning, 2018.</li>
+  <li>ภาควิชาวิศวกรรมคอมพิวเตอร์, "เอกสารประกอบการเรียนวิชา Embedded System Design: สถาปัตยกรรม Microprocessor เบื้องต้น," สถาบันเทคโนโลยีพระจอมเกล้าพระนครเหนือ, 2569.</li>
+</ol>
+
+</body>
+</html>
