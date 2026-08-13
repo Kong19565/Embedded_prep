@@ -223,7 +223,7 @@
           <li><b>Program Counter (PC):</b> รีจิสเตอร์ชี้ตำแหน่งแอดเดรสคำสั่งถัดไปใน RAM (ขนาด 4 บิต)</li>
           <li><b>Memory Address Register (MAR):</b> รีจิสเตอร์รับแอดเดรสสำหรับส่งต่อให้ RAM อ่าน/เขียนข้อมูล</li>
           <li><b>Memory Data Register (MDR):</b> บัฟเฟอร์รับเข้าและส่งออกข้อมูลไบนารีระหว่าง CPU กับ RAM</li>
-          <li><b>Instruction Register (IR):</b> เก็บคำสั่งขนาด 8 บิตที่เพิ่งถอดรหัสจาก RAM ($Opcode [7:4] + Operand [3:0]$)</li>
+          <li><b>Instruction Register (IR):</b> เก็บคำสั่งขนาด 8 บิตที่เพิ่งถอดรหัสจาก RAM (Opcode [7:4] + Operand [3:0])</li>
           <li><b>Accumulator (ACC):</b> รีจิสเตอร์สะสมผลลัพธ์คำนวณ 8 บิตหลักที่ต่อเข้ากับวงจร ALU</li>
         </ul>
       </div>
@@ -232,7 +232,9 @@
       <div class="slide-card">
         <div class="slide-header">
           <span class="slide-num-badge">ส่วนที่ 2: วงจร FSM 3 สถานะการประมวลผลคำสั่ง</span>
-          <h3 style="color: #fff;">2. วงจร FSM และสัญญาณควบคุมในแต่ละรอบสถานะ ($S_0 ightarrow S_1 ightarrow S_2$)</h3>
+          <h3 style="color: #fff;">2. วงจร FSM และสัญญาณควบคุมในแต่ละรอบสถานะ ($S_0 
+ightarrow S_1 
+ightarrow S_2$)</h3>
         </div>
         <div style="overflow-x: auto; margin-top: 14px;">
           <table class="data-table">

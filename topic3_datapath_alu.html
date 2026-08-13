@@ -39,8 +39,8 @@
       <div class="wwh-box what-box" style="margin-bottom: 12px;">
         <div class="wwh-title" style="color: var(--primary);">📌 Full Adder & Subtractor (What):</div>
         <div>Full Adder 1 บิต มีสมการเอาต์พุต:<br>
-        • <code>Sum = A $\oplus$ B $\oplus$ Cin</code><br>
-        • <code>Cout = (A · B) + (Cin · (A $\oplus$ B))</code><br>
+        • <code>Sum = A ⊕ B ⊕ Cin</code><br>
+        • <code>Cout = (A · B) + (Cin · (A ⊕ B))</code><br>
         เมื่อต้องการทำวงจรบวกลบร่วมกัน จะใช้ XOR Gate ควบคุมอินพุต B กับสัญญาณ <code>M</code> (ถ้า M=1 ทำการ 2's Complement เพื่อลบเลข)</div>
       </div>
       <div class="wwh-box how-box">
@@ -48,7 +48,7 @@
         <div>• <b>Carry Flag (C):</b> ตัวทดออกจากบิต MSB<br>
         • <b>Zero Flag (Z):</b> เป็น 1 เมื่อเอาต์พุตคำนวณเป็น 0 ทั้งหมด<br>
         • <b>Negative Flag (N):</b> บิตสูงสุด MSB ของผลลัพธ์ (บอกเครื่องหมายใน 2's Complement)<br>
-        • <b>Overflow Flag (V):</b> <code>V = C_in(MSB) $\oplus$ C_out(MSB)</code> เกิดการล้นของเลขมีเครื่องหมาย</div>
+        • <b>Overflow Flag (V):</b> <code>V = C_in(MSB) ⊕ C_out(MSB)</code> เกิดการล้นของเลขมีเครื่องหมาย</div>
       </div>
     </div>
 

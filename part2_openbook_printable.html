@@ -99,7 +99,7 @@
                 <td><b>I</b> (Interrupt)</td>
                 <td><b>T</b> (Bit Copy)</td>
                 <td><b>H</b> (Half Carry)</td>
-                <td><b>S</b> (Sign Bit $S=N \oplus V$)</td>
+                <td><b>S</b> (Sign Bit $S=N ⊕ V$)</td>
                 <td><b>V</b> (Overflow)</td>
                 <td><b>N</b> (Negative)</td>
                 <td><b>Z</b> (Zero)</td>
@@ -222,7 +222,7 @@ SUB_DONE:
       </pre>
 
       <!-- Template 3: Sum N down to 1 Loop -->
-      <h4 style="color: #4ade80; margin-top: 16px;">Template 3: วนลูปคำนวณผลรวมสะสม $S = \sum_{i=1}^{n} i$</h4>
+      <h4 style="color: #4ade80; margin-top: 16px;">Template 3: วนลูปคำนวณผลรวมสะสม S = 1 + 2 + ... + n</h4>
       <pre style="background: #060b19; color: #4ade80; padding: 12px; border-radius: 8px; font-size: 0.85rem;">
 ; คำนวณ S = N + (N-1) + ... + 1 (เช่น N=5 -> S=15)
 LDI R16, 5              ; N = 5
