@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📄 เอกสารประกอบการสอบ PART 2 (เปิดตำรา) — สรุปชุดคำสั่ง AVR Assembly & แผนผังบอร์ด ATmega328P</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    @media print {
+      body { background: #fff !important; color: #000 !important; font-size: 10pt !important; }
+      .navbar, .btn-print, .pagination-nav, footer { display: none !important; }
+      .container { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
+      .print-card { border: 1px solid #000 !important; background: #fff !important; color: #000 !important; page-break-inside: avoid; margin-bottom: 15px !important; box-shadow: none !important; }
+      .print-title { color: #000 !important; border-bottom: 2px solid #000 !important; }
+      table.data-table { border: 1px solid #000 !important; color: #000 !important; }
+      table.data-table th, table.data-table td { border: 1px solid #000 !important; background: #fff !important; color: #000 !important; padding: 4px 6px !important; font-size: 8.5pt !important; }
+      pre { background: #f8fafc !important; color: #000 !important; border: 1px solid #000 !important; font-size: 8pt !important; line-height: 1.3 !important; }
+      .source-tag { border: 1px solid #000 !important; color: #000 !important; background: #fff !important; }
+    }
+    .print-card {
+      background: #0f172a;
+      border: 1px solid var(--border-highlight);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 28px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+    }
+    .print-title {
+      color: var(--accent);
+      font-size: 1.2rem;
+      font-weight: 800;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .btn-print {
+      background: #4ade80;
+      color: #052e16;
+      font-weight: 800;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+      box-shadow: 0 0 15px rgba(74, 222, 128, 0.4);
+      transition: all 0.2s;
+    }
+    .btn-print:hover {
+      background: #22c55e;
+      transform: scale(1.03);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">⚡ EMBEDDED EXAM HUB</a>
+    <ul class="nav-links">
+      <li><a href="index.html">หน้าหลัก Index</a></li>
+      <li><a href="part2_openbook_printable.html" class="active">📄 สรุปสูตรพิมพ์ A4 พกเข้าห้องสอบ (Part 2)</a></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN CONTAINER -->
+  <main class="container">
+
+    <!-- PAGE BANNER -->
+    <header class="page-banner">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+        <div>
+          <span class="source-tag" style="background: rgba(74, 222, 128, 0.2); color: #4ade80; border-color: #4ade80;">🟢 PART 2: สอบเปิดตำรา (13:00 - 15:30 น.) — อนุญาตให้นำกระดาษเข้าได้</span>
+          <h1 class="page-title" style="margin-top: 6px;">📄 สรุปคำสั่ง AVR Assembly & โครงสร้างฮาร์ดแวร์ ATmega328P (A4 Print-Ready Cheat Sheet)</h1>
+        </div>
+        <button class="btn-print" onclick="window.print()">🖨️ พิมพ์เอกสารฉบับนี้ออกกระดาษ A4 พกเข้าห้องสอบ</button>
+      </div>
+    </header>
+
+    <!-- SECTION 1: HARDWARE REGISTERS & MEMORY MAP -->
+    <div class="print-card">
+      <div class="print-title">
+        <span>📌 1. โครงสร้างฮาร์ดแวร์ รีจิสเตอร์ และพอร์ต I/O ของ ATmega328P</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 18px;">
+        <div>
+          <h4 style="color: #38bdf8; margin-bottom: 8px;">1.1 รีจิสเตอร์สถานะ Status Register (SREG)</h4>
+          <table class="data-table">
+            <thead>
+              <tr><th>Bit 7</th><th>Bit 6</th><th>Bit 5</th><th>Bit 4</th><th>Bit 3</th><th>Bit 2</th><th>Bit 1</th><th>Bit 0</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>I</b> (Interrupt)</td>
+                <td><b>T</b> (Bit Copy)</td>
+                <td><b>H</b> (Half Carry)</td>
+                <td><b>S</b> (Sign Bit $S=N \oplus V$)</td>
+                <td><b>V</b> (Overflow)</td>
+                <td><b>N</b> (Negative)</td>
+                <td><b>Z</b> (Zero)</td>
+                <td><b>C</b> (Carry)</td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 6px;">
+            • <b>Z (Zero):</b> เป็น 1 เมื่อผลลัพธ์คำนวณเป็น 0<br>
+            • <b>C (Carry):</b> เป็น 1 เมื่อมีตัวทดออกจาก MSB (บิต 7)<br>
+            • <b>V (Overflow):</b> เป็น 1 เมื่อเกิดการล้นของเลขมีเครื่องหมาย 2's Complement
+          </p>
+        </div>
+        <div>
+          <h4 style="color: #fbbf24; margin-bottom: 8px;">1.2 รีจิสเตอร์ควบคุมพอร์ต I/O (PORTB, PORTC, PORTD)</h4>
+          <table class="data-table">
+            <thead>
+              <tr><th>ชื่อรีจิสเตอร์</th><th>หน้าที่การทำงาน</th><th>ตัวอย่างคำสั่งตั้งค่า</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>DDRx</code></td><td>กำหนดทิศทางพอร์ต (1 = Output, 0 = Input)</td><td><code>LDI R16, 0xFF</code><br><code>OUT DDRB, R16</code></td></tr>
+              <tr><td><code>PORTx</code></td><td>ส่งค่าเอาต์พุตออก หรือเปิด Pull-up บนอินพุต</td><td><code>OUT PORTB, R16</code></td></tr>
+              <tr><td><code>PINx</code></td><td>อ่านค่าระดับแรงดันอินพุตดิจิทัลจากขาพิน</td><td><code>IN R16, PINB</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: AVR ASSEMBLY INSTRUCTION SET CHEAT SHEET TABLE -->
+    <div class="print-card">
+      <div class="print-title">
+        <span>⚡ 2. ตารางสรุปชุดคำสั่งภาษาแอสเซมบลี AVR Assembly Instruction Reference</span>
+      </div>
+      <div style="overflow-x: auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>กลุ่มคำสั่ง</th>
+              <th>Mnemonic</th>
+              <th>รูปแบบการใช้งาน (Syntax)</th>
+              <th>คำอธิบายหน้าที่ (Operation / Description)</th>
+              <th>ผลต่อธง SREG</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td rowspan="5"><b>ย้ายข้อมูล<br>(Data Transfer)</b></td><td><code>LDI</code></td><td><code>LDI Rd, K</code></td><td>โหลดค่าคงที่ K (0-255) ลงรีจิสเตอร์ Rd (ต้องเป็น R16-R31)</td><td>ไม่มี</td></tr>
+            <tr><td><code>MOV</code></td><td><code>MOV Rd, Rr</code></td><td>คัดลอกค่าจากรีจิสเตอร์ Rr ไปยัง Rd</td><td>ไม่มี</td></tr>
+            <tr><td><code>IN</code></td><td><code>IN Rd, A</code></td><td>อ่านค่าจากพอร์ต I/O แอดเดรส A ลงรีจิสเตอร์ Rd</td><td>ไม่มี</td></tr>
+            <tr><td><code>OUT</code></td><td><code>OUT A, Rr</code></td><td>ส่งค่าจากรีจิสเตอร์ Rr ออกพอร์ต I/O แอดเดรส A</td><td>ไม่มี</td></tr>
+            <tr><td><code>PUSH / POP</code></td><td><code>PUSH Rr / POP Rd</code></td><td>เอาค่าเข้า Stack / ดึงค่าออกจาก Stack</td><td>ไม่มี</td></tr>
+
+            <tr><td rowspan="6"><b>คำนวณคณิตศาสตร์<br>& ลอจิก<br>(ALU Ops)</b></td><td><code>ADD / ADC</code></td><td><code>ADD Rd, Rr</code></td><td>บวกค่า Rd = Rd + Rr (ADC รวมตัวทด Carry)</td><td>Z, C, N, V, H, S</td></tr>
+            <tr><td><code>SUB / SUBI</code></td><td><code>SUBI Rd, K</code></td><td>ลบค่าคงที่ K ออกจาก Rd (Rd = Rd - K)</td><td>Z, C, N, V, H, S</td></tr>
+            <tr><td><code>INC / DEC</code></td><td><code>INC Rd / DEC Rd</code></td><td>บวกเพิ่มค่าทีละ 1 / ลดค่าลงทีละ 1</td><td>Z, N, V, S (ไม่กระทบ C!)</td></tr>
+            <tr><td><code>AND / ANDI</code></td><td><code>ANDI Rd, K</code></td><td>AND ระดับบิต Rd = Rd & K (ใช้ Mask บิต)</td><td>Z, N, V=0, S</td></tr>
+            <tr><td><code>OR / ORI</code></td><td><code>ORI Rd, K</code></td><td>OR ระดับบิต Rd = Rd | K (ใช้ Set บิตเป็น 1)</td><td>Z, N, V=0, S</td></tr>
+            <tr><td><code>EOR / CLR</code></td><td><code>CLR Rd</code></td><td>เคลียร์ค่าในรีจิสเตอร์ให้เป็น 0 (Rd = 0)</td><td>Z=1, N=0, V=0</td></tr>
+
+            <tr><td rowspan="5"><b>เปรียบเทียบ<br>& ควบคุมทิศทาง<br>(Branching)</b></td><td><code>CPI</code></td><td><code>CPI Rd, K</code></td><td>เปรียบเทียบค่า Rd กับค่าคงที่ K (ทำการลบโดยไม่เปลี่ยน Rd)</td><td>Z, C, N, V, S</td></tr>
+            <tr><td><code>BREQ / BRNE</code></td><td><code>BREQ label</code></td><td>กระโดดถ้าเท่ากัน (Z=1) / กระโดดถ้าไม่เท่ากัน (Z=0)</td><td>ไม่มี</td></tr>
+            <tr><td><code>BRLO / BRSH</code></td><td><code>BRLO label</code></td><td>กระโดดถ้าน้อยกว่า (C=1) / กระโดดถ้ามากกว่าหรือเท่ากับ (C=0)</td><td>ไม่มี</td></tr>
+            <tr><td><code>RJMP</code></td><td><code>RJMP label</code></td><td>กระโดดไปตามป้ายชื่อlabel โดยไม่มีเงื่อนไข</td><td>ไม่มี</td></tr>
+            <tr><td><code>CALL / RET</code></td><td><code>CALL Sub / RET</code></td><td>เรียกฟังก์ชันย่อย / กลับจากฟังก์ชันย่อย</td><td>ไม่มี</td></tr>
+
+            <tr><td rowspan="2"><b>จัดการบิตพอร์ต<br>(Bit Manip)</b></td><td><code>SBI / CBI</code></td><td><code>SBI PORTB, 5</code></td><td>เซตบิตพอร์ตเป็น 1 (SBI) / เคลียร์บิตพอร์ตเป็น 0 (CBI)</td><td>ไม่มี</td></tr>
+            <tr><td><code>SBIS / SBIC</code></td><td><code>SBIC PINB, 0</code></td><td>ข้ามคำสั่งถัดไปถ้าบิตบนพินเป็น 1 (SBIS) หรือเป็น 0 (SBIC)</td><td>ไม่มี</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SECTION 3: 5 CORE ASSEMBLY CODE TEMPLATES -->
+    <div class="print-card">
+      <div class="print-title">
+        <span>💻 3. แม่แบบโค้ดแอสเซมบลีที่ออกสอบบ่อย (5 Essential Code Templates)</span>
+      </div>
+
+      <!-- Template 1: Port Init & LED Control -->
+      <h4 style="color: #38bdf8; margin-top: 10px;">Template 1: การตั้งค่าพอร์ต I/O และควบคุมไฟ LED ตามสวิตช์</h4>
+      <pre style="background: #060b19; color: #38bdf8; padding: 12px; border-radius: 8px; font-size: 0.85rem;">
+.INCLUDE "M328PDEF.INC"
+.ORG 0x0000
+
+LDI R16, HIGH(RAMEND)   ; ตั้งค่า Stack Pointer
+OUT SPH, R16
+LDI R16, LOW(RAMEND)
+OUT SPL, R16
+
+LDI R16, 0xFF
+OUT DDRB, R16           ; ตั้ง PORTB เป็น Output (LEDs)
+LDI R16, 0x00
+OUT DDRC, R16           ; ตั้ง PORTC เป็น Input (Switches)
+LDI R16, 0xFF
+OUT PORTC, R16          ; เปิด Pull-up Resistors บน PORTC
+
+MAIN_LOOP:
+    IN R16, PINC        ; อ่านค่าจากสวิตช์ PINC
+    COM R16             ; กลับบิต (Active Low Switch)
+    OUT PORTB, R16      ; ส่งออกไฟ LED PORTB
+    RJMP MAIN_LOOP
+      </pre>
+
+      <!-- Template 2: Hex to BCD Conversion -->
+      <h4 style="color: #fbbf24; margin-top: 16px;">Template 2: การแปลงเลขฐานสิบหก 0-99 เป็น BCD สองหลักด้วยวิธีลบซ้ำด้วย 10</h4>
+      <pre style="background: #060b19; color: #fbbf24; padding: 12px; border-radius: 8px; font-size: 0.85rem;">
+; Input: R16 (Hex value 0x00 - 0x63), Output: R17 (BCD Packed 2 digits)
+HEX_TO_BCD:
+    CLR R17             ; R17 เก็บตัวนับหลักสิบ (Tens digit)
+SUB_LOOP:
+    CPI R16, 10         ; เปรียบเทียบกับ 10
+    BRLO SUB_DONE       ; ถ้า R16 < 10 ให้จบการลบ
+    SUBI R16, 10        ; R16 = R16 - 10
+    INC R17             ; หลักสิบเพิ่มทีละ 1
+    RJMP SUB_LOOP
+SUB_DONE:
+    SWAP R17            ; ย้ายหลักสิบขึ้น 4 บิตสูง (MSB Nibble)
+    OR R17, R16         ; รวมหลักสิบและหลักหน่วยเข้าเป็น BCD
+    OUT PORTB, R17      ; ส่งออกแสดงผล PORTB
+      </pre>
+
+      <!-- Template 3: Sum N down to 1 Loop -->
+      <h4 style="color: #4ade80; margin-top: 16px;">Template 3: วนลูปคำนวณผลรวมสะสม $S = \sum_{i=1}^{n} i$</h4>
+      <pre style="background: #060b19; color: #4ade80; padding: 12px; border-radius: 8px; font-size: 0.85rem;">
+; คำนวณ S = N + (N-1) + ... + 1 (เช่น N=5 -> S=15)
+LDI R16, 5              ; N = 5
+CLR R17                 ; R17 เก็บผลรวมสะสม Sum = 0
+SUM_LOOP:
+    ADD R17, R16        ; Sum = Sum + N
+    DEC R16             ; N = N - 1
+    BRNE SUM_LOOP       ; วนลูปจนกว่า N = 0 (Z=1)
+OUT PORTB, R17          ; ส่งผลรวมออก PORTB (15 = 0x0F)
+      </pre>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <p>Embedded System Exam Portal &copy; 2569 | Part 2 Open-Book Printable Reference Sheet</p>
+    </footer>
+
+  </main>
+
+</body>
+</html>
