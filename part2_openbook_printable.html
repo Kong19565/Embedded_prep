@@ -366,18 +366,19 @@ L2: DEC R21             ; 1 Clock Cycle
 
     <!-- PAGINATION -->
     
-    <!-- SW 3: REAL STUDENT LAB EXERCISES & SOURCE CODES -->
+    
+    <!-- SW 3: REAL STUDENT LAB EXERCISES & SOURCE CODES (ASM ONLY) -->
     <div class="print-card" style="border-color: #4ade80;">
       <div class="print-header">
-        <span>2.3 ชุดโค้ดจากรายงานการทดลองแล็บจริงของนักศึกษา (Real Student Lab Code Suite)</span>
-        <span class="badge-sw">REAL LAB CODES</span>
+        <span>2.3 ชุดซอร์สโค้ดภาษา AVR Assembly จากรายงานการทดลองแล็บจริง (Pure Assembly Code Suite)</span>
+        <span class="badge-sw">PURE ASM ONLY</span>
       </div>
       <p style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 16px;">
-        รวบรวมซอร์สโค้ดภาษา AVR Assembly (.asm) และภาษา C (.c) จากรายงานแล็บจริงของนักศึกษา สำหรับใช้เปิดอ้างอิงตอนทำข้อสอบเขียนโค้ดบ่ายนี้:
+        รวบรวมซอร์สโค้ดภาษา AVR Assembly (.asm) จากรายงานแล็บจริงของนักศึกษา สำหรับเปิดอ้างอิงตอนทำข้อสอบเขียนโค้ดภาษาแอสเซมบลีบ่ายนี้:
       </p>
 
-      <!-- LAB CODE 1: AssemblyBlink1.asm -->
-      <b style="color: #fbbf24;">📂 1. Lab 3 Code: AssemblyBlink1.asm (ควบคุมไฟ LED ติดดับพร้อมกันบน PORTB และ PORTD)</b>
+      <!-- ASM CODE 1: AssemblyBlink1.asm -->
+      <b style="color: #fbbf24;">📂 1. Lab 3 Code: AssemblyBlink1.asm (ควบคุมไฟ LED ติดดับพร้อมกันบน PORTB และ PORTD ในภาษา Assembly)</b>
       <pre style="background: #060911; color: #4ade80; border: 1.5px solid #4ade80;">;====================================================================
 ; Title: AssemblyBlink1.asm
 ; Created: 11/22/2013
@@ -422,8 +423,8 @@ L3:
     ret                 ; Return from subroutine
 </pre>
 
-      <!-- LAB CODE 2: AssemblyBlink1_modified.asm -->
-      <b style="color: #fbbf24; margin-top: 20px; display: block;">📂 2. Lab 3 Code: AssemblyBlink1_modified.asm (ควบคุมไฟ LED ติดสลับกัน PORTB ติดเมื่อ PORTD ดับ)</b>
+      <!-- ASM CODE 2: AssemblyBlink1_modified.asm -->
+      <b style="color: #fbbf24; margin-top: 20px; display: block;">📂 2. Lab 3 Code: AssemblyBlink1_modified.asm (ควบคุมไฟ LED ติดสลับกัน PORTB ติดเมื่อ PORTD ดับ ในภาษา Assembly)</b>
       <pre style="background: #060911; color: #38bdf8; border: 1.5px solid #38bdf8;">;====================================================================
 ; Title: AssemblyBlink1_modified.asm
 ; Created: 11/22/2013 (Modified: 2026-07-19)
@@ -472,69 +473,8 @@ L3:
     ret                 ; Return from subroutine
 </pre>
 
-      <!-- LAB CODE 3: GccAppBlink1.c -->
-      <b style="color: #fbbf24; margin-top: 20px; display: block;">📂 3. Lab 3 Code: GccAppBlink1.c (ซอร์สโค้ดภาษา C ภาษา AVR GCC สำหรับจำลองใน Proteus)</b>
-      <pre style="background: #060911; color: #f472b6; border: 1.5px solid #f472b6;">/*====================================================================
- * Title: GccAppBlink1.c
- * Created: 11/24/2013 (Updated: 2026-07-19)
- * Author: khatathapswatdipisal
- * Description: AVR GCC C program to blink Port D and PB5 LEDs
- *====================================================================*/
-
-#include <avr/io.h>
-
-int main(void)
-{
-    unsigned int i, j;
-    
-    DDRD = 0xFF;        // Set all pins of Port D as Output
-    DDRB = 0x3F;        // Set PB0-PB5 pins of Port B as Output (0b00111111)
-    
-    // Initial delay loop
-    for (j = 0; j < 1; j++)
-    {
-        for (i = 0; i < 42150; i++)
-        {
-            // Crude software delay
-        }
-    }
-    
-    PORTD = 0x00;       // Set Port D output low
-    PORTB = 0x00;       // Set Port B output low
-    
-    while (1)
-    {
-        PORTD = 0xFF;                   // Turn all Port D LEDs ON
-        PORTB = PORTB | 0b00100000;     // Turn PB5 LED ON
-        
-        // Delay loop for 5 iterations (longer ON time)
-        for (j = 0; j < 5; j++)
-        {
-            for (i = 0; i < 42150; i++)
-            {
-                // Crude software delay
-            }
-        }
-        
-        PORTD = 0x00;                   // Turn all Port D LEDs OFF
-        PORTB = PORTB & ~0b00100000;    // Turn PB5 LED OFF
-        
-        // Delay loop for 2 iterations (shorter OFF time)
-        for (j = 0; j < 2; j++)
-        {
-            for (i = 0; i < 42150; i++)
-            {
-                // Crude software delay
-            }
-        }
-    }
-    
-    return 0;
-}
-</pre>
-
-      <!-- LAB CODE 4: AVR Exercise 5-8 -->
-      <b style="color: #fbbf24; margin-top: 20px; display: block;">📂 4. AVR Exercise 5-8 Code: Hex to BCD Conversion (แปลง Hex 0xFD เป็น BCD 3 หลัก)</b>
+      <!-- ASM CODE 3: AVR Exercise 5-8 -->
+      <b style="color: #fbbf24; margin-top: 20px; display: block;">📂 3. AVR Exercise 5-8 Code: Hex to BCD Conversion (แปลง Hex 0xFD เป็น BCD 3 หลัก ในภาษา Assembly)</b>
       <pre style="background: #060911; color: #fbbf24; border: 1.5px solid #fbbf24;">
 .INCLUDE "M328PDEF.INC"
 .ORG 0x0000
@@ -563,8 +503,8 @@ FINISH:
     OUT PORTB, R17  ; ส่งผลลัพธ์ออก PORTB
       </pre>
 
-      <!-- LAB CODE 5: Sum N down to 1 -->
-      <b style="color: #fbbf24; margin-top: 20px; display: block;">📂 5. AVR Exercise Code: Summation Loop (คำนวณผลรวม S = N + (N-1) + ... + 1)</b>
+      <!-- ASM CODE 4: Sum N down to 1 -->
+      <b style="color: #fbbf24; margin-top: 20px; display: block;">📂 4. AVR Exercise Code: Summation Loop (คำนวณผลรวม S = N + (N-1) + ... + 1 ในภาษา Assembly)</b>
       <pre style="background: #060911; color: #2dd4bf; border: 1.5px solid #2dd4bf;">
 .INCLUDE "M328PDEF.INC"
 .ORG 0x0000
