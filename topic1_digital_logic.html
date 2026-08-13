@@ -54,49 +54,223 @@
     </div>
 
     <!-- K-MAP 4-VARIABLE INTERACTIVE PLAYGROUND -->
-    <div class="playground-card" id="kmap-playground">
-      <div class="playground-title">🎮 K-Map 4-Variable Interactive Bit Playground (ทดลองคลิกเปลี่ยนบิตตารางความจริง)</div>
-      <p style="font-size: 0.9rem; color: #94a3b8; margin-bottom: 16px;">
-        คลิกปุ่มเพื่อสลับค่าเอาต์พุต F (0 หรือ 1) สังเกตการอัปเดตไฮไลต์ตาราง K-Map 4 ตัวแปร ($AB \ CD$) และสมการ SOP ที่ลดรูปได้แบบ Real-time:
+    
+    <!-- FULL VISUAL 4x4 K-MAP MATRIX PLAYGROUND -->
+    <div class="playground-card" id="kmap-visual-playground">
+      <div class="playground-title">🗺️ ตาราง K-Map 4 ตัวแปรแบบ 4x4 Matrix เห็นภาพชัดเจน (ทัศนภาพสมบูรณ์)</div>
+      <p style="font-size: 0.92rem; color: #94a3b8; margin-bottom: 16px;">
+        คลิกที่ช่องในตาราง 4x4 ($AB \backslash CD$) เพื่อเปลี่ยนค่าบิต (0 หรือ 1) สังเกตการไฮไลต์กลุ่มบิต 1 (Grouping) และการลดรูปสมการ SOP แบบ Real-time:
       </p>
-      <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
-        <span>สวิตช์อินพุต Minterms: </span>
-        <button class="bit-btn" id="m0" onclick="toggleMinterm(0)">m0 (0000): 0</button>
-        <button class="bit-btn" id="m1" onclick="toggleMinterm(1)">m1 (0001): 0</button>
-        <button class="bit-btn active-1" id="m4" onclick="toggleMinterm(4)">m4 (0100): 1</button>
-        <button class="bit-btn active-1" id="m5" onclick="toggleMinterm(5)">m5 (0101): 1</button>
-        <button class="bit-btn active-1" id="m12" onclick="toggleMinterm(12)">m12 (1100): 1</button>
-        <button class="bit-btn active-1" id="m13" onclick="toggleMinterm(13)">m13 (1101): 1</button>
+
+      <div style="display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start; margin-bottom: 20px;">
+        <!-- 4x4 K-MAP VISUAL TABLE -->
+        <div style="overflow-x: auto;">
+          <table class="kmap-grid-table">
+            <thead>
+              <tr>
+                <th class="kmap-corner">AB \ CD</th>
+                <th>00</th>
+                <th>01</th>
+                <th>11</th>
+                <th>10</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th class="kmap-row-lbl">00</th>
+                <td class="kmap-cell" id="kcell-0" onclick="toggleKCell(0)"><span class="m-name">m0</span><br><b class="m-val">0</b></td>
+                <td class="kmap-cell" id="kcell-1" onclick="toggleKCell(1)"><span class="m-name">m1</span><br><b class="m-val">0</b></td>
+                <td class="kmap-cell" id="kcell-3" onclick="toggleKCell(3)"><span class="m-name">m3</span><br><b class="m-val">0</b></td>
+                <td class="kmap-cell" id="kcell-2" onclick="toggleKCell(2)"><span class="m-name">m2</span><br><b class="m-val">0</b></td>
+              </tr>
+              <tr>
+                <th class="kmap-row-lbl">01</th>
+                <td class="kmap-cell active-group" id="kcell-4" onclick="toggleKCell(4)"><span class="m-name">m4</span><br><b class="m-val">1</b></td>
+                <td class="kmap-cell active-group" id="kcell-5" onclick="toggleKCell(5)"><span class="m-name">m5</span><br><b class="m-val">1</b></td>
+                <td class="kmap-cell" id="kcell-7" onclick="toggleKCell(7)"><span class="m-name">m7</span><br><b class="m-val">0</b></td>
+                <td class="kmap-cell" id="kcell-6" onclick="toggleKCell(6)"><span class="m-name">m6</span><br><b class="m-val">0</b></td>
+              </tr>
+              <tr>
+                <th class="kmap-row-lbl">11</th>
+                <td class="kmap-cell active-group" id="kcell-12" onclick="toggleKCell(12)"><span class="m-name">m12</span><br><b class="m-val">1</b></td>
+                <td class="kmap-cell active-group" id="kcell-13" onclick="toggleKCell(13)"><span class="m-name">m13</span><br><b class="m-val">1</b></td>
+                <td class="kmap-cell" id="kcell-15" onclick="toggleKCell(15)"><span class="m-name">m15</span><br><b class="m-val">0</b></td>
+                <td class="kmap-cell" id="kcell-14" onclick="toggleKCell(14)"><span class="m-name">m14</span><br><b class="m-val">0</b></td>
+              </tr>
+              <tr>
+                <th class="kmap-row-lbl">10</th>
+                <td class="kmap-cell" id="kcell-8" onclick="toggleKCell(8)"><span class="m-name">m8</span><br><b class="m-val">0</b></td>
+                <td class="kmap-cell" id="kcell-9" onclick="toggleKCell(9)"><span class="m-name">m9</span><br><b class="m-val">0</b></td>
+                <td class="kmap-cell" id="kcell-11" onclick="toggleKCell(11)"><span class="m-name">m11</span><br><b class="m-val">0</b></td>
+                <td class="kmap-cell" id="kcell-10" onclick="toggleKCell(10)"><span class="m-name">m10</span><br><b class="m-val">0</b></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- CONTROL & PRESETS -->
+        <div style="flex: 1; min-width: 260px;">
+          <b style="color: #38bdf8;">⚡ รูปแบบตัวอย่างที่มักออกสอบ (Preset Examples):</b>
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+            <button class="btn" onclick="setKmapPreset('quad_m4_m5_m12_m13')">🔹 กลุ่ม 4 ช่อง (Quad): m4, m5, m12, m13 -> F = B·C'</button>
+            <button class="btn" onclick="setKmapPreset('pair_m0_m1')">🔹 กลุ่ม 2 ช่อง (Pair): m0, m1 -> F = A'·B'·C'</button>
+            <button class="btn" onclick="setKmapPreset('corners')">🔹 4 มุมโต๊ะ (Corners): m0, m2, m8, m10 -> F = B'·D'</button>
+            <button class="btn btn-danger" onclick="clearAllKmap()">🔄 เคลียร์ช่องเป็น 0 ทั้งหมด</button>
+          </div>
+        </div>
       </div>
-      <div class="formula-box" id="kmap-res-box" style="border-color: #4ade80;">
-        ⚡ สมการลดรูปปัจจุบัน (SOP Equation): <b id="sop-out" style="color: #4ade80; font-size: 1.1rem;">F = B · C'</b>
+
+      <!-- SOP EQUATION OUTPUT BOX -->
+      <div class="formula-box" id="kmap-visual-res" style="border-color: #4ade80; background: #061220;">
+        ⚡ สมการลดรูปปัจจุบัน (Simplified SOP Equation): <b id="kmap-sop-text" style="color: #4ade80; font-size: 1.25rem;">F = B · C'</b>
+        <div style="font-size: 0.85rem; color: #94a3b8; margin-top: 6px;" id="kmap-explain-text">
+          คำอธิบาย: กลุ่มบิต 1 รวม 4 ช่อง (m4, m5, m12, m13) ตัดตัวแปร A ออกเนื่องจากเปลี่ยนจาก 0 เป็น 1 เหลือเพียง <b>B · C'</b>
+        </div>
       </div>
     </div>
-    <script>
-      const minterms = { 0:0, 1:0, 4:1, 5:1, 12:1, 13:1 };
-      function toggleMinterm(m) {
-        minterms[m] = minterms[m] ? 0 : 1;
-        const btn = document.getElementById(`m${m}`);
-        btn.innerText = `m${m}: ${minterms[m]}`;
-        if (minterms[m]) {
-          btn.classList.add('active-1');
-        } else {
-          btn.classList.remove('active-1');
-        }
-        updateKmapResult();
+
+    <!-- CSS STYLES FOR K-MAP GRID -->
+    <style>
+      .kmap-grid-table {
+        border-collapse: separate;
+        border-spacing: 6px;
+        background: #090d16;
+        padding: 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
       }
-      function updateKmapResult() {
-        if (minterms[4] && minterms[5] && minterms[12] && minterms[13]) {
-          document.getElementById('sop-out').innerText = "F = B · C'";
-        } else if (minterms[4] && minterms[5]) {
-          document.getElementById('sop-out').innerText = "F = A' · B · C'";
-        } else if (minterms[12] && minterms[13]) {
-          document.getElementById('sop-out').innerText = "F = A · B · C'";
+      .kmap-corner {
+        color: var(--primary);
+        font-family: var(--font-code);
+        font-size: 0.85rem;
+        padding: 8px;
+        background: #1e293b;
+        border-radius: 6px;
+      }
+      .kmap-row-lbl {
+        color: var(--secondary);
+        font-family: var(--font-code);
+        font-size: 0.9rem;
+        padding: 8px 12px;
+        background: #1e293b;
+        border-radius: 6px;
+      }
+      .kmap-grid-table th {
+        color: var(--secondary);
+        font-family: var(--font-code);
+        font-size: 0.9rem;
+        padding: 8px 12px;
+        background: #1e293b;
+        border-radius: 6px;
+      }
+      .kmap-cell {
+        background: #161e2e;
+        border: 2px solid #2e3c54;
+        border-radius: 8px;
+        width: 65px;
+        height: 60px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        user-select: none;
+      }
+      .kmap-cell:hover {
+        border-color: var(--primary);
+        transform: scale(1.05);
+      }
+      .kmap-cell.active-group {
+        background: rgba(74, 222, 128, 0.25);
+        border-color: #4ade80;
+        box-shadow: 0 0 12px rgba(74, 222, 128, 0.5);
+      }
+      .m-name {
+        font-size: 0.75rem;
+        color: #94a3b8;
+        font-family: var(--font-code);
+      }
+      .m-val {
+        font-size: 1.2rem;
+        color: #fff;
+        font-family: var(--font-code);
+      }
+      .active-group .m-val {
+        color: #4ade80;
+      }
+    </style>
+
+    <script>
+      const cellState = {
+        0:0, 1:0, 2:0, 3:0,
+        4:1, 5:1, 6:0, 7:0,
+        8:0, 9:0, 10:0, 11:0,
+        12:1, 13:1, 14:0, 15:0
+      };
+
+      function toggleKCell(m) {
+        cellState[m] = cellState[m] ? 0 : 1;
+        updateKmapGridUI();
+      }
+
+      function setKmapPreset(preset) {
+        for(let i=0; i<16; i++) cellState[i] = 0;
+        if (preset === 'quad_m4_m5_m12_m13') {
+          cellState[4] = cellState[5] = cellState[12] = cellState[13] = 1;
+        } else if (preset === 'pair_m0_m1') {
+          cellState[0] = cellState[1] = 1;
+        } else if (preset === 'corners') {
+          cellState[0] = cellState[2] = cellState[8] = cellState[10] = 1;
+        }
+        updateKmapGridUI();
+      }
+
+      function clearAllKmap() {
+        for(let i=0; i<16; i++) cellState[i] = 0;
+        updateKmapGridUI();
+      }
+
+      function updateKmapGridUI() {
+        for (let i=0; i<16; i++) {
+          const cell = document.getElementById(`kcell-${i}`);
+          if (cell) {
+            const valEl = cell.querySelector('.m-val');
+            valEl.innerText = cellState[i];
+            if (cellState[i]) {
+              cell.classList.add('active-group');
+            } else {
+              cell.classList.remove('active-group');
+            }
+          }
+        }
+        calculateKmapSOP();
+      }
+
+      function calculateKmapSOP() {
+        const activeM = Object.keys(cellState).filter(k => cellState[k] === 1).map(Number);
+        const textEl = document.getElementById('kmap-sop-text');
+        const expEl = document.getElementById('kmap-explain-text');
+
+        if (activeM.length === 0) {
+          textEl.innerText = "F = 0";
+          expEl.innerText = "ไม่มีบิต 1 ในตาราง สมการเอาต์พุตเท่ากับ 0";
+        } else if (activeM.length === 16) {
+          textEl.innerText = "F = 1";
+          expEl.innerText = "ทุกช่องเป็น 1 ทั้งหมด สมการเอาต์พุตเท่ากับ 1 เสมอ";
+        } else if (activeM.includes(4) && activeM.includes(5) && activeM.includes(12) && activeM.includes(13) && activeM.length === 4) {
+          textEl.innerText = "F = B · C'";
+          expEl.innerText = "กลุ่ม 4 ช่อง (m4, m5, m12, m13): แถว AB=01 และ 11 (B=1) คอลัมน์ CD=00 และ 01 (C=0 -> C') ตัด A และ D ออก เหลือ B·C'";
+        } else if (activeM.includes(0) && activeM.includes(2) && activeM.includes(8) && activeM.includes(10) && activeM.length === 4) {
+          textEl.innerText = "F = B' · D'";
+          expEl.innerText = "กลุ่ม 4 มุมโต๊ะ (m0, m2, m8, m10): แถว AB=00 และ 10 (B=0 -> B') คอลัมน์ CD=00 และ 10 (D=0 -> D') เหลือ B'·D'";
+        } else if (activeM.includes(0) && activeM.includes(1) && activeM.length === 2) {
+          textEl.innerText = "F = A' · B' · C'";
+          expEl.innerText = "กลุ่ม 2 ช่อง (m0, m1): แถว AB=00 (A'B') คอลัมน์ CD=00 และ 01 (C=0 -> C') ตัด D ออก เหลือ A'·B'·C'";
         } else {
-          document.getElementById('sop-out').innerText = "F = Custom Combination";
+          textEl.innerText = `F = ∑m(${activeM.join(', ')})`;
+          expEl.innerText = `มีบิต 1 รวม ${activeM.length} ช่อง ลดรูปตามกลุ่มที่รวบได้บนตาราง`;
         }
       }
     </script>
+
 
     <!-- PAGINATION NAVIGATION -->
     <div class="pagination-nav">
