@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔴 Module 2: Sequential Circuits, Flip-Flops & Counters (Enoch Hwang Ch 5 / Mano Ch 2)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- TOP NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">⚡ EMBEDDED EXAM HUB</a>
+    <ul class="nav-links">
+      <li><a href="index.html">หน้าหลัก Index</a></li>
+      <li><a href="#part1-section">🔴 Part 1 ปิดตำรา</a></li>
+      <li><a href="#part2-section">🟢 Part 2 เปิดตำรา</a></li>
+      <li><a href="part2_openbook_printable.html" style="color: #4ade80; font-weight: 700;">📄 พิมพ์ A4 พกเข้าห้องสอบ</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <header class="page-banner">
+      <span class="source-tag" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border-color: #f87171;">🔴 PART 1: ปิดตำรา (09:30 - 11:30)</span>
+      <h1 class="page-title">🔴 Module 2: Sequential Circuits, Flip-Flops & Counters (Enoch Hwang Ch 5 / Mano Ch 2)</h1>
+      <p class="page-subtitle">
+        สรุปเจาะลึกจากตำราเรียนสากล (Enoch Hwang, M. Morris Mano, Mazidi AVR) สำหรับการเตรียมสอบวิชา Embedded System Design
+      </p>
+    </header>
+
+    <div class="slide-card">
+      <div class="slide-header">
+        <span class="slide-num-badge">วงจรลอจิกแบบลำดับ</span>
+        <h3 style="color: #fff;">1. Latches vs Flip-Flops & ชนิดของฟลิปฟลอป</h3>
+      </div>
+      <div class="wwh-box what-box" style="margin-bottom: 12px;">
+        <div class="wwh-title" style="color: var(--primary);">📌 ความแตกต่าง (What):</div>
+        <div>• <b>Latch:</b> เปลี่ยนสถานะเอาต์พุตตามระดับสัญญาณไฟ (Level-sensitive)<br>
+        • <b>Flip-Flop:</b> เปลี่ยนสถานะเอาต์พุตตามขอบสัญญาณนาฬิกาเท่านั้น (Edge-triggered: ขอบขาขึ้น Rising Edge หรือ ขอบขาลง Falling Edge)</div>
+      </div>
+      <div class="wwh-box how-box">
+        <div class="wwh-title" style="color: var(--accent);">⚙️ ตารางคุณลักษณะของ Flip-Flops (Characteristic Equations):</div>
+        <div>
+          • <b>D Flip-Flop:</b> <code>Q(t+1) = D</code> (จำค่า D เมื่อมีขอบ Clock)<br>
+          • <b>JK Flip-Flop:</b> <code>Q(t+1) = J·Q' + K'·Q</code> (J=1,K=1 เกิด Toggle สลับสถานะ)<br>
+          • <b>T Flip-Flop:</b> <code>Q(t+1) = T $\oplus$ Q</code> (T=1 เกิด Toggle, T=0 Hold ค่าเดิม)
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-card">
+      <div class="slide-header">
+        <span class="slide-num-badge">วงจรนับและรีจิสเตอร์</span>
+        <h3 style="color: #fff;">2. Binary Counters & Shift Registers</h3>
+      </div>
+      <p style="font-size: 0.92rem; line-height: 1.7; color: #cbd5e1;">
+        • <b>Synchronous Counter:</b> สัญญาณ Clock ต่อป้อนเข้าฟลิปฟลอปทุกตัวพร้อมกัน ทำให้เปลี่ยนสถานะพร้อมกันโดยไม่มี Propagation Delay สะสม<br>
+        • <b>Asynchronous Counter (Ripple Counter):</b> สัญญาณเอาต์พุต Q ของฟลิปฟลอปตัวแรกต่อเข้าเป็น Clock ของฟลิปฟลอปตัวถัดไป เกิดความล่าช้าสะสม
+      </p>
+    </div>
+
+    <!-- PAGINATION NAVIGATION -->
+    <div class="pagination-nav">
+      <a href="part1_mod1_digital_logic.html" class="pagination-btn">⬅️ ย้อนกลับ</a>
+      <span style="color: var(--text-muted); font-size: 0.9rem;">Module 2: Sequential Logic</span>
+      <a href="part1_mod3_datapath_alu.html" class="pagination-btn">หน้าถัดไป ➡️</a>
+    </div>
+
+    <footer class="footer">
+      <p>Embedded System Exam Portal &copy; 2569 | Textbook-based Complete Exam Portal</p>
+    </footer>
+  </main>
+</body>
+</html>

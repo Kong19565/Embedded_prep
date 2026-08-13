@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🟢 Chapter 6: Advanced Assembly Programming & Conversions (Mazidi AVR Textbook Ch. 6)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- TOP NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">⚡ EMBEDDED EXAM HUB</a>
+    <ul class="nav-links">
+      <li><a href="index.html">หน้าหลัก Index</a></li>
+      <li><a href="#part1-section">🔴 Part 1 ปิดตำรา</a></li>
+      <li><a href="#part2-section">🟢 Part 2 เปิดตำรา</a></li>
+      <li><a href="part2_openbook_printable.html" style="color: #4ade80; font-weight: 700;">📄 พิมพ์ A4 พกเข้าห้องสอบ</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <header class="page-banner">
+      <span class="source-tag" style="background: rgba(74, 222, 128, 0.2); color: #4ade80; border-color: #4ade80;">🟢 PART 2: เปิดตำรา (13:00 - 15:30)</span>
+      <h1 class="page-title">🟢 Chapter 6: Advanced Assembly Programming & Conversions (Mazidi AVR Textbook Ch. 6)</h1>
+      <p class="page-subtitle">
+        สรุปเจาะลึกจากตำราเรียนสากล (Enoch Hwang, M. Morris Mano, Mazidi AVR) สำหรับการเตรียมสอบวิชา Embedded System Design
+      </p>
+    </header>
+
+    <div class="slide-card">
+      <div class="slide-header">
+        <span class="slide-num-badge">โปรแกรมแอสเซมบลีระดับสูง</span>
+        <h3 style="color: #fff;">1. Hex to BCD Conversion & Delay Calculations</h3>
+      </div>
+      <pre style="background: #060b19; color: #fbbf24; padding: 14px; border-radius: 10px; font-family: var(--font-code); font-size: 0.88rem;">
+; อัลกอริทึมแปลง Hex 0-99 เป็น BCD 2 หลักด้วยวิธีลบซ้ำด้วย 10
+LDI R16, 0x37       ; ค่าอินพุต 0x37 = 55 ทศนิยม
+CLR R17             ; R17 เก็บหลักสิบ
+CONVERT_LOOP:
+    CPI R16, 10
+    BRLO DONE
+    SUBI R16, 10    ; ลบออกทีละ 10
+    INC R17         ; ตัวนับหลักสิบเพิ่มขึ้นทีละ 1
+    RJMP CONVERT_LOOP
+DONE:
+    SWAP R17
+    OR R17, R16     ; รวมหลักสิบและหลักหน่วย BCD
+    OUT PORTB, R17  ; ส่งผลลัพธ์ BCD ออก PORTB
+      </pre>
+    </div>
+
+    <!-- PAGINATION NAVIGATION -->
+    <div class="pagination-nav">
+      <a href="part2_ch5_arithmetic_logic.html" class="pagination-btn">⬅️ ย้อนกลับ</a>
+      <span style="color: var(--text-muted); font-size: 0.9rem;">Chapter 6: Advanced Assembly</span>
+      <a href="part2_openbook_printable.html" class="pagination-btn">หน้าถัดไป ➡️</a>
+    </div>
+
+    <footer class="footer">
+      <p>Embedded System Exam Portal &copy; 2569 | Textbook-based Complete Exam Portal</p>
+    </footer>
+  </main>
+</body>
+</html>
