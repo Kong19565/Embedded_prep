@@ -365,7 +365,223 @@ L2: DEC R21             ; 1 Clock Cycle
     </div>
 
     <!-- PAGINATION -->
-    <div class="pagination-nav no-print">
+    
+    <!-- SW 3: REAL STUDENT LAB EXERCISES & SOURCE CODES -->
+    <div class="print-card" style="border-color: #4ade80;">
+      <div class="print-header">
+        <span>2.3 ชุดโค้ดจากรายงานการทดลองแล็บจริงของนักศึกษา (Real Student Lab Code Suite)</span>
+        <span class="badge-sw">REAL LAB CODES</span>
+      </div>
+      <p style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 16px;">
+        รวบรวมซอร์สโค้ดภาษา AVR Assembly (.asm) และภาษา C (.c) จากรายงานแล็บจริงของนักศึกษา สำหรับใช้เปิดอ้างอิงตอนทำข้อสอบเขียนโค้ดบ่ายนี้:
+      </p>
+
+      <!-- LAB CODE 1: AssemblyBlink1.asm -->
+      <b style="color: #fbbf24;">📂 1. Lab 3 Code: AssemblyBlink1.asm (ควบคุมไฟ LED ติดดับพร้อมกันบน PORTB และ PORTD)</b>
+      <pre style="background: #060911; color: #4ade80; border: 1.5px solid #4ade80;">;====================================================================
+; Title: AssemblyBlink1.asm
+; Created: 11/22/2013
+; Author: khatathapswatdipisal
+; Description: Blink all LEDs on PORTB and PORTD simultaneously
+;====================================================================
+
+.nolist
+.include "m328pdef.inc"
+.list
+
+; Start at main after reset
+rjmp main
+
+main:
+    ldi r16, 0xFF       ; Load 0xFF into R16 (all bits set to 1)
+    out DDRB, r16       ; Configure Port B pins as Outputs
+    out DDRD, r16       ; Configure Port D pins as Outputs
+    ldi r16, 0x00       ; Clear R16 to 0x00
+
+loop:
+    com r16             ; Complement R16 (toggle bits between 0x00 and 0xFF)
+    out PORTB, r16      ; Write R16 to Port B
+    out PORTD, r16      ; Write R16 to Port D
+    call MY_DELAY       ; Delay for simulation timing
+    rjmp loop           ; Loop indefinitely
+
+; Delay Subroutine
+MY_DELAY:
+    ldi r20, 8
+L1:
+    ldi r21, 200
+L2:
+    ldi r22, 250
+L3:
+    dec r22             ; Decrement R22
+    brne L3             ; Loop if R22 != 0
+    dec r21             ; Decrement R21
+    brne L2             ; Loop if R21 != 0
+    dec r20             ; Decrement R20
+    brne L1             ; Loop if R20 != 0
+    ret                 ; Return from subroutine
+</pre>
+
+      <!-- LAB CODE 2: AssemblyBlink1_modified.asm -->
+      <b style="color: #fbbf24; margin-top: 20px; display: block;">📂 2. Lab 3 Code: AssemblyBlink1_modified.asm (ควบคุมไฟ LED ติดสลับกัน PORTB ติดเมื่อ PORTD ดับ)</b>
+      <pre style="background: #060911; color: #38bdf8; border: 1.5px solid #38bdf8;">;====================================================================
+; Title: AssemblyBlink1_modified.asm
+; Created: 11/22/2013 (Modified: 2026-07-19)
+; Author: khatathapswatdipisal
+; Description: Alternate blinking: Port B ON when Port D is OFF
+;====================================================================
+
+.nolist
+.include "m328pdef.inc"
+.list
+
+; Start at main after reset
+rjmp main
+
+main:
+    ldi r16, 0xFF       ; Load 0xFF into R16 (all bits set to 1)
+    out DDRB, r16       ; Configure Port B pins as Outputs
+    out DDRD, r16       ; Configure Port D pins as Outputs
+    ldi r16, 0x00       ; Clear R16 to 0x00
+
+loop:
+    com r16             ; Complement R16 (toggle R16 between 0x00 and 0xFF)
+    out PORTB, r16      ; Write R16 directly to Port B (PB0-PB7)
+    
+    mov r17, r16        ; Copy R16 to R17
+    com r17             ; Complement R17 (so R17 is always the opposite of R16)
+    out PORTD, r17      ; Write R17 to Port D (PD0-PD7)
+    
+    call MY_DELAY       ; Delay for simulation timing
+    rjmp loop           ; Loop indefinitely
+
+; Delay Subroutine
+MY_DELAY:
+    ldi r20, 8
+L1:
+    ldi r21, 200
+L2:
+    ldi r22, 250
+L3:
+    dec r22             ; Decrement R22
+    brne L3             ; Loop if R22 != 0
+    dec r21             ; Decrement R21
+    brne L2             ; Loop if R21 != 0
+    dec r20             ; Decrement R20
+    brne L1             ; Loop if R20 != 0
+    ret                 ; Return from subroutine
+</pre>
+
+      <!-- LAB CODE 3: GccAppBlink1.c -->
+      <b style="color: #fbbf24; margin-top: 20px; display: block;">📂 3. Lab 3 Code: GccAppBlink1.c (ซอร์สโค้ดภาษา C ภาษา AVR GCC สำหรับจำลองใน Proteus)</b>
+      <pre style="background: #060911; color: #f472b6; border: 1.5px solid #f472b6;">/*====================================================================
+ * Title: GccAppBlink1.c
+ * Created: 11/24/2013 (Updated: 2026-07-19)
+ * Author: khatathapswatdipisal
+ * Description: AVR GCC C program to blink Port D and PB5 LEDs
+ *====================================================================*/
+
+#include <avr/io.h>
+
+int main(void)
+{
+    unsigned int i, j;
+    
+    DDRD = 0xFF;        // Set all pins of Port D as Output
+    DDRB = 0x3F;        // Set PB0-PB5 pins of Port B as Output (0b00111111)
+    
+    // Initial delay loop
+    for (j = 0; j < 1; j++)
+    {
+        for (i = 0; i < 42150; i++)
+        {
+            // Crude software delay
+        }
+    }
+    
+    PORTD = 0x00;       // Set Port D output low
+    PORTB = 0x00;       // Set Port B output low
+    
+    while (1)
+    {
+        PORTD = 0xFF;                   // Turn all Port D LEDs ON
+        PORTB = PORTB | 0b00100000;     // Turn PB5 LED ON
+        
+        // Delay loop for 5 iterations (longer ON time)
+        for (j = 0; j < 5; j++)
+        {
+            for (i = 0; i < 42150; i++)
+            {
+                // Crude software delay
+            }
+        }
+        
+        PORTD = 0x00;                   // Turn all Port D LEDs OFF
+        PORTB = PORTB & ~0b00100000;    // Turn PB5 LED OFF
+        
+        // Delay loop for 2 iterations (shorter OFF time)
+        for (j = 0; j < 2; j++)
+        {
+            for (i = 0; i < 42150; i++)
+            {
+                // Crude software delay
+            }
+        }
+    }
+    
+    return 0;
+}
+</pre>
+
+      <!-- LAB CODE 4: AVR Exercise 5-8 -->
+      <b style="color: #fbbf24; margin-top: 20px; display: block;">📂 4. AVR Exercise 5-8 Code: Hex to BCD Conversion (แปลง Hex 0xFD เป็น BCD 3 หลัก)</b>
+      <pre style="background: #060911; color: #fbbf24; border: 1.5px solid #fbbf24;">
+.INCLUDE "M328PDEF.INC"
+.ORG 0x0000
+
+; โปรแกรมแปลงเลข Hex ใน R16 (เช่น 0xFD = 253 ทศนิยม) เป็น BCD 3 หลัก (หลักร้อย, หลักสิบ, หลักหน่วย)
+LDI R16, 0xFD       ; 0xFD = 253 ทศนิยม
+CLR R17             ; R17 เก็บหลักสิบ (Tens)
+CLR R18             ; R18 เก็บหลักร้อย (Hundreds)
+
+CONVERT_100:
+    CPI R16, 100
+    BRLO CONVERT_10
+    SUBI R16, 100   ; ลบออกทีละ 100
+    INC R18         ; เพิ่มหลักร้อย
+    RJMP CONVERT_100
+
+CONVERT_10:
+    CPI R16, 10
+    BRLO FINISH
+    SUBI R16, 10    ; ลบออกทีละ 10
+    INC R17         ; เพิ่มหลักสิบ
+    RJMP CONVERT_10
+
+FINISH:
+    ; ผลลัพธ์: R18 = หลักร้อย (2), R17 = หลักสิบ (5), R16 = หลักหน่วย (3)
+    OUT PORTB, R17  ; ส่งผลลัพธ์ออก PORTB
+      </pre>
+
+      <!-- LAB CODE 5: Sum N down to 1 -->
+      <b style="color: #fbbf24; margin-top: 20px; display: block;">📂 5. AVR Exercise Code: Summation Loop (คำนวณผลรวม S = N + (N-1) + ... + 1)</b>
+      <pre style="background: #060911; color: #2dd4bf; border: 1.5px solid #2dd4bf;">
+.INCLUDE "M328PDEF.INC"
+.ORG 0x0000
+
+LDI R16, 5          ; N = 5 (คำนวณ 5 + 4 + 3 + 2 + 1 = 15)
+CLR R17             ; R17 เก็บผลรวมลูป S
+
+SUM_LOOP:
+    ADD R17, R16    ; S = S + N
+    DEC R16         ; N = N - 1
+    BRNE SUM_LOOP   ; ทำซ้ำจนกว่า N == 0
+
+; ผลลัพธ์ R17 = 15 (0x0F)
+OUT PORTB, R17
+      </pre>
+    </div>
+<div class="pagination-nav no-print">
       <a href="index.html" class="pagination-btn">⬅️ กลับสู่หน้าหลัก Index</a>
       <button class="pagination-btn" onclick="window.print()" style="background: #4ade80; color: #052e16;">🖨️ พิมพ์ A4 ฉบับนี้ออกกระดาษ ➡️</button>
     </div>
