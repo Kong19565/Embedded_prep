@@ -107,10 +107,11 @@
       </div>
       <div style="display: flex; flex-direction: column; gap: 14px; font-size: 0.92rem; color: #cbd5e1; line-height: 1.7;">
         <div><b>Ch 1 - MCU Architecture:</b> Harvard Architecture (แยก Flash ROM 32KB และ Data SRAM 2KB) ดึงคำสั่งและอ่านข้อมูลได้ใน 1 คาบ Clock</div>
-        <div><b>Ch 2 - Registers & SREG Flags:</b> 32 Working Registers ($R_0-R_{31}$), ธง SREG (I, T, H, S, V, N, Z, C), Directives <code>.INCLUDE</code>, <code>.ORG</code>, <code>.EQU</code></div>
+        <div><b>Ch 2 - Registers & SREG Flags:</b> 32 Working Registers ($R0-R_{31}$), ธง SREG (I, T, H, S, V, N, Z, C), Directives <code>.INCLUDE</code>, <code>.ORG</code>, <code>.EQU</code></div>
         <div><b>Ch 3 - Branch & Stack Pointer:</b> การตั้งค่า Stack Pointer <code>SPH:SPL = RAMEND</code>, การวนลูปด้วย <code>DEC</code> + <code>BRNE</code>, <code>CALL/RET</code></div>
         <div><b>Ch 4 - I/O Port & Bit Operations:</b> การตั้งค่าพอร์ต <code>DDRx</code> (1=Out, 0=In), <code>PORTx</code>, <code>PINx</code>, คำสั่งจัดการบิต <code>SBI</code>, <code>CBI</code>, <code>SBIS</code>, <code>SBIC</code></div>
-        <div><b>Ch 5 - Arithmetic & Logic Instructions:</b> <code>ADD</code>, <code>ADC</code>, <code>SUB</code>, <code>SUBI</code>, <code>SBC</code>, <code>MUL</code> ($8 	imes 8 ightarrow 16$-bit ในคู่ $R_1:R_0$), <code>AND</code>, <code>OR</code>, <code>EOR</code>, Shifts <code>LSL/LSR/ROL/ROR</code></div>
+        <div><b>Ch 5 - Arithmetic & Logic Instructions:</b> <code>ADD</code>, <code>ADC</code>, <code>SUB</code>, <code>SUBI</code>, <code>SBC</code>, <code>MUL</code> ($8 	imes 8 
+ightarrow 16$-bit ในคู่ R1:R0), <code>AND</code>, <code>OR</code>, <code>EOR</code>, Shifts <code>LSL/LSR/ROL/ROR</code></div>
         <div><b>Ch 6 - Advanced Assembly & Conversions:</b> อัลกอริทึมแปลง Hex 0-99 เป็น BCD 2 หลัก (ลบซ้ำด้วย 10), การคำนวณคาบเวลาหน่วง Time Delay ($16	ext{ MHz} \implies 62.5	ext{ ns}$)</div>
       </div>
     </div>

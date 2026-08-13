@@ -154,12 +154,12 @@
         </thead>
         <tbody>
           <!-- DATA TRANSFER -->
-          <tr><td rowspan="8"><b>1. ย้ายข้อมูล<br>(Data Transfer)</b></td><td><code>LDI</code></td><td><code>LDI Rd, K</code></td><td>โหลดค่าคงที่ K (0-255) ลงรีจิสเตอร์ Rd ($R_16-R_31$) Direct Immediate</td><td>ไม่มี</td></tr>
+          <tr><td rowspan="8"><b>1. ย้ายข้อมูล<br>(Data Transfer)</b></td><td><code>LDI</code></td><td><code>LDI Rd, K</code></td><td>โหลดค่าคงที่ K (0-255) ลงรีจิสเตอร์ Rd (R16 ถึง R31) Direct Immediate</td><td>ไม่มี</td></tr>
           <tr><td><code>MOV / MOVW</code></td><td><code>MOV Rd, Rr</code></td><td>คัดลอกข้อมูลจาก Rr ไปยัง Rd (`MOVW` คัดลอกคู่รีจิสเตอร์ 16 บิต)</td><td>ไม่มี</td></tr>
           <tr><td><code>LDS / STS</code></td><td><code>LDS Rd, k</code> / <code>STS k, Rr</code></td><td><code>LDS</code> อ่านข้อมูลจากแอดเดรส k ใน SRAM ลง Rd / <code>STS</code> เขียนค่าจาก Rr ลง SRAM</td><td>ไม่มี</td></tr>
           <tr><td><code>IN / OUT</code></td><td><code>IN Rd, A</code> / <code>OUT A, Rr</code></td><td><code>IN</code> อ่านค่าจาก I/O Register A ลง Rd / <code>OUT</code> ส่งค่าจาก Rr ออก I/O Register A</td><td>ไม่มี</td></tr>
           <tr><td><code>PUSH / POP</code></td><td><code>PUSH Rr</code> / <code>POP Rd</code></td><td><code>PUSH</code> เก็บข้อมูลลง Stack Pointer / <code>POP</code> ดึงข้อมูลออกจาก Stack คืนลง Rd</td><td>ไม่มี</td></tr>
-          <tr><td><code>LPM</code></td><td><code>LPM Rd, Z</code></td><td>อ่านข้อมูล 1 ไบต์จาก Flash ROM ที่ชี้โดยพอยเตอร์ Z ($R_31:R_30$) ลง Rd</td><td>ไม่มี</td></tr>
+          <tr><td><code>LPM</code></td><td><code>LPM Rd, Z</code></td><td>อ่านข้อมูล 1 ไบต์จาก Flash ROM ที่ชี้โดยพอยเตอร์ Z ($R31:R_30$) ลง Rd</td><td>ไม่มี</td></tr>
           <tr><td><code>LD / ST</code></td><td><code>LD Rd, X</code> / <code>ST X, Rr</code></td><td>อ่าน/เขียนข้อมูล SRAM แบบอ้อมผ่าน Pointer X, Y, Z (รองรับ `+`, `-` Pre/Post)</td><td>ไม่มี</td></tr>
           <tr><td><code>CLR / SER</code></td><td><code>CLR Rd</code> / <code>SER Rd</code></td><td><code>CLR</code> เคลียร์ค่าใน Rd เป็น 0x00 (คือ `EOR Rd, Rd`) / <code>SER</code> เซตค่าเป็น 0xFF</td><td>Z=1 (CLR)</td></tr>
 
@@ -228,34 +228,34 @@
             <td rowspan="2"><b>คณิตศาสตร์<br>2 รีจิสเตอร์</b></td>
             <td><code>ADD Rd, Rr</code></td>
             <td><code>0000 11rd dddd rrrr</code></td>
-            <td>[15:10] Opcode <code>000011</code><br>[9,3:0] $R_r$ <code>r rrrr</code><br>[8:4] $R_d$ <code>d dddd</code></td>
-            <td>• <b>Bit 15-10:</b> Opcode คำสั่ง ADD (000011)<br>• <b>Bit 8-4:</b> $R_d$ 5 บิต ($R_0-R_{31}$)<br>• <b>Bit 9,3-0:</b> $R_r$ 5 บิต ($R_0-R_{31}$)</td>
+            <td>[15:10] Opcode <code>000011</code><br>[9,3:0] Rr <code>r rrrr</code><br>[8:4] Rd <code>d dddd</code></td>
+            <td>• <b>Bit 15-10:</b> Opcode คำสั่ง ADD (000011)<br>• <b>Bit 8-4:</b> Rd 5 บิต ($R0-R_{31}$)<br>• <b>Bit 9,3-0:</b> Rr 5 บิต ($R0-R_{31}$)</td>
           </tr>
           <tr>
             <td><code>SUB Rd, Rr</code></td>
             <td><code>0001 10rd dddd rrrr</code></td>
-            <td>[15:10] Opcode <code>000110</code><br>[9,3:0] $R_r$ <code>r rrrr</code><br>[8:4] $R_d$ <code>d dddd</code></td>
-            <td>• <b>Bit 15-10:</b> Opcode คำสั่ง SUB (000110)<br>• <b>Bit 8-4:</b> $R_d$ 5 บิต<br>• <b>Bit 9,3-0:</b> $R_r$ 5 บิต</td>
+            <td>[15:10] Opcode <code>000110</code><br>[9,3:0] Rr <code>r rrrr</code><br>[8:4] Rd <code>d dddd</code></td>
+            <td>• <b>Bit 15-10:</b> Opcode คำสั่ง SUB (000110)<br>• <b>Bit 8-4:</b> Rd 5 บิต<br>• <b>Bit 9,3-0:</b> Rr 5 บิต</td>
           </tr>
           <tr>
             <td><b>โหลดค่าคงที่</b></td>
             <td><code>LDI Rd, K</code></td>
             <td><code>1110 KKKK dddd KKKK</code></td>
-            <td>[15:12] Opcode <code>1110</code><br>[11:8] $K_{7-4}$ <code>KKKK</code><br>[7:4] $R_d$ <code>dddd</code><br>[3:0] $K_{3-0}$ <code>KKKK</code></td>
-            <td>• <b>Bit 15-12:</b> Opcode คำสั่ง LDI (1110)<br>• <b>Bit 11-8:</b> ค่าคงที่ $K$ 4 บิตสูง ($K_7-K_4$)<br>• <b>Bit 7-4:</b> $R_d$ 4 บิต ($R_{16}-R_{31}$)<br>• <b>Bit 3-0:</b> ค่าคงที่ $K$ 4 บิตต่ำ ($K_3-K_0$)</td>
+            <td>[15:12] Opcode <code>1110</code><br>[11:8] $K_{7-4}$ <code>KKKK</code><br>[7:4] Rd <code>dddd</code><br>[3:0] $K_{3-0}$ <code>KKKK</code></td>
+            <td>• <b>Bit 15-12:</b> Opcode คำสั่ง LDI (1110)<br>• <b>Bit 11-8:</b> ค่าคงที่ $K$ 4 บิตสูง ($K_7-K_4$)<br>• <b>Bit 7-4:</b> Rd 4 บิต (R16 ถึง R31)<br>• <b>Bit 3-0:</b> ค่าคงที่ $K$ 4 บิตต่ำ ($K_3-K_0$)</td>
           </tr>
           <tr>
             <td rowspan="2"><b>อ่าน/เขียน I/O</b></td>
             <td><code>IN Rd, A</code></td>
             <td><code>1011 0AAd dddd AAAA</code></td>
-            <td>[15:11] Opcode <code>10110</code><br>[10:9,3:0] Address $A$ <code>AAAAAA</code><br>[8:4] $R_d$ <code>ddddd</code></td>
-            <td>• <b>Bit 15-11:</b> Opcode คำสั่ง IN (10110)<br>• <b>Bit 10-9,3-0:</b> I/O Address $A$ 6 บิต (0x00-0x3F)<br>• <b>Bit 8-4:</b> $R_d$ 5 บิต ($R_0-R_{31}$)</td>
+            <td>[15:11] Opcode <code>10110</code><br>[10:9,3:0] Address $A$ <code>AAAAAA</code><br>[8:4] Rd <code>ddddd</code></td>
+            <td>• <b>Bit 15-11:</b> Opcode คำสั่ง IN (10110)<br>• <b>Bit 10-9,3-0:</b> I/O Address $A$ 6 บิต (0x00-0x3F)<br>• <b>Bit 8-4:</b> Rd 5 บิต ($R0-R_{31}$)</td>
           </tr>
           <tr>
             <td><code>OUT A, Rr</code></td>
             <td><code>1011 1AAr rrrr AAAA</code></td>
-            <td>[15:11] Opcode <code>10111</code><br>[10:9,3:0] Address $A$ <code>AAAAAA</code><br>[8:4] $R_r$ <code>rrrrr</code></td>
-            <td>• <b>Bit 15-11:</b> Opcode คำสั่ง OUT (10111)<br>• <b>Bit 10-9,3-0:</b> I/O Address $A$ 6 บิต (0x00-0x3F)<br>• <b>Bit 8-4:</b> $R_r$ 5 บิต ($R_0-R_{31}$)</td>
+            <td>[15:11] Opcode <code>10111</code><br>[10:9,3:0] Address $A$ <code>AAAAAA</code><br>[8:4] Rr <code>rrrrr</code></td>
+            <td>• <b>Bit 15-11:</b> Opcode คำสั่ง OUT (10111)<br>• <b>Bit 10-9,3-0:</b> I/O Address $A$ 6 บิต (0x00-0x3F)<br>• <b>Bit 8-4:</b> Rr 5 บิต ($R0-R_{31}$)</td>
           </tr>
           <tr>
             <td rowspan="2"><b>จัดการบิต I/O</b></td>
