@@ -359,7 +359,7 @@ pre {
   border-top: 1px solid var(--border-color);
   color: var(--text-muted);
   font-size: 0.88rem;
-  margin-top: auto;
+  margin-top: 48px;
 }
 
 /* PAGINATION NAVIGATION */
@@ -367,23 +367,27 @@ pre {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 40px;
-  padding-top: 24px;
+  margin-top: 48px;
+  margin-bottom: 36px;
+  padding: 24px 16px;
   border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: 12px;
   flex-wrap: wrap;
   gap: 16px;
 }
 .pagination-btn {
   background: var(--bg-card);
-  border: 1px solid var(--border-color);
+  border: 1.5px solid var(--border-color);
   color: var(--text-main);
-  padding: 10px 20px;
+  padding: 12px 24px;
   border-radius: 10px;
   text-decoration: none;
   font-weight: 600;
   font-size: 0.95rem;
   transition: all 0.2s ease;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
 }
@@ -391,6 +395,8 @@ pre {
   background: var(--primary);
   color: var(--bg-dark);
   border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(56, 189, 248, 0.35);
 }
 .pagination-select {
   background: var(--bg-card);
