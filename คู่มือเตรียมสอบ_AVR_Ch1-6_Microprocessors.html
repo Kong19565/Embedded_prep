@@ -13,63 +13,49 @@
     }
     body {
       font-family: 'Sarabun', 'TH Sarabun New', 'TH Sarabun PSK', sans-serif;
-      font-size: 13pt;
-      line-height: 1.6;
+      font-size: 12pt;
+      line-height: 1.5;
       color: #000;
       background: #fff;
     }
     h1 {
-      font-size: 20pt;
+      font-size: 18pt;
       font-weight: 800;
       color: #1e3a8a;
       border-bottom: 3px solid #1e3a8a;
       padding-bottom: 6px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       text-align: center;
     }
     h2 {
-      font-size: 16pt;
+      font-size: 15pt;
       font-weight: 700;
       color: #0369a1;
       border-bottom: 2px solid #0369a1;
       padding-bottom: 4px;
-      margin-top: 22px;
-      margin-bottom: 10px;
+      margin-top: 18px;
+      margin-bottom: 8px;
       page-break-after: avoid;
     }
     h3 {
-      font-size: 14.5pt;
+      font-size: 13.5pt;
       font-weight: 700;
       color: #0f766e;
-      margin-top: 14px;
+      margin-top: 12px;
       margin-bottom: 6px;
       page-break-after: avoid;
-    }
-    .cut-box {
-      background: #fef2f2;
-      border: 1.5px solid #ef4444;
-      border-radius: 8px;
-      padding: 12px 16px;
-      margin-bottom: 16px;
-    }
-    .keep-box {
-      background: #f0fdf4;
-      border: 1.5px solid #22c55e;
-      border-radius: 8px;
-      padding: 12px 16px;
-      margin-bottom: 16px;
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 14px 0;
-      font-size: 11pt;
+      margin: 10px 0;
+      font-size: 10pt;
       break-inside: avoid;
       page-break-inside: avoid;
     }
     table th, table td {
       border: 1px solid #334155;
-      padding: 8px 12px;
+      padding: 6px 10px;
       text-align: left;
     }
     table th {
@@ -85,15 +71,23 @@
       background: #f8fafc;
       border: 1.5px solid #475569;
       border-radius: 6px;
-      padding: 12px;
+      padding: 10px;
       font-family: 'Consolas', 'Courier New', monospace;
-      font-size: 10pt;
-      line-height: 1.4;
+      font-size: 9.5pt;
+      line-height: 1.35;
       white-space: pre-wrap;
       word-break: break-all;
       break-inside: avoid;
       page-break-inside: avoid;
-      margin: 10px 0;
+      margin: 8px 0;
+    }
+    .line-exp {
+      background: #f1f5f9;
+      border-left: 3.5px solid #0284c7;
+      padding: 8px 12px;
+      margin-bottom: 14px;
+      font-size: 9.5pt;
+      color: #1e293b;
     }
     .page-break {
       page-break-before: always;
@@ -102,110 +96,94 @@
 </head>
 <body>
 
-  <h1>🎯 คู่มือสรุปคัดกรองเนื้อหาเตรียมสอบวิชา Embedded System Design</h1>
+  <h1>🎯 คู่มือสรุปเน้นออกสอบวิชา Embedded System Design (Master Printable PDF)</h1>
   <p style="text-align: center; font-weight: 600; color: #475569;">
-    สรุปเฉพาะประเด็นเน้นออกสอบ 100% สกัดจากตำรา AVR Microcontroller Ch 1-6 & Microprocessors
+    รวมชุดคำสั่ง AVR Assembly ครบทุกคำสั่ง และคำอธิบายโค้ดตัวอย่างบรรทัดต่อบรรทัด (Line-by-Line Code Explanations)
   </p>
 
-  <!-- CUT BOX -->
-  <div class="cut-box">
-    <b style="color: #dc2626; font-size: 14pt;">❌ ส่วนที่ตัดออก (ส่วนที่ไม่จำเป็นต้องท่องจำ / ไม่เกี่ยวกับข้อสอบ):</b>
-    <ul style="margin-top: 6px; margin-bottom: 0;">
-      <li><b>ประวัติศาสตร์คอมพิวเตอร์ยุคแรก:</b> หลอดสูญญากาศ Vacuum Tubes, ทรานซิสเตอร์ยุค 1950s และประวัติชิป Intel 4004/8080</li>
-      <li><b>ฟิสิกส์สารกึ่งตัวนำ & ไฟฟ้าลึก:</b> โครงสร้างทรานซิสเตอร์ MOSFET level, Gate Capacitance (Cin), Silicon Doping, อัตราคายความร้อน (Watts/BTU)</li>
-      <li><b>โปรโตคอลบัสภายนอกที่ไม่ได้ออกสอบ:</b> CAN Bus, USB 2.0 Packet Framing, Ethernet MAC Controller, ZigBee, I2S Audio</li>
-      <li><b>รายละเอียด GUI ซอฟต์แวร์ย่อย:</b> ขั้นตอนลงทะเบียน Atmel Studio VSIX Extension Plugin, Visual Studio Extensibility SDK</li>
-    </ul>
-  </div>
-
-  <!-- KEEP BOX -->
-  <div class="keep-box">
-    <b style="color: #16a34a; font-size: 14pt;">✅ ส่วนที่ต้องเน้น 100% (จุดเน้นออกสอบจริงแยกตาม Part 1 & Part 2):</b>
-  </div>
-
-  <h2>🔴 PART 1: สรุปเน้นสอบตอนเช้า (ปิดตำรา - CLOSED-BOOK EXAM)</h2>
-
-  <h3>1.1 พีชคณิตบูลีน & K-Map 4 ตัวแปร (Gate Minimization)</h3>
+  <h2>🔴 PART 1: สรุปเน้นสอบตอนเช้า (ปิดตำรา - CLOSED BOOK)</h2>
+  <h3>1.1 K-Map 4x4, Full Adder & CPU Pipeline</h3>
   <ul>
-    <li><b>กฎ DeMorgan:</b> <code>(A · B)' = A' + B'</code> และ <code>(A + B)' = A' · B'</code></li>
-    <li><b>Minterm (mi) & Maxterm (Mi):</b> Minterm ใช้ใน SOP (Sum of Products) เมื่อเอาต์พุตเป็น 1, Maxterm ใช้ใน POS (Product of Sums) เมื่อเอาต์พุตเป็น 0</li>
-    <li><b>ตาราง K-Map 4x4:</b> จัดลำดับตาม Gray Code (`00`, `01`, `11`, `10`) การรวบกลุ่ม 4 ช่อง (Quad) ตัดตัวแปรเปลี่ยนค่าได้ 2 ตัวแปร</li>
-  </ul>
-
-  <h3>1.2 วงจรบวก Full Adder & ธงล้น Overflow</h3>
-  <ul>
-    <li><b>Sum:</b> <code>Sum = A ⊕ B ⊕ Cin</code></li>
-    <li><b>Carry Out:</b> <code>Cout = AB + Cin(A ⊕ B)</code></li>
-    <li><b>Overflow Flag (V):</b> <code>V = Cin(MSB) ⊕ Cout(MSB)</code> เกิดการล้นของเลขมีเครื่องหมาย 2's Complement (-128 ถึง +127)</li>
-  </ul>
-
-  <h3>1.3 ฟลิปฟลอป & วงจรนับ (Sequential Circuits)</h3>
-  <ul>
-    <li><b>D Flip-Flop:</b> <code>Q(t+1) = D</code> (จำค่า D เมื่อมีขอบ Clock)</li>
-    <li><b>JK Flip-Flop:</b> <code>Q(t+1) = J·Q' + K'·Q</code> (J=1, K=1 เกิด Toggle สลับสถานะ)</li>
-    <li><b>T Flip-Flop:</b> <code>Q(t+1) = T ⊕ Q</code> (T=1 เกิด Toggle, T=0 Hold ค่าเดิม)</li>
-    <li><b>Synchronous Counter:</b> สัญญาณ Clock ต่อเข้าป้อนฟลิปฟลอปทุกตัวพร้อมกัน ป้องกัน Propagation Delay สะสม</li>
-  </ul>
-
-  <h3>1.4 หน่วยควบคุม CPU (Control Unit: Hardwired FSM vs Microprogrammed ROM)</h3>
-  <table>
-    <thead>
-      <tr><th>คุณสมบัติ</th><th>Hardwired FSM Control Unit</th><th>Microprogrammed ROM Control Unit</th></tr>
-    </thead>
-    <tbody>
-      <tr><td><b>ฮาร์ดแวร์</b></td><td>เกตลอย, Decoders & Flip-Flops FSM</td><td>หน่วยความจำ ROM (Control Store) เก็บไมโครโค้ด</td></tr>
-      <tr><td><b>ความเร็ว</b></td><td>เร็วมาก (High Speed)</td><td>ช้ากว่าเล็กน้อย (ต้องอ่านแอดเดรส ROM)</td></tr>
-      <tr><td><b>ความยืดหยุ่น</b></td><td>ยากมาก (ต้องต่อสายไฟหรือแก้ Lay out ชิปใหม่)</td><td>ง่ายมาก (เพียงโปรแกรมข้อมูลไบนารีใน ROM ใหม่)</td></tr>
-      <tr><td><b>สถาปัตยกรรม</b></td><td>CPU แบบ RISC (เน้นความเร็ว)</td><td>CPU แบบ CISC (เน้นคำสั่งซับซ้อน)</td></tr>
-    </tbody>
-  </table>
-
-  <h3>1.5 สถาปัตยกรรมไปป์ไลน์ CPU (5-Stage Pipeline & Hazards)</h3>
-  <ul>
-    <li><b>5 สเตจไปป์ไลน์:</b> IF (Instruction Fetch) ➔ ID (Instruction Decode) ➔ EX (Execute) ➔ MEM (Memory Access) ➔ WB (Writeback)</li>
-    <li><b>Pipeline Hazards:</b> Data Hazard (RAW) แก้ด้วย <b>Data Forwarding/Bypassing</b>, Control Hazard แก้ด้วย <b>Branch Prediction / Flush</b></li>
+    <li><b>DeMorgan:</b> <code>(A·B)' = A' + B'</code>, Minterm ($m_i$) ใน SOP เอาต์พุต=1</li>
+    <li><b>Full Adder & Overflow:</b> <code>Sum = A ⊕ B ⊕ Cin</code>, <code>V = Cin(MSB) ⊕ Cout(MSB)</code></li>
+    <li><b>Flip-Flops:</b> D (<code>Q(t+1)=D</code>), JK (<code>Q(t+1)=J·Q'+K'·Q</code>), T (<code>Q(t+1)=T ⊕ Q</code>)</li>
+    <li><b>Control Unit:</b> Hardwired FSM (เร็ว ยืดหยุ่นน้อย เหมาะ RISC) vs Microprogrammed ROM Store (ช้ากว่า แก้ไขง่าย เหมาะ CISC)</li>
   </ul>
 
   <div class="page-break"></div>
 
-  <h2>🟢 PART 2: สรุปเน้นสอบตอนบ่าย (เปิดตำรา - OPEN-BOOK EXAM)</h2>
-
-  <h3>2.1 สถาปัตยกรรมฮาร์ดแวร์ ATmega328P Microcontroller (Mazidi Ch 1–2)</h3>
-  <ul>
-    <li><b>Harvard Architecture:</b> แยกบัส Flash ROM 32KB และ Data SRAM 2KB ออกจากกัน ดึงคำสั่งและอ่านข้อมูลได้พร้อมกันใน 1 คาบ Clock</li>
-    <li><b>Register File:</b> 32 General Purpose Working Registers (R0 ถึง R31) โดยที่ R16-R31 สามารถใช้คำสั่ง <code>LDI</code> ได้โดยตรง</li>
-    <li><b>Status Register (SREG) 8 บิต:</b> [ <b>I</b> | <b>T</b> | <b>H</b> | <b>S</b> | <b>V</b> | <b>N</b> | <b>Z</b> | <b>C</b> ]<br>
-      • <b>Z (Zero):</b> เป็น 1 เมื่อผลลัพธ์เป็น 0 | <b>C (Carry):</b> เกิดตัวทดออกจาก MSB | <b>V (Overflow):</b> เลขมีเครื่องหมายล้น
-    </li>
-  </ul>
-
-  <h3>2.2 พอร์ต I/O และคำสั่งจัดการบิต (Mazidi Ch 4)</h3>
+  <h2>🟢 PART 2: สรุปเน้นสอบตอนบ่าย (เปิดตำรา - OPEN BOOK & ALL ASM)</h2>
+  <h3>2.1 คลังชุดคำสั่งภาษา AVR Assembly ครบทุกคำสั่ง (All 40+ Instructions Table)</h3>
   <table>
     <thead>
-      <tr><th>รีจิสเตอร์</th><th>หน้าที่ (Function)</th><th>คำสั่งบิตสำคัญ</th><th>การทำงาน</th></tr>
+      <tr><th>หมวดคำสั่ง</th><th>คำสั่ง (Opcode)</th><th>รูปแบบ (Syntax)</th><th>การทำงาน (Operation) & คำอธิบาย</th></tr>
     </thead>
     <tbody>
-      <tr><td><code>DDRx</code></td><td>กำหนดทิศทาง (1=Output, 0=Input)</td><td><code>SBI PORTB, 5</code></td><td>เซตบิตที่ 5 ของ PORTB ให้เป็น 1 (ติดไฟ LED)</td></tr>
-      <tr><td><code>PORTx</code></td><td>ส่งเอาต์พุต / เปิด Pull-up</td><td><code>CBI PORTB, 5</code></td><td>เคลียร์บิตที่ 5 ของ PORTB ให้เป็น 0 (ดับไฟ LED)</td></tr>
-      <tr><td><code>PINx</code></td><td>อ่านค่าสัญญาณอินพุตจากพิน</td><td><code>SBIC PINC, 0</code></td><td>ข้าม 1 คำสั่งถัดไปถ้าพิน PC0 เป็น 0 (สวิตช์กดลงดิน)</td></tr>
+      <tr><td rowspan="4"><b>ย้ายข้อมูล</b></td><td><code>LDI / MOV / MOVW</code></td><td><code>LDI Rd, K</code></td><td>โหลดค่าคงที่ K ลง Rd ($R_16-R_31$) / `MOVW` ก๊อบปี้คู่ 16 บิต</td></tr>
+      <tr><td><code>LDS / STS</code></td><td><code>LDS Rd, k</code> / <code>STS k, Rr</code></td><td>อ่าน/เขียนข้อมูลตรงกับแอดเดรส k ใน Data SRAM</td></tr>
+      <tr><td><code>IN / OUT</code></td><td><code>IN Rd, A</code> / <code>OUT A, Rr</code></td><td>อ่าน/เขียนข้อมูลพอร์ต I/O Register A (เช่น PORTB, PINC)</td></tr>
+      <tr><td><code>PUSH / POP / LPM</code></td><td><code>PUSH Rr</code> / <code>LPM Rd, Z</code></td><td>เก็บ/ดึง Stack / อ่านข้อมูล 1 ไบต์จาก Flash ROM ชี้โดย Z Pointer</td></tr>
+
+      <tr><td rowspan="4"><b>คำนวณ ALU</b></td><td><code>ADD / ADC</code></td><td><code>ADD Rd, Rr</code></td><td>บวก Rd = Rd + Rr (`ADC` บวก Carry C เพิ่มอีก 1)</td></tr>
+      <tr><td><code>SUB / SUBI / SBC</code></td><td><code>SUBI Rd, K</code></td><td>ลบด้วยค่าคงที่ K หรือลบรวมตัวยืม Carry C</td></tr>
+      <tr><td><code>INC / DEC / NEG</code></td><td><code>INC Rd</code> / <code>NEG Rd</code></td><td>เพิ่ม/ลดค่าทีละ 1 / หาค่า 2's Complement เปลี่ยนเครื่องหมาย</td></tr>
+      <tr><td><code>MUL / MULS / CPI</code></td><td><code>MUL Rd, Rr</code></td><td>คูณ 8 บิต ผลลัพธ์ 16 บิตในคู่ `R1:R0` / `CPI` เปรียบเทียบเซต SREG</td></tr>
+
+      <tr><td rowspan="3"><b>ลอจิก & บิต</b></td><td><code>ANDI / ORI / EOR</code></td><td><code>ANDI Rd, K</code></td><td>ลอจิก AND Mask บิต / ORI เซตบิต 1 / EOR XOR บิต</td></tr>
+      <tr><td><code>SBI / CBI</code></td><td><code>SBI A, b</code> / <code>CBI A, b</code></td><td>Set Bit 1 หรือ Clear Bit 0 ของพอร์ต I/O Register A ขา b</td></tr>
+      <tr><td><code>SBIS / SBIC</code></td><td><code>SBIS A, b</code></td><td>ข้าม 1 คำสั่งถัดไปถ้าพินพอร์ต I/O b เป็น 1 (`SBIS`) หรือ 0 (`SBIC`)</td></tr>
+
+      <tr><td rowspan="4"><b>กระโดดเงื่อนไข</b></td><td><code>RJMP / CALL / RET</code></td><td><code>CALL Subroutine</code></td><td>กระโดดไร้เงื่อนไข / เรียกฟังก์ชันย่อย และดึงกลับด้วย `RET`</td></tr>
+      <tr><td><code>BREQ / BRNE</code></td><td><code>BRNE label</code></td><td>กระโดดเมื่อ Z=1 (เท่ากัน) หรือ Z=0 (ไม่เท่ากัน)</td></tr>
+      <tr><td><code>BRLO / BRSH</code></td><td><code>BRLO label</code></td><td>กระโดดเมื่อ C=1 (น้อยกว่า) หรือ C=0 (มากกว่า/เท่ากับ)</td></tr>
+      <tr><td><code>SEI / CLI / RETI</code></td><td><code>SEI</code> / <code>RETI</code></td><td>เปิด Global Interrupt (I=1) / ดึง PC คืนจาก Interrupt ISR</td></tr>
     </tbody>
   </table>
 
-  <h3>2.3 ชุดคำสั่งคำนวณและโปรแกรมภาษา AVR Assembly (Mazidi Ch 3, 5, 6)</h3>
-  <table>
-    <thead>
-      <tr><th>หมวดคำสั่ง</th><th>คำสั่ง</th><th>รูปแบบ</th><th>การทำงาน</th></tr>
-    </thead>
-    <tbody>
-      <tr><td><b>ย้ายข้อมูล</b></td><td><code>LDI / MOV / IN / OUT</code></td><td><code>LDI Rd, K</code> / <code>OUT A, Rr</code></td><td>โหลดค่าคงที่ K ลง Rd / ส่ง Rr ออก I/O Register A</td></tr>
-      <tr><td><b>คำนวณ ALU</b></td><td><code>ADD / SUB / SUBI / MUL</code></td><td><code>MUL Rd, Rr</code></td><td>คูณเลข 8 บิต ผลลัพธ์ 16 บิตเก็บบนคู่ <code>R1:R0</code></td></tr>
-      <tr><td><b>วนลูป & กระโดด</b></td><td><code>DEC / BRNE / BREQ / CALL</code></td><td><code>DEC Rd</code> + <code>BRNE label</code></td><td>ลดค่า Rd ทีละ 1 และกระโดดกลับลูปจนกว่าจะเท่ากับ 0</td></tr>
-    </tbody>
-  </table>
+  <h3>2.2 อธิบายโค้ดตัวอย่างบรรทัดต่อบรรทัด (Line-by-Line Code Explanations)</h3>
 
-  <h3>2.4 ซอร์สโค้ดภาษา AVR Assembly (.asm) จากรายงานแล็บจริงสำหรับเปิดทำข้อสอบ</h3>
+  <b>📂 1. การตั้งค่า Stack Pointer (SPH:SPL = RAMEND)</b>
+  <pre class="code">
+.INCLUDE "M328PDEF.INC"
+.ORG 0x0000
+LDI R16, HIGH(RAMEND)
+OUT SPH, R16
+LDI R16, LOW(RAMEND)
+OUT SPL, R16
+  </pre>
+  <div class="line-exp">
+    <b>💡 คำอธิบายบรรทัดต่อบรรทัด:</b><br>
+    • <code>.INCLUDE & .ORG:</code> ดึงไฟล์นิยามแอดเดรสชิป และตั้งจุดเริ่มต้นที่ Flash 0x0000<br>
+    • <code>LDI R16, HIGH(RAMEND) & OUT SPH, R16:</code> ดึง 8 บิตสูงของ RAMEND (0x08) ชี้แอดเดรสสูงสุด SRAM ลง SPH<br>
+    • <code>LDI R16, LOW(RAMEND) & OUT SPL, R16:</code> ดึง 8 บิตต่ำของ RAMEND (0xFF) ลง SPL ให้ Stack พร้อมใช้งาน
+  </div>
 
-  <b>📂 1. โค้ดไฟกะพริบพร้อมกันบน PORTB และ PORTD (AssemblyBlink1.asm)</b>
+  <b>📂 2. อัลกอริทึมแปลง Hex เป็น BCD 2 หลัก (ลบซ้ำด้วย 10)</b>
+  <pre class="code">
+LDI R16, 0x45       ; ค่าอินพุต 0x45 = 69 ทศนิยม
+CLR R17             ; R17 เก็บหลักสิบ (Tens)
+
+BCD_LOOP:
+    CPI R16, 10
+    BRLO BCD_DONE
+    SUBI R16, 10    ; ลบออกทีละ 10
+    INC R17         ; เพิ่มหลักสิบ
+    RJMP BCD_LOOP
+
+BCD_DONE:
+    SWAP R17
+    OR R17, R16     ; รวมหลักสิบและหลักหน่วย (0x69)
+    OUT PORTB, R17
+  </pre>
+  <div class="line-exp">
+    <b>💡 คำอธิบายบรรทัดต่อบรรทัด:</b><br>
+    • <code>LDI R16, 0x45 & CLR R17:</code> กำหนดค่าอินพุตเริ่มต้น 69 และล้างค่าหลักสิบ R17 เป็น 0<br>
+    • <code>CPI R16, 10 & BRLO BCD_DONE:</code> เช็คว่าค่าเหลือถึง 10 ไหม ถ้าน้อยกว่า 10 จบลูป (เศษใน R16 คือหลักหน่วย)<br>
+    • <code>SUBI R16, 10 & INC R17:</code> ลบออกทีละ 10 และเพิ่มค่านับหลักสิบ R17 ขึ้นทีละ 1<br>
+    • <code>SWAP R17 & OR R17, R16:</code> ย้ายหลักสิบขึ้นไป 4 บิตสูง (SWAP) แล้ว OR รวมหลักหน่วย ได้ BCD 0x69
+  </div>
+
+  <b>📂 3. โค้ดแล็บจริง: AssemblyBlink1.asm (ควบคุมไฟกะพริบพร้อมกัน 2 พอร์ต)</b>
   <pre class="code">;====================================================================
 ; Title: AssemblyBlink1.asm
 ; Created: 11/22/2013
@@ -249,92 +227,12 @@ L3:
     brne L1             ; Loop if R20 != 0
     ret                 ; Return from subroutine
 </pre>
-
-  <b>📂 2. โค้ดไฟกะพริบสลับพอร์ต PORTB ติดเมื่อ PORTD ดับ (AssemblyBlink1_modified.asm)</b>
-  <pre class="code">;====================================================================
-; Title: AssemblyBlink1_modified.asm
-; Created: 11/22/2013 (Modified: 2026-07-19)
-; Author: khatathapswatdipisal
-; Description: Alternate blinking: Port B ON when Port D is OFF
-;====================================================================
-
-.nolist
-.include "m328pdef.inc"
-.list
-
-; Start at main after reset
-rjmp main
-
-main:
-    ldi r16, 0xFF       ; Load 0xFF into R16 (all bits set to 1)
-    out DDRB, r16       ; Configure Port B pins as Outputs
-    out DDRD, r16       ; Configure Port D pins as Outputs
-    ldi r16, 0x00       ; Clear R16 to 0x00
-
-loop:
-    com r16             ; Complement R16 (toggle R16 between 0x00 and 0xFF)
-    out PORTB, r16      ; Write R16 directly to Port B (PB0-PB7)
-    
-    mov r17, r16        ; Copy R16 to R17
-    com r17             ; Complement R17 (so R17 is always the opposite of R16)
-    out PORTD, r17      ; Write R17 to Port D (PD0-PD7)
-    
-    call MY_DELAY       ; Delay for simulation timing
-    rjmp loop           ; Loop indefinitely
-
-; Delay Subroutine
-MY_DELAY:
-    ldi r20, 8
-L1:
-    ldi r21, 200
-L2:
-    ldi r22, 250
-L3:
-    dec r22             ; Decrement R22
-    brne L3             ; Loop if R22 != 0
-    dec r21             ; Decrement R21
-    brne L2             ; Loop if R21 != 0
-    dec r20             ; Decrement R20
-    brne L1             ; Loop if R20 != 0
-    ret                 ; Return from subroutine
-</pre>
-
-  <b>📂 3. โค้ดแปลง Hex 0-99 เป็น BCD 2 หลัก (Repeated Subtraction by 10)</b>
-  <pre class="code">
-.INCLUDE "M328PDEF.INC"
-.ORG 0x0000
-
-LDI R16, 0x45       ; ค่าอินพุต 0x45 = 69 ทศนิยม
-CLR R17             ; R17 เก็บหลักสิบ (Tens)
-
-BCD_LOOP:
-    CPI R16, 10
-    BRLO BCD_DONE
-    SUBI R16, 10    ; ลบออกทีละ 10
-    INC R17         ; เพิ่มหลักสิบ
-    RJMP BCD_LOOP
-
-BCD_DONE:
-    SWAP R17
-    OR R17, R16     ; รวมหลักสิบและหลักหน่วย
-    OUT PORTB, R17  ; ส่งผลลัพธ์ BCD ออก PORTB
-  </pre>
-
-  <b>📂 4. โค้ดคำนวณผลรวมวนลูป S = N + (N-1) + ... + 1</b>
-  <pre class="code">
-.INCLUDE "M328PDEF.INC"
-.ORG 0x0000
-
-LDI R16, 5          ; N = 5
-CLR R17             ; ผลรวม S
-
-SUM_LOOP:
-    ADD R17, R16
-    DEC R16
-    BRNE SUM_LOOP
-
-OUT PORTB, R17      ; ส่งผลลัพธ์ 15 (0x0F) ออก PORTB
-  </pre>
+  <div class="line-exp">
+    <b>💡 คำอธิบายบรรทัดต่อบรรทัด:</b><br>
+    • <code>out DDRB/DDRD, r16:</code> ตั้งพิน PORTB และ PORTD ทั้งหมดเป็นเอาต์พุต<br>
+    • <code>com r16 & out PORTB/PORTD, r16:</code> กลับบิต R16 สลับ 0x00 ➔ 0xFF ทำให้ไฟกะพริบติดดับพร้อมกัน<br>
+    • <code>call MY_DELAY:</code> เรียกฟังก์ชันย่อยหน่วงเวลา 3 ลูปซ้อนกัน (R20, R21, R22)
+  </div>
 
 </body>
 </html>

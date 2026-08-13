@@ -3,32 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>📄 คู่มือพิมพ์ A4 สรุปเปิดตำราพกเข้าห้องสอบฉบับสมบูรณ์ (Hardware & Software Master Reference Manual)</title>
+  <title>📄 คู่มือพิมพ์ A4 สรุปเปิดตำราพกเข้าห้องสอบฉบับสมบูรณ์ (Line-by-Line Code & Full AVR Assembly Reference)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <style>
     @media print {
-      body { background: #fff !important; color: #000 !important; font-size: 9.5pt !important; }
+      body { background: #fff !important; color: #000 !important; font-size: 9pt !important; }
       .navbar, .btn-print, .pagination-nav, footer, .no-print { display: none !important; }
       .container { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
-      .print-card { border: 1.5px solid #000 !important; background: #fff !important; color: #000 !important; page-break-inside: avoid; margin-bottom: 14px !important; box-shadow: none !important; }
+      .print-card { border: 1.5px solid #000 !important; background: #fff !important; color: #000 !important; page-break-inside: avoid; margin-bottom: 12px !important; box-shadow: none !important; }
       .print-header { border-bottom: 2px solid #000 !important; color: #000 !important; }
-      table { border: 1px solid #000 !important; background: #fff !important; color: #000 !important; }
+      table { border: 1px solid #000 !important; background: #fff !important; color: #000 !important; font-size: 8.5pt !important; }
       th { background: #e2e8f0 !important; color: #000 !important; border: 1px solid #000 !important; }
       td { border: 1px solid #000 !important; color: #000 !important; }
-      pre { background: #f8fafc !important; color: #000 !important; border: 1px solid #000 !important; font-size: 8.5pt !important; }
-      .source-tag { border: 1px solid #000 !important; color: #000 !important; background: #f1f5f9 !important; }
-      .badge-hw { background: #e0f2fe !important; color: #0369a1 !important; border: 1px solid #0284c7 !important; }
-      .badge-sw { background: #dcfce7 !important; color: #15803d !important; border: 1px solid #16a34a !important; }
+      pre { background: #f8fafc !important; color: #000 !important; border: 1px solid #000 !important; font-size: 8pt !important; }
+      .line-exp { background: #fff !important; border-left: 3px solid #0284c7 !important; color: #000 !important; }
     }
     .print-card {
       background: #0f172a;
       border: 1px solid #2e3c54;
       border-radius: 14px;
-      padding: 22px;
-      margin-bottom: 24px;
+      padding: 20px;
+      margin-bottom: 22px;
       box-shadow: 0 8px 30px rgba(0,0,0,0.5);
     }
     .print-header {
@@ -36,8 +34,8 @@
       font-weight: 800;
       color: #38bdf8;
       border-bottom: 1.5px solid #2e3c54;
-      padding-bottom: 10px;
-      margin-bottom: 16px;
+      padding-bottom: 8px;
+      margin-bottom: 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -60,6 +58,17 @@
       font-size: 0.8rem;
       font-weight: 700;
     }
+    .line-exp {
+      background: #060911;
+      border-left: 4px solid #38bdf8;
+      padding: 10px 14px;
+      margin-top: 6px;
+      margin-bottom: 16px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.88rem;
+      color: #cbd5e1;
+      line-height: 1.6;
+    }
   </style>
 </head>
 <body>
@@ -70,21 +79,21 @@
     <ul class="nav-links">
       <li><a href="index.html">หน้าหลัก Index</a></li>
       <li><a href="#hw-section">🟢 Part A: HARDWARE</a></li>
-      <li><a href="#sw-section">🟢 Part B: SOFTWARE</a></li>
+      <li><a href="#sw-section">🟢 Part B: SOFTWARE & ALL ASM</a></li>
       <li><a href="part2_openbook_printable.html" class="active" style="color: #4ade80;">📄 หน้าสรุปพิมพ์ A4</a></li>
     </ul>
   </nav>
 
   <main class="container">
 
-    <!-- ACTION BUTTON & BANNER -->
+    <!-- BANNER -->
     <header class="page-banner">
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
         <div>
           <span class="source-tag" style="background: rgba(74, 222, 128, 0.2); color: #4ade80; border-color: #4ade80;">🟢 PART 2: เปิดตำรา (13:00 - 15:30) — คลังเอกสารพกเข้าห้องสอบ</span>
-          <h1 class="page-title">📄 คู่มือสรุปพิมพ์ A4 พกเข้าห้องสอบฉบับสมบูรณ์ (Hardware & Software Master Manual)</h1>
+          <h1 class="page-title">📄 คู่มือสรุปพิมพ์ A4 พกเข้าห้องสอบฉบับสมบูรณ์ (Line-by-Line Code & Full AVR Assembly)</h1>
           <p class="page-subtitle">
-            รวบรวมข้อมูลฮาร์ดแวร์ ATmega328P (พิน, รีจิสเตอร์, วงจร) และข้อมูลซอฟต์แวร์ (ตารางคำสั่ง AVR Assembly, Directives & 10 แม่แบบโค้ดสอบ) สำหรับสั่งพิมพ์พกเข้าห้องสอบสำหรับผู้เริ่มต้น
+            รวบรวมชุดคำสั่ง AVR Assembly ครบทุกคำสั่ง และอธิบายโค้ดตัวอย่างบรรทัดต่อบรรทัด (Line-by-Line Explanations) สำหรับเปิดดูทำข้อสอบได้อย่างแม่นยำ 100%
           </p>
         </div>
         <button class="btn btn-primary no-print" onclick="window.print()" style="padding: 12px 24px; font-size: 1rem; font-weight: 800;">
@@ -93,293 +102,228 @@
       </div>
     </header>
 
-    <!-- ================================================================= -->
-    <!-- PART A: HARDWARE REFERENCE SECTION -->
-    <!-- ================================================================= -->
-    <h2 id="hw-section" style="color: #38bdf8; font-size: 1.5rem; margin: 30px 0 20px 0; border-bottom: 2px solid #38bdf8; padding-bottom: 8px;">
-      ⚙️ PART A: HARDWARE REFERENCE (หมวดฮาร์ดแวร์ — โครงสร้างชิป พิน รีจิสเตอร์ & วงจร)
+    <!-- PART A: HARDWARE REFERENCE -->
+    <h2 id="hw-section" style="color: #38bdf8; font-size: 1.4rem; margin: 26px 0 16px 0; border-bottom: 2px solid #38bdf8; padding-bottom: 6px;">
+      ⚙️ PART A: HARDWARE REFERENCE (หมวดฮาร์ดแวร์ — พิน รีจิสเตอร์ & SREG Flags)
     </h2>
 
-    <!-- HW 1: ATmega328P Architecture & Block Diagram -->
+    <!-- HW 1: Pinout & Registers -->
     <div class="print-card">
       <div class="print-header">
-        <span>1.1 สถาปัตยกรรมและโครงสร้างฮาร์ดแวร์ ATmega328P RISC MCU</span>
+        <span>1.1 สรุปพิน ATmega328P, รีจิสเตอร์พอร์ต I/O (DDRx, PORTx, PINx) & ธง SREG</span>
         <span class="badge-hw">HARDWARE 1</span>
       </div>
-      <ul style="line-height: 1.7; color: #cbd5e1; padding-left: 20px; font-size: 0.92rem;">
-        <li><b>สถาปัตยกรรมบัส:</b> Harvard Architecture (แยกบัส Program Flash ROM 32KB และ Data SRAM 2KB ออกจากกัน ดึงคำสั่งได้ใน 1 คาบ Clock)</li>
-        <li><b>รีจิสเตอร์ทำงานทั่วไป:</b> 32 General Purpose Working Registers ($R_0$ ถึง $R_{31}$) ขนาด 8 บิต โดยที่ $R_{16}-R_{31}$ ใช้คำสั่ง <code>LDI</code> ได้</li>
-        <li><b>คู่อ้างอิงที่อยู่ 16 บิต (Pointer Registers):</b> X ($R_{27}:R_{26}$), Y ($R_{29}:R_{28}$), Z ($R_{31}:R_{30}$)</li>
-        <li><b>Program Counter (PC):</b> 14 บิต ชี้ตำแหน่งแอดเดรสคำสั่งถัดไปใน Flash ROM</li>
-        <li><b>Stack Pointer (SP):</b> 16 บิต ประกอบด้วย <code>SPH</code> (High Byte) และ <code>SPL</code> (Low Byte) ชี้แอดเดรสบน SRAM สำหรับเก็บ Return Address ตอน <code>CALL</code> และ <code>PUSH/POP</code></li>
-      </ul>
-    </div>
-
-    <!-- HW 2: ATmega328P 28-pin Pinout Map -->
-    <div class="print-card">
-      <div class="print-header">
-        <span>1.2 แผนผังพิน ATmega328P (28-pin PDIP Pinout Map) & หน้าที่พิเศษ</span>
-        <span class="badge-hw">HARDWARE 2</span>
-      </div>
       <table class="data-table">
         <thead>
-          <tr>
-            <th>Pin Number</th>
-            <th>Pin Name</th>
-            <th>หน้าที่หลัก (Primary Function)</th>
-            <th>หน้าที่พิเศษ (Alternate Hardware Function)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td><b>1</b></td><td><code>PC6 / RESET</code></td><td>Reset Pin (Active Low)</td><td>PCINT14 / DebugWIRE</td></tr>
-          <tr><td><b>2, 3</b></td><td><code>PD0, PD1</code></td><td>Port D Bit 0, 1</td><td><code>RXD</code> (USART Data In), <code>TXD</code> (USART Data Out)</td></tr>
-          <tr><td><b>4, 5, 6</b></td><td><code>PD2, PD3, PD4</code></td><td>Port D Bit 2, 3, 4</td><td><code>INT0</code> (Ext Interrupt 0), <code>INT1</code> (Ext Interrupt 1), <code>XCK / T0</code></td></tr>
-          <tr><td><b>7, 8</b></td><td><code>VCC, GND</code></td><td>แหล่งจ่ายไฟหลัก +5V, Ground</td><td>Power Supply Digital Core</td></tr>
-          <tr><td><b>9, 10</b></td><td><code>PB6, PB7</code></td><td>Port B Bit 6, 7</td><td><code>XTAL1</code> (Clock In), <code>XTAL2</code> (Clock Out 16MHz Crystal)</td></tr>
-          <tr><td><b>11, 12, 13</b></td><td><code>PD5, PD6, PD7</code></td><td>Port D Bit 5, 6, 7</td><td><code>OC0B</code> (PWM 0B), <code>OC0A</code> (PWM 0A / AIN0), <code>AIN1</code></td></tr>
-          <tr><td><b>14, 15, 16</b></td><td><code>PB0, PB1, PB2</code></td><td>Port B Bit 0, 1, 2</td><td><code>ICP1</code> (Input Capture 1), <code>OC1A</code> (PWM 1A), <code>OC1B</code> (PWM 1B / SS SPI)</td></tr>
-          <tr><td><b>17, 18, 19</b></td><td><code>PB3, PB4, PB5</code></td><td>Port B Bit 3, 4, 5</td><td><code>MOSI</code> (SPI Data Out), <code>MISO</code> (SPI Data In), <code>SCK</code> (SPI Clock / LED)</td></tr>
-          <tr><td><b>20, 21, 22</b></td><td><code>AVCC, AREF, GND</code></td><td>แหล่งจ่ายไฟอนาล็อก +5V, Ref Voltage</td><td>Analog Power & ADC Reference</td></tr>
-          <tr><td><b>23-28</b></td><td><code>PC0 - PC5</code></td><td>Port C Bit 0 ถึง Bit 5</td><td><code>ADC0 - ADC5</code> (Analog to Digital Channels) / <code>SDA, SCL</code> (I2C)</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- HW 3: I/O Registers & Bit Map -->
-    <div class="print-card">
-      <div class="print-header">
-        <span>1.3 ตารางแอดเดรสและหน้าที่ของรีจิสเตอร์ควบคุมพอร์ต I/O (DDRx, PORTx, PINx)</span>
-        <span class="badge-hw">HARDWARE 3</span>
-      </div>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Port Name</th>
-            <th>DDRx Register (ทิศทาง)</th>
-            <th>PORTx Register (เอาต์พุต)</th>
-            <th>PINx Register (อ่านอินพุต)</th>
-            <th>กฎการกำหนดค่าลอจิก (Logic Rule)</th>
-          </tr>
+          <tr><th>พอร์ต</th><th>DDRx (ทิศทาง)</th><th>PORTx (เอาต์พุต)</th><th>PINx (อ่านอินพุต)</th><th>หน้าที่ลอจิกบิต</th></tr>
         </thead>
         <tbody>
           <tr>
-            <td><b>PORT B</b></td>
-            <td><code>DDRB</code> (0x04 / I/O 0x24)</td>
-            <td><code>PORTB</code> (0x05 / I/O 0x25)</td>
-            <td><code>PINB</code> (0x03 / I/O 0x23)</td>
-            <td rowspan="3">
-              • <b>DDRx Bit = 1:</b> ตั้งขานั้นเป็น <b>Output</b><br>
-              • <b>DDRx Bit = 0:</b> ตั้งขานั้นเป็น <b>Input</b><br>
-              • <b>PORTx Bit = 1 (โหมด Output):</b> ส่งไฟ HIGH (+5V)<br>
-              • <b>PORTx Bit = 0 (โหมด Output):</b> ส่งไฟ LOW (0V)<br>
-              • <b>PORTx Bit = 1 (โหมด Input):</b> เปิดใช้งาน <b>Internal Pull-up Resistor</b>
-            </td>
-          </tr>
-          <tr>
-            <td><b>PORT C</b></td>
-            <td><code>DDRC</code> (0x07 / I/O 0x27)</td>
-            <td><code>PORTC</code> (0x08 / I/O 0x28)</td>
-            <td><code>PINC</code> (0x06 / I/O 0x26)</td>
-          </tr>
-          <tr>
-            <td><b>PORT D</b></td>
-            <td><code>DDRD</code> (0x0A / I/O 0x2A)</td>
-            <td><code>PORTD</code> (0x0B / I/O 0x2B)</td>
-            <td><code>PIND</code> (0x09 / I/O 0x29)</td>
+            <td><b>Port B, C, D</b></td>
+            <td>DDRB (0x24)<br>DDRC (0x27)<br>DDRD (0x2A)</td>
+            <td>PORTB (0x25)<br>PORTC (0x28)<br>PORTD (0x2B)</td>
+            <td>PINB (0x23)<br>PINC (0x26)<br>PIND (0x29)</td>
+            <td>• <b>DDRx Bit = 1:</b> กำหนดพินเป็น Output<br>• <b>DDRx Bit = 0:</b> กำหนดพินเป็น Input<br>• <b>PORTx Bit = 1 (Out):</b> จ่ายไฟ HIGH (+5V)<br>• <b>PORTx Bit = 1 (In):</b> เปิด Internal Pull-up</td>
           </tr>
         </tbody>
       </table>
+      <div style="margin-top: 10px; font-size: 0.9rem; color: #cbd5e1;">
+        📌 <b>ธง Status Register (SREG):</b> [ Bit 7: <b>I</b> (Interrupt) | Bit 6: <b>T</b> (Bit Copy) | Bit 5: <b>H</b> (Half Carry) | Bit 4: <b>S</b> (Sign) | Bit 3: <b>V</b> (Overflow: $Cin(MSB) \oplus Cout(MSB)$) | Bit 2: <b>N</b> (Negative) | Bit 1: <b>Z</b> (Zero) | Bit 0: <b>C</b> (Carry) ]
+      </div>
     </div>
 
-    <!-- HW 4: SREG Status Register Bit-by-Bit Map -->
-    <div class="print-card">
-      <div class="print-header">
-        <span>1.4 ตารางธงสถานะ Status Register (SREG) 8 บิต & เงื่อนไขการเปลี่ยนธง</span>
-        <span class="badge-hw">HARDWARE 4</span>
-      </div>
-      <div class="formula-box" style="border-color: #38bdf8; background: #061220; margin-bottom: 12px;">
-        📌 <b>SREG Bit Map:</b> [ Bit 7: <b>I</b> | Bit 6: <b>T</b> | Bit 5: <b>H</b> | Bit 4: <b>S</b> | Bit 3: <b>V</b> | Bit 2: <b>N</b> | Bit 1: <b>Z</b> | Bit 0: <b>C</b> ]
-      </div>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Bit</th>
-            <th>Flag Name</th>
-            <th>ชื่อธงเต็ม</th>
-            <th>เงื่อนไขการเป็น 1 (Set Condition = 1)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>7</td><td><code>I</code></td><td>Global Interrupt Enable</td><td>เปิดรับสัญญาณขัดจังหวะทุกชนิด (เปิดด้วยคำสั่ง <code>SEI</code>, ปิดด้วย <code>CLI</code>)</td></tr>
-          <tr><td>6</td><td><code>T</code></td><td>Bit Copy Storage</td><td>เก็บบิตชั่วคราวสำหรับคำสั่ง <code>BST</code> (Bit Store) และ <code>BLD</code> (Bit Load)</td></tr>
-          <tr><td>5</td><td><code>H</code></td><td>Half Carry Flag</td><td>เกิดตัวทดจากบิต 3 ไปบิต 4 (ใช้คำนวณคณิตศาสตร์ BCD <code>DAA</code>)</td></tr>
-          <tr><td>4</td><td><code>S</code></td><td>Sign Bit Flag</td><td><code>S = N ⊕ V</code> เครื่องหมายจริงของการคำนวณเลขมีเครื่องหมาย 2's Complement</td></tr>
-          <tr><td>3</td><td><code>V</code></td><td>Overflow Flag</td><td><code>V = Cin(MSB) ⊕ Cout(MSB)</code> เกิดการล้นของขอบเขตเลขมีเครื่องหมาย (-128 ถึง +127)</td></tr>
-          <tr><td>2</td><td><code>N</code></td><td>Negative Flag</td><td>เป็น 1 เมื่อบิตสูงสุด MSB ของผลลัพธ์การคำนวณเป็น 1 (บอกว่าผลลัพธ์ติดลบ)</td></tr>
-          <tr><td>1</td><td><code>Z</code></td><td>Zero Flag</td><td>เป็น 1 เมื่อผลลัพธ์การคำนวณ ALU มีค่าเป็น 0 ทั้งหมดทุกบิต</td></tr>
-          <tr><td>0</td><td><code>C</code></td><td>Carry Flag</td><td>เป็น 1 เมื่อเกิดตัวทด (Carry) ออกจากบิต MSB หรือเกิดการยืม (Borrow) ในการลบ</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- ================================================================= -->
-    <!-- PART B: SOFTWARE REFERENCE SECTION -->
-    <!-- ================================================================= -->
-    <h2 id="sw-section" style="color: #4ade80; font-size: 1.5rem; margin: 40px 0 20px 0; border-bottom: 2px solid #4ade80; padding-bottom: 8px;">
-      💻 PART B: SOFTWARE REFERENCE (หมวดซอฟต์แวร์ — ชุดคำสั่ง AVR Assembly & 10 แม่แบบโค้ดสอบ)
+    <!-- PART B: COMPLETE AVR ASSEMBLY INSTRUCTION SET -->
+    <h2 id="sw-section" style="color: #4ade80; font-size: 1.4rem; margin: 34px 0 16px 0; border-bottom: 2px solid #4ade80; padding-bottom: 6px;">
+      💻 PART B: COMPLETE AVR ASSEMBLY INSTRUCTION SET (ตารางรวมคำสั่งภาษาแอสเซมบลีทั้งหมด)
     </h2>
 
-    <!-- SW 1: Complete Instruction Set Table -->
     <div class="print-card">
       <div class="print-header">
-        <span>2.1 ตารางสรุปชุดคำสั่ง AVR Assembly Reference (แยกตามหมวดการใช้งาน)</span>
-        <span class="badge-sw">SOFTWARE 1</span>
+        <span>2.1 คลังชุดคำสั่งภาษา AVR Assembly ครบทุกคำสั่ง (All 40+ Instructions Reference Table)</span>
+        <span class="badge-sw">ALL INSTRUCTIONS</span>
       </div>
       <table class="data-table">
         <thead>
           <tr>
             <th>หมวดคำสั่ง</th>
-            <th>คำสั่ง (Instruction)</th>
+            <th>คำสั่ง (Opcode)</th>
             <th>รูปแบบ (Syntax)</th>
-            <th>การทำงาน (Operation) & คำอธิบาย</th>
+            <th>การทำงาน (Operation) & รายละเอียดการอธิบาย</th>
+            <th>ธงที่ส่งผล (SREG)</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td rowspan="4"><b>ย้ายข้อมูล<br>(Data Transfer)</b></td>
-            <td><code>LDI</code></td><td><code>LDI Rd, K</code></td><td>โหลดค่าคงที่ K (0-255) ลงรีจิสเตอร์ Rd ($R_{16}-R_{31}$)</td>
-          </tr>
-          <tr><td><code>MOV</code></td><td><code>MOV Rd, Rr</code></td><td>คัดลอกข้อมูลจากรีจิสเตอร์ Rr ไปยัง Rd</td></tr>
-          <tr><td><code>IN</code></td><td><code>IN Rd, A</code></td><td>อ่านข้อมูลจาก I/O Register A (เช่น PINC) เข้าสู่ Rd</td></tr>
-          <tr><td><code>OUT</code></td><td><code>OUT A, Rr</code></td><td>ส่งข้อมูลจาก Rr ออกไปยัง I/O Register A (เช่น PORTB, DDRB)</td></tr>
-          <tr>
-            <td rowspan="4"><b>คำนวณ ALU<br>(Arithmetic)</b></td>
-            <td><code>ADD / ADC</code></td><td><code>ADD Rd, Rr</code></td><td>บวก Rd = Rd + Rr (ADC รวมตัวทด Carry Flag C เพิ่มอีก 1)</td></tr>
-            <td><code>SUB / SUBI</code></td><td><code>SUB Rd, Rr</code></td><td>ลบ Rd = Rd - Rr (SUBI ลบด้วยค่าคงที่ K: Rd = Rd - K)</td></tr>
-            <td><code>INC / DEC</code></td><td><code>INC Rd</code></td><td>เพิ่ม/ลด ค่าในรีจิสเตอร์ Rd ทีละ 1 (Rd = Rd + 1 หรือ Rd = Rd - 1)</td></tr>
-            <td><code>MUL</code></td><td><code>MUL Rd, Rr</code></td><td>คูณเลข 8-bit ไม่คิดเครื่องหมาย ผลลัพธ์ 16 บิตเก็บบนคู่รีจิสเตอร์ <code>R1:R0</code></td></tr>
-          <tr>
-            <td rowspan="3"><b>จัดการบิต<br>(Bit Operation)</b></td>
-            <td><code>SBI / CBI</code></td><td><code>SBI PORTB, 5</code></td><td><code>SBI</code> เซตบิตใน I/O ให้เป็น 1 / <code>CBI</code> เคลียร์บิตใน I/O ให้เป็น 0</td></tr>
-            <td><code>SBIS / SBIC</code></td><td><code>SBIS PINB, 0</code></td><td><code>SBIS</code> ข้าม 1 บรรทัดถ้าบิตใน I/O เป็น 1 / <code>SBIC</code> ข้ามถ้าเป็น 0</td></tr>
-            <td><code>AND / OR / EOR</code></td><td><code>AND Rd, Rr</code></td><td>ลอจิก AND, OR, XOR บิตต่อบิตระหว่าง Rd และ Rr</td></tr>
-          <tr>
-            <td rowspan="3"><b>กระโดดเงื่อนไข<br>(Branching)</b></td>
-            <td><code>BREQ / BRNE</code></td><td><code>BRNE label</code></td><td><code>BREQ</code> กระโดดเมื่อ Z=1 (เท่ากัน) / <code>BRNE</code> กระโดดเมื่อ Z=0 (ไม่เท่ากัน)</td></tr>
-            <td><code>BRLO / BRSH</code></td><td><code>BRLO label</code></td><td><code>BRLO</code> กระโดดเมื่อ C=1 (น้อยกว่า) / <code>BRSH</code> กระโดดเมื่อ C=0 (มากกว่าหรือเท่ากับ)</td></tr>
-            <td><code>CALL / RET</code></td><td><code>CALL Subroutine</code></td><td><code>CALL</code> เรียกฟังก์ชันย่อย (บันทึก PC ลง Stack) / <code>RET</code> ดึง PC คืนจาก Stack</td></tr>
+          <!-- DATA TRANSFER -->
+          <tr><td rowspan="8"><b>1. ย้ายข้อมูล<br>(Data Transfer)</b></td><td><code>LDI</code></td><td><code>LDI Rd, K</code></td><td>โหลดค่าคงที่ K (0-255) ลงรีจิสเตอร์ Rd ($R_16-R_31$) Direct Immediate</td><td>ไม่มี</td></tr>
+          <tr><td><code>MOV / MOVW</code></td><td><code>MOV Rd, Rr</code></td><td>คัดลอกข้อมูลจาก Rr ไปยัง Rd (`MOVW` คัดลอกคู่รีจิสเตอร์ 16 บิต)</td><td>ไม่มี</td></tr>
+          <tr><td><code>LDS / STS</code></td><td><code>LDS Rd, k</code> / <code>STS k, Rr</code></td><td><code>LDS</code> อ่านข้อมูลจากแอดเดรส k ใน SRAM ลง Rd / <code>STS</code> เขียนค่าจาก Rr ลง SRAM</td><td>ไม่มี</td></tr>
+          <tr><td><code>IN / OUT</code></td><td><code>IN Rd, A</code> / <code>OUT A, Rr</code></td><td><code>IN</code> อ่านค่าจาก I/O Register A ลง Rd / <code>OUT</code> ส่งค่าจาก Rr ออก I/O Register A</td><td>ไม่มี</td></tr>
+          <tr><td><code>PUSH / POP</code></td><td><code>PUSH Rr</code> / <code>POP Rd</code></td><td><code>PUSH</code> เก็บข้อมูลลง Stack Pointer / <code>POP</code> ดึงข้อมูลออกจาก Stack คืนลง Rd</td><td>ไม่มี</td></tr>
+          <tr><td><code>LPM</code></td><td><code>LPM Rd, Z</code></td><td>อ่านข้อมูล 1 ไบต์จาก Flash ROM ที่ชี้โดยพอยเตอร์ Z ($R_31:R_30$) ลง Rd</td><td>ไม่มี</td></tr>
+          <tr><td><code>LD / ST</code></td><td><code>LD Rd, X</code> / <code>ST X, Rr</code></td><td>อ่าน/เขียนข้อมูล SRAM แบบอ้อมผ่าน Pointer X, Y, Z (รองรับ `+`, `-` Pre/Post)</td><td>ไม่มี</td></tr>
+          <tr><td><code>CLR / SER</code></td><td><code>CLR Rd</code> / <code>SER Rd</code></td><td><code>CLR</code> เคลียร์ค่าใน Rd เป็น 0x00 (คือ `EOR Rd, Rd`) / <code>SER</code> เซตค่าเป็น 0xFF</td><td>Z=1 (CLR)</td></tr>
+
+          <!-- ARITHMETIC -->
+          <tr><td rowspan="7"><b>2. คำนวณ ALU<br>(Arithmetic)</b></td><td><code>ADD / ADC</code></td><td><code>ADD Rd, Rr</code></td><td>บวก Rd = Rd + Rr (`ADC` บวกผลรวมตัวทด Carry Flag C เพิ่มอีก 1)</td><td>Z, C, N, V, H, S</td></tr>
+          <tr><td><code>SUB / SUBI</code></td><td><code>SUB Rd, Rr</code></td><td>ลบ Rd = Rd - Rr (`SUBI` ลบด้วยค่าคงที่ K: Rd = Rd - K)</td><td>Z, C, N, V, H, S</td></tr>
+          <tr><td><code>SBC / SBCI</code></td><td><code>SBC Rd, Rr</code></td><td>ลบพร้อมตัวยืม Carry: Rd = Rd - Rr - C (`SBCI` ลบค่าคงที่ K และ C)</td><td>Z, C, N, V, H, S</td></tr>
+          <tr><td><code>INC / DEC</code></td><td><code>INC Rd</code> / <code>DEC Rd</code></td><td>เพิ่มค่า (`INC`) หรือ ลดค่า (`DEC`) ใน Rd ทีละ 1 (ไม่กระทบ Carry Flag C)</td><td>Z, N, V, S</td></tr>
+          <tr><td><code>MUL / MULS</code></td><td><code>MUL Rd, Rr</code></td><td>คูณเลข 8 บิต ผลลัพธ์ 16 บิตเก็บบนคู่ <code>R1:R0</code> (`MULS` คิดเครื่องหมาย 2's)</td><td>Z, C</td></tr>
+          <tr><td><code>NEG</code></td><td><code>NEG Rd</code></td><td>หาค่า 2's Complement ของ Rd (คือ Rd = 0 - Rd เปลี่ยนเครื่องหมายบวก/ลบ)</td><td>Z, C, N, V, H, S</td></tr>
+          <tr><td><code>CP / CPC / CPI</code></td><td><code>CPI Rd, K</code></td><td>เปรียบเทียบ Rd กับ K (คือทดลองลบ Rd - K เพื่อเซตธง SREG โดยไม่แก้ค่า Rd)</td><td>Z, C, N, V, H, S</td></tr>
+
+          <!-- LOGIC & BIT -->
+          <tr><td rowspan="6"><b>3. ลอจิก & จัดการบิต<br>(Logic & Bit)</b></td><td><code>AND / ANDI</code></td><td><code>ANDI Rd, K</code></td><td>ลอจิก AND บิตต่อบิต (`ANDI` ใช้กับค่าคงที่ Mask บิตตัดส่วนไม่ต้องการออก)</td><td>Z, N, V=0, S</td></tr>
+          <tr><td><code>OR / ORI</code></td><td><code>ORI Rd, K</code></td><td>ลอจิก OR บิตต่อบิต (`ORI` ใช้เซตบิตเฉพาะตำแหน่งให้เป็น 1)</td><td>Z, N, V=0, S</td></tr>
+          <tr><td><code>EOR / COM</code></td><td><code>EOR Rd, Rr</code></td><td>`EOR` XOR บิตต่อบิต / `COM` กลับบิตทุกบิต 1's Complement (Rd = 0xFF - Rd)</td><td>Z, N, V=0, S</td></tr>
+          <tr><td><code>SBI / CBI</code></td><td><code>SBI A, b</code> / <code>CBI A, b</code></td><td><code>SBI</code> เซตบิตที่ b ใน I/O A ให้เป็น 1 / <code>CBI</code> เคลียร์บิตที่ b ให้เป็น 0</td><td>ไม่มี</td></tr>
+          <tr><td><code>SBIS / SBIC</code></td><td><code>SBIS A, b</code></td><td><code>SBIS</code> ข้าม 1 คำสั่งถัดไปถ้าบิต b ใน I/O A เป็น 1 / <code>SBIC</code> ข้ามถ้าเป็น 0</td><td>ไม่มี</td></tr>
+          <tr><td><code>SBRS / SBRC</code></td><td><code>SBRS Rr, b</code></td><td>ข้าม 1 คำสั่งถัดไปถ้าบิต b ในรีจิสเตอร์ Rr เป็น 1 (`SBRS`) หรือเป็น 0 (`SBRC`)</td><td>ไม่มี</td></tr>
+
+          <!-- BRANCH & CONTROL -->
+          <tr><td rowspan="7"><b>4. กระโดด & ควบคุม<br>(Branch & Jump)</b></td><td><code>JMP / RJMP</code></td><td><code>RJMP label</code></td><td>กระโดดไปยัง label ไร้เงื่อนไข (`RJMP` กระโดดสัมพัทธ์ระยะทางใกล้ -2K ถึง +2K)</td><td>ไม่มี</td></tr>
+          <tr><td><code>CALL / RET</code></td><td><code>CALL Subroutine</code></td><td><code>CALL</code> เรียกฟังก์ชันย่อย (บันทึก PC ลง Stack) / <code>RET</code> ดึง PC คืนจาก Stack</td><td>ไม่มี</td></tr>
+          <tr><td><code>BREQ / BRNE</code></td><td><code>BRNE label</code></td><td><code>BREQ</code> กระโดดเมื่อ Z=1 (เท่ากัน) / <code>BRNE</code> กระโดดเมื่อ Z=0 (ไม่เท่ากัน)</td><td>ไม่มี</td></tr>
+          <tr><td><code>BRLO / BRSH</code></td><td><code>BRLO label</code></td><td><code>BRLO</code> กระโดดเมื่อ C=1 (น้อยกว่า) / <code>BRSH</code> กระโดดเมื่อ C=0 (มากกว่าหรือเท่ากับ)</td><td>ไม่มี</td></tr>
+          <tr><td><code>BMI / BPL</code></td><td><code>BMI label</code></td><td><code>BMI</code> กระโดดเมื่อ N=1 (ผลลัพธ์ติดลบ) / <code>BPL</code> กระโดดเมื่อ N=0 (ผลลัพธ์เป็นบวก)</td><td>ไม่มี</td></tr>
+          <tr><td><code>BRCS / BRCC</code></td><td><code>BRCS label</code></td><td><code>BRCS</code> กระโดดเมื่อ Carry C=1 / <code>BRCC</code> กระโดดเมื่อ Carry C=0</td><td>ไม่มี</td></tr>
+          <tr><td><code>RETI</code></td><td><code>RETI</code></td><td>ดึง PC คืนจาก Stack หลังจบฟังก์ชันขัดจังหวะ (Interrupt Service Routine) + SEI</td><td>I=1</td></tr>
+
+          <!-- SHIFT & ROTATE -->
+          <tr><td rowspan="4"><b>5. เลื่อน & หมุนบิต<br>(Shift & Rotate)</b></td><td><code>LSL / LSR</code></td><td><code>LSL Rd</code> / <code>LSR Rd</code></td><td><code>LSL</code> เลื่อนบิตไปทางซ้าย 1 บิต (คูณ 2) / <code>LSR</code> เลื่อนบิตไปทางขวา 1 บิต (หาร 2)</td><td>Z, C, N, V, S</td></tr>
+          <tr><td><code>ROL / ROR</code></td><td><code>ROL Rd</code> / <code>ROR Rd</code></td><td>หมุนบิตผ่าน Carry Flag C (ROL ดึง C เข้าบิต 0, ROR ดึง C เข้าบิต 7)</td><td>Z, C, N, V, S</td></tr>
+          <tr><td><code>ASR</code></td><td><code>ASR Rd</code></td><td>เลื่อนบิตไปทางขวาแบบคงเครื่องหมาย MSB ไว้ (Arithmetic Shift Right สำหรับเลขติดลบ)</td><td>Z, C, N, V, S</td></tr>
+          <tr><td><code>SWAP</code></td><td><code>SWAP Rd</code></td><td>สลับบิตระหว่าง 4 บิตสูง (High Nibble) และ 4 บิตต่ำ (Low Nibble) ของ Rd</td><td>ไม่มี</td></tr>
+
+          <!-- SYSTEM CONTROL -->
+          <tr><td rowspan="2"><b>6. ควบคุมระบบ<br>(System Control)</b></td><td><code>SEI / CLI</code></td><td><code>SEI</code> / <code>CLI</code></td><td><code>SEI</code> เปิดรับสัญญาณขัดจังหวะ Global Interrupt (I=1) / <code>CLI</code> ปิดการขัดจังหวะ (I=0)</td><td>I (Set/Clear)</td></tr>
+          <tr><td><code>NOP</code></td><td><code>NOP</code></td><td>No Operation (ไม่ทำอะไรเลย เสียเวลา 1 คาบ Clock Cycle ใช้หน่วงเวลา)</td><td>ไม่มี</td></tr>
         </tbody>
       </table>
     </div>
 
-    <!-- SW 2: 10 Exam Assembly Code Blueprints -->
+    <!-- PART C: LINE-BY-LINE EXPLAINED CODE BLUEPRINTS -->
+    <h2 style="color: #4ade80; font-size: 1.4rem; margin: 34px 0 16px 0; border-bottom: 2px solid #4ade80; padding-bottom: 6px;">
+      📝 PART C: LINE-BY-LINE EXPLAINED CODE BLUEPRINTS (อธิบายโค้ดตัวอย่างบรรทัดต่อบรรทัด)
+    </h2>
+
     <div class="print-card">
       <div class="print-header">
-        <span>2.2 แม่แบบโค้ดภาษา AVR Assembly 10 รูปแบบสำเร็จรูปสำหรับดัดแปลงตอบข้อสอบเขียนโปรแกรม</span>
-        <span class="badge-sw">SOFTWARE 2</span>
+        <span>2.2 พิมพ์เขียวซอร์สโค้ดพร้อมคำอธิบายการทำงานบรรทัดต่อบรรทัด (Line-by-Line Code Explanations)</span>
+        <span class="badge-sw">LINE BY LINE</span>
       </div>
 
-      <!-- BP 1 -->
-      <b style="color: #4ade80;">🔹 แม่แบบที่ 1: โครงสร้างมาตรฐานและการตั้งค่า Stack Pointer (SPH:SPL)</b>
+      <!-- CODE 1 -->
+      <b style="color: #4ade80; font-size: 1.05rem;">📂 1. การตั้งค่า Stack Pointer (SPH:SPL = RAMEND)</b>
       <pre>
 .INCLUDE "M328PDEF.INC"
 .ORG 0x0000
-
-; 1. ตั้งค่า Stack Pointer ชี้ตำแหน่งสูงสุดของ SRAM (RAMEND = 0x08FF)
 LDI R16, HIGH(RAMEND)
 OUT SPH, R16
 LDI R16, LOW(RAMEND)
 OUT SPL, R16
-
-; 2. โปรแกรมเริ่มที่นี่...
-MAIN:
-    RJMP MAIN
       </pre>
+      <div class="line-exp">
+        <b>💡 อธิบายการทำงานบรรทัดต่อบรรทัด:</b><br>
+        • <code>บรรทัด 1 (.INCLUDE "M328PDEF.INC"):</code> ดึงไฟล์นิยามชื่อรีจิสเตอร์และแอดเดรสมาตรฐานของ ATmega328P เข้ามาใช้งาน<br>
+        • <code>บรรทัด 2 (.ORG 0x0000):</code> กำหนดจุดเริ่มต้นของโปรแกรมให้อยู่ที่แอดเดรสแรก 0x0000 ของ Flash ROM (Reset Vector)<br>
+        • <code>บรรทัด 3 (LDI R16, HIGH(RAMEND)):</code> ดึงค่า 8 บิตสูงของแอดเดรสสูงสุด SRAM (RAMEND = 0x08FF ➔ HIGH คือ 0x08) ลง R16<br>
+        • <code>บรรทัด 4 (OUT SPH, R16):</code> ส่งค่า 0x08 ไปยัง Stack Pointer High Register (SPH)<br>
+        • <code>บรรทัด 5 (LDI R16, LOW(RAMEND)):</code> ดึงค่า 8 บิตต่ำของแอดเดรสสูงสุด SRAM (LOW คือ 0xFF) ลง R16<br>
+        • <code>บรรทัด 6 (OUT SPL, R16):</code> ส่งค่า 0xFF ไปยัง Stack Pointer Low Register (SPL) เพื่อให้ Stack เริ่มต้นที่ปลายสุด 0x08FF
+      </div>
 
-      <!-- BP 2 -->
-      <b style="color: #4ade80;">🔹 แม่แบบที่ 2: การวนลูปนับเลข 1 ถึง 10 ออกพอร์ต PORTB</b>
+      <!-- CODE 2 -->
+      <b style="color: #4ade80; font-size: 1.05rem; margin-top: 18px; display: block;">📂 2. การวนลูปนับเลข 1 ถึง 10 ออกพอร์ต PORTB</b>
       <pre>
 LDI R16, 0xFF
-OUT DDRB, R16           ; ตั้ง PORTB เป็นเอาต์พุต
-LDI R17, 1              ; ค่าเริ่มต้นนับ = 1
+OUT DDRB, R16
+LDI R17, 1
 
 COUNT_LOOP:
-    OUT PORTB, R17      ; ส่งค่านับออก PORTB
-    CPI R17, 10         ; เช็คว่าครบ 10 หรือยัง
-    BREQ LOOP_DONE      ; ถ้าครบ 10 ให้กระโดดออก
-    INC R17             ; เพิ่มค่าทีละ 1
+    OUT PORTB, R17
+    CPI R17, 10
+    BREQ LOOP_DONE
+    INC R17
     RJMP COUNT_LOOP
 LOOP_DONE:
       </pre>
+      <div class="line-exp">
+        <b>💡 อธิบายการทำงานบรรทัดต่อบรรทัด:</b><br>
+        • <code>บรรทัด 1 (LDI R16, 0xFF):</code> โหลดค่า 0xFF (111111112) ลง R16 เพื่อเตรียมตั้งค่าทุกพินเป็นเอาต์พุต<br>
+        • <code>บรรทัด 2 (OUT DDRB, R16):</code> ส่งค่า 0xFF ไปยัง Data Direction Register Port B (DDRB) เพื่อตั้งค่าขา PB0-PB7 เป็น Output<br>
+        • <code>บรรทัด 3 (LDI R17, 1):</code> กำหนดค่าเริ่มต้นของตัวนับใน R17 ให้เท่ากับ 1<br>
+        • <code>บรรทัด 4 (COUNT_LOOP:):</code> ป้ายกำกับ (Label) จุดเริ่มต้นของลูปการนับ<br>
+        • <code>บรรทัด 5 (OUT PORTB, R17):</code> ส่งค่านับปัจจุบันใน R17 ออกไปแสดงผลทางขาพอร์ต PORTB<br>
+        • <code>บรรทัด 6 (CPI R17, 10):</code> เปรียบเทียบค่าใน R17 กับ 10 (ทดลองลบ R17 - 10 ถ้าเท่ากัน จะเซตธง Zero Flag Z=1)<br>
+        • <code>บรรทัด 7 (BREQ LOOP_DONE):</code> ถ้า Z=1 (นับครบ 10 เท่ากันแล้ว) ให้กระโดดไปที่ป้าย LOOP_DONE เพื่อจบลูป<br>
+        • <code>บรรทัด 8 (INC R17):</code> เพิ่มค่านับใน R17 ขึ้นทีละ 1 (R17 = R17 + 1)<br>
+        • <code>บรรทัด 9 (RJMP COUNT_LOOP):</code> กระโดดกลับไปทำบรรทัดแรกของลูป COUNT_LOOP อีกครั้ง
+      </div>
 
-      <!-- BP 3 -->
-      <b style="color: #4ade80;">🔹 แม่แบบที่ 3: อัลกอริทึมแปลง Hex 0-99 เป็น BCD 2 หลักด้วยวิธีลบซ้ำด้วย 10</b>
+      <!-- CODE 3 -->
+      <b style="color: #4ade80; font-size: 1.05rem; margin-top: 18px; display: block;">📂 3. การอ่านปุ่มกด Active Low สวิตช์ PINC0 ควบคุมไฟ LED PORTB5</b>
       <pre>
-LDI R16, 0x45           ; ค่าอินพุต Hex 0x45 = 69 ทศนิยม
-CLR R17                 ; R17 เก็บหลักสิบ (Tens)
+SBI DDRB, 5
+CBI DDRC, 0
+SBI PORTC, 0
+
+READ_SWITCH:
+    SBIC PINC, 0
+    RJMP TURN_OFF
+TURN_ON:
+    SBI PORTB, 5
+    RJMP READ_SWITCH
+TURN_OFF:
+    CBI PORTB, 5
+    RJMP READ_SWITCH
+      </pre>
+      <div class="line-exp">
+        <b>💡 อธิบายการทำงานบรรทัดต่อบรรทัด:</b><br>
+        • <code>บรรทัด 1 (SBI DDRB, 5):</code> Set Bit 5 ของ DDRB ให้เป็น 1 เพื่อตั้งขา PB5 เป็นเอาต์พุตสำหรับต่อไฟ LED<br>
+        • <code>บรรทัด 2 (CBI DDRC, 0):</code> Clear Bit 0 ของ DDRC ให้เป็น 0 เพื่อตั้งขา PC0 เป็นอินพุตสำหรับต่อปุ่มกด<br>
+        • <code>บรรทัด 3 (SBI PORTC, 0):</code> Set Bit 0 ของ PORTC ให้เป็น 1 ขณะอยู่โหมด Input เพื่อเปิดใช้งาน Internal Pull-up Resistor<br>
+        • <code>บรรทัด 5 (SBIC PINC, 0):</code> เช็คพิน PC0 ถ้าปุ่มกดถูกกดลงดิน (เป็น 0) ให้ข้ามคำสั่งบรรทัดถัดไป / ถ้ายังไม่ได้กด (เป็น 1) ทำบรรทัดถัดไป<br>
+        • <code>บรรทัด 6 (RJMP TURN_OFF):</code> ทำงานเมื่อไม่ได้กดปุ่ม ให้กระโดดไปดับไฟ LED<br>
+        • <code>บรรทัด 8 (SBI PORTB, 5):</code> ทำงานเมื่อกดปุ่ม (เพราะถูกข้ามมา) ให้ส่งไฟ 5V ออกขา PB5 ติดไฟ LED<br>
+        • <code>บรรทัด 9 (RJMP READ_SWITCH):</code> กระโดดกลับไปอ่านค่าสวิตช์วนลูปต่อเนื่อง
+      </div>
+
+      <!-- CODE 4 -->
+      <b style="color: #4ade80; font-size: 1.05rem; margin-top: 18px; display: block;">📂 4. อัลกอริทึมแปลง Hex เป็น BCD 2 หลักด้วยวิธีลบซ้ำด้วย 10</b>
+      <pre>
+LDI R16, 0x45
+CLR R17
 
 BCD_CONVERT:
-    CPI R16, 10         ; เปรียบเทียบค่าที่เหลือกับ 10
-    BRLO BCD_DONE       ; นอกนั้นถ้าน้อยกว่า 10 จบลูป
-    SUBI R16, 10        ; ลบออกทีละ 10
-    INC R17             ; หลักสิบเพิ่มขึ้นทีละ 1
+    CPI R16, 10
+    BRLO BCD_DONE
+    SUBI R16, 10
+    INC R17
     RJMP BCD_CONVERT
 
 BCD_DONE:
-    SWAP R17            ; สลับหลักสิบไปไว้ที่ 4 บิตสูง (High Nibble)
-    OR R17, R16         ; รวมหลักหน่วย (Low Nibble) ได้ BCD สมบูรณ์
-    OUT PORTB, R17      ; ส่ง BCD ออก PORTB
+    SWAP R17
+    OR R17, R16
+    OUT PORTB, R17
       </pre>
-
-      <!-- BP 4 -->
-      <b style="color: #4ade80;">🔹 แม่แบบที่ 4: การอ่านปุ่มกด Active Low สวิตช์ PINC บิต 0 ควบคุมไฟ LED PORTB บิต 5</b>
-      <pre>
-SBI DDRB, 5             ; ตั้ง PB5 เป็นเอาต์พุต (LED)
-CBI DDRC, 0             ; ตั้ง PC0 เป็นอินพุต (Switch)
-SBI PORTC, 0            ; เปิด Pull-up บน PC0
-
-READ_SWITCH:
-    SBIC PINC, 0        ; ข้ามคำสั่งถัดไปถ้าสวิตช์ PC0 ถูกกดลงดิน (เป็น 0)
-    RJMP TURN_OFF       ; ถ้ายังไม่ได้กด (เป็น 1) ดับไฟ
-TURN_ON:
-    SBI PORTB, 5        ; ติดไฟ LED
-    RJMP READ_SWITCH
-TURN_OFF:
-    CBI PORTB, 5        ; ดับไฟ LED
-    RJMP READ_SWITCH
-      </pre>
-
-      <!-- BP 5 -->
-      <b style="color: #4ade80;">🔹 แม่แบบที่ 5: การคำนวณคาบเวลาหน่วง Delay Loop สำหรับคริสตัล 16MHz ($T = 62.5	ext{ ns}$)</b>
-      <pre>
-; ฟังก์ชันย่อยสร้างความหน่วงเวลาประมาณ 1 มิลลิวินาที (1ms) ที่คริสตัล 16MHz
-DELAY_1MS:
-    LDI R20, 20
-L1: LDI R21, 200
-L2: DEC R21             ; 1 Clock Cycle
-    BRNE L2             ; 2 Clock Cycles (รวมลูปใน 3 Cycles x 200 = 600 Cycles)
-    DEC R20
-    BRNE L1
-    RET
-      </pre>
-    </div>
-
-    <!-- PAGINATION -->
-    
-    
-    <!-- SW 3: REAL STUDENT LAB EXERCISES & SOURCE CODES (ASM ONLY) -->
-    <div class="print-card" style="border-color: #4ade80;">
-      <div class="print-header">
-        <span>2.3 ชุดซอร์สโค้ดภาษา AVR Assembly จากรายงานการทดลองแล็บจริง (Pure Assembly Code Suite)</span>
-        <span class="badge-sw">PURE ASM ONLY</span>
+      <div class="line-exp">
+        <b>💡 อธิบายการทำงานบรรทัดต่อบรรทัด:</b><br>
+        • <code>บรรทัด 1 (LDI R16, 0x45):</code> โหลดค่าคงที่ Hex 0x45 (69 ทศนิยม) เข้า R16 เป็นข้อมูลอินพุตเริ่มต้น<br>
+        • <code>บรรทัด 2 (CLR R17):</code> ล้างค่า R17 เป็น 0x00 สำหรับใช้นับจำนวนหลักสิบ (Tens digit)<br>
+        • <code>บรรทัด 4 (CPI R16, 10):</code> เปรียบเทียบค่าที่เหลือใน R16 กับ 10<br>
+        • <code>บรรทัด 5 (BRLO BCD_DONE):</code> ถ้าน้อยกว่า 10 (เกิด Carry C=1) ให้กระโดดออกจากลูปไป BCD_DONE (ค่าที่เหลือใน R16 คือหลักหน่วย)<br>
+        • <code>บรรทัด 6 (SUBI R16, 10):</code> ลบค่าคงที่ 10 ออกจาก R16 (R16 = R16 - 10)<br>
+        • <code>บรรทัด 7 (INC R17):</code> เพิ่มค่านับหลักสิบใน R17 ขึ้นทีละ 1 (R17 = R17 + 1)<br>
+        • <code>บรรทัด 8 (RJMP BCD_CONVERT):</code> กระโดดกลับไปวนลบด้วย 10 ต่อไป<br>
+        • <code>บรรทัด 11 (SWAP R17):</code> สลับบิตของ R17 (เช่น จาก 0000 0110 เป็น 06 ➔ 60) เพื่อย้ายหลักสิบไปไว้ 4 บิตสูง (High Nibble)<br>
+        • <code>บรรทัด 12 (OR R17, R16):</code> รวมหลักสิบใน 4 บิตสูง และหลักหน่วยจาก R16 ใน 4 บิตต่ำ ได้เป็น BCD สมบูรณ์ (0x69)<br>
+        • <code>บรรทัด 13 (OUT PORTB, R17):</code> ส่งค่า BCD 0x69 ออกแสดงผลทางพอร์ต PORTB
       </div>
-      <p style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 16px;">
-        รวบรวมซอร์สโค้ดภาษา AVR Assembly (.asm) จากรายงานแล็บจริงของนักศึกษา สำหรับเปิดอ้างอิงตอนทำข้อสอบเขียนโค้ดภาษาแอสเซมบลีบ่ายนี้:
-      </p>
 
-      <!-- ASM CODE 1: AssemblyBlink1.asm -->
-      <b style="color: #fbbf24;">📂 1. Lab 3 Code: AssemblyBlink1.asm (ควบคุมไฟ LED ติดดับพร้อมกันบน PORTB และ PORTD ในภาษา Assembly)</b>
-      <pre style="background: #060911; color: #4ade80; border: 1.5px solid #4ade80;">;====================================================================
+      <!-- CODE 5 -->
+      <b style="color: #4ade80; font-size: 1.05rem; margin-top: 18px; display: block;">📂 5. โค้ดแล็บจริง: AssemblyBlink1.asm (ไฟกะพริบพร้อมกัน 2 พอร์ต)</b>
+      <pre>;====================================================================
 ; Title: AssemblyBlink1.asm
 ; Created: 11/22/2013
 ; Author: khatathapswatdipisal
@@ -422,10 +366,17 @@ L3:
     brne L1             ; Loop if R20 != 0
     ret                 ; Return from subroutine
 </pre>
+      <div class="line-exp">
+        <b>💡 อธิบายการทำงานบรรทัดต่อบรรทัด:</b><br>
+        • <code>ldi r16, 0xFF & out DDRB/DDRD, r16:</code> โหลด 0xFF ตั้งค่าขา PORTB และ PORTD ทั้งหมดเป็น Output<br>
+        • <code>com r16:</code> กลับบิตทุกบิตใน R16 (สลับระหว่าง 0x00 ➔ 0xFF ➔ 0x00) ทำให้ไฟกะพริบติดดับสลับกันตามคาบเวลา<br>
+        • <code>out PORTB/PORTD, r16:</code> ส่งค่า R16 ออกควบคุมไฟ LED บนทั้งสองพอร์ตพร้อมกัน<br>
+        • <code>call MY_DELAY:</code> เรียกฟังก์ชันย่อยสร้างความหน่วงเวลาโดยใช้ลูปซ้อนกัน 3 ชั้น (R20, R21, R22) เพื่อให้ตากมองทันการกะพริบ
+      </div>
 
-      <!-- ASM CODE 2: AssemblyBlink1_modified.asm -->
-      <b style="color: #fbbf24; margin-top: 20px; display: block;">📂 2. Lab 3 Code: AssemblyBlink1_modified.asm (ควบคุมไฟ LED ติดสลับกัน PORTB ติดเมื่อ PORTD ดับ ในภาษา Assembly)</b>
-      <pre style="background: #060911; color: #38bdf8; border: 1.5px solid #38bdf8;">;====================================================================
+      <!-- CODE 6 -->
+      <b style="color: #4ade80; font-size: 1.05rem; margin-top: 18px; display: block;">📂 6. โค้ดแล็บจริง: AssemblyBlink1_modified.asm (ไฟกะพริบสลับพอร์ต PORTB ติดเมื่อ PORTD ดับ)</b>
+      <pre>;====================================================================
 ; Title: AssemblyBlink1_modified.asm
 ; Created: 11/22/2013 (Modified: 2026-07-19)
 ; Author: khatathapswatdipisal
@@ -472,56 +423,16 @@ L3:
     brne L1             ; Loop if R20 != 0
     ret                 ; Return from subroutine
 </pre>
+      <div class="line-exp">
+        <b>💡 อธิบายการทำงานบรรทัดต่อบรรทัด:</b><br>
+        • <code>com r16 & out PORTB, r16:</code> กลับบิต R16 และส่งออก PORTB (เช่น PB=0xFF ไฟติด)<br>
+        • <code>mov r17, r16 & com r17 & out PORTD, r17:</code> ก๊อบปี้ R16 ลง R17 แล้วกลับบิต R17 เพื่อให้ R17 มีค่าตรงข้ามกับ R16 เสมอ (เช่น PD=0x00 ไฟดับ) ทำให้ทั้งสองพอร์ตติดดับสลับกัน
+      </div>
 
-      <!-- ASM CODE 3: AVR Exercise 5-8 -->
-      <b style="color: #fbbf24; margin-top: 20px; display: block;">📂 3. AVR Exercise 5-8 Code: Hex to BCD Conversion (แปลง Hex 0xFD เป็น BCD 3 หลัก ในภาษา Assembly)</b>
-      <pre style="background: #060911; color: #fbbf24; border: 1.5px solid #fbbf24;">
-.INCLUDE "M328PDEF.INC"
-.ORG 0x0000
-
-; โปรแกรมแปลงเลข Hex ใน R16 (เช่น 0xFD = 253 ทศนิยม) เป็น BCD 3 หลัก (หลักร้อย, หลักสิบ, หลักหน่วย)
-LDI R16, 0xFD       ; 0xFD = 253 ทศนิยม
-CLR R17             ; R17 เก็บหลักสิบ (Tens)
-CLR R18             ; R18 เก็บหลักร้อย (Hundreds)
-
-CONVERT_100:
-    CPI R16, 100
-    BRLO CONVERT_10
-    SUBI R16, 100   ; ลบออกทีละ 100
-    INC R18         ; เพิ่มหลักร้อย
-    RJMP CONVERT_100
-
-CONVERT_10:
-    CPI R16, 10
-    BRLO FINISH
-    SUBI R16, 10    ; ลบออกทีละ 10
-    INC R17         ; เพิ่มหลักสิบ
-    RJMP CONVERT_10
-
-FINISH:
-    ; ผลลัพธ์: R18 = หลักร้อย (2), R17 = หลักสิบ (5), R16 = หลักหน่วย (3)
-    OUT PORTB, R17  ; ส่งผลลัพธ์ออก PORTB
-      </pre>
-
-      <!-- ASM CODE 4: Sum N down to 1 -->
-      <b style="color: #fbbf24; margin-top: 20px; display: block;">📂 4. AVR Exercise Code: Summation Loop (คำนวณผลรวม S = N + (N-1) + ... + 1 ในภาษา Assembly)</b>
-      <pre style="background: #060911; color: #2dd4bf; border: 1.5px solid #2dd4bf;">
-.INCLUDE "M328PDEF.INC"
-.ORG 0x0000
-
-LDI R16, 5          ; N = 5 (คำนวณ 5 + 4 + 3 + 2 + 1 = 15)
-CLR R17             ; R17 เก็บผลรวมลูป S
-
-SUM_LOOP:
-    ADD R17, R16    ; S = S + N
-    DEC R16         ; N = N - 1
-    BRNE SUM_LOOP   ; ทำซ้ำจนกว่า N == 0
-
-; ผลลัพธ์ R17 = 15 (0x0F)
-OUT PORTB, R17
-      </pre>
     </div>
-<div class="pagination-nav no-print">
+
+    <!-- PAGINATION -->
+    <div class="pagination-nav no-print">
       <a href="index.html" class="pagination-btn">⬅️ กลับสู่หน้าหลัก Index</a>
       <button class="pagination-btn" onclick="window.print()" style="background: #4ade80; color: #052e16;">🖨️ พิมพ์ A4 ฉบับนี้ออกกระดาษ ➡️</button>
     </div>
