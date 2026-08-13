@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ศูนย์การเรียนรู้เตรียมสอบวิชา Embedded System Design (2-Part Exam Structure)</title>
+  <title>ศูนย์การเรียนรู้เตรียมสอบวิชา Embedded System Design (Concise Exam Portal)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
@@ -27,6 +27,18 @@
       background: linear-gradient(145deg, rgba(74, 222, 128, 0.15), rgba(22, 101, 52, 0.25));
       border: 1px solid var(--success);
     }
+    .topic-card {
+      background: linear-gradient(145deg, #0d1527, #131c31);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 16px;
+      transition: all 0.2s;
+    }
+    .topic-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
   </style>
 </head>
 <body>
@@ -36,9 +48,9 @@
     <a href="index.html" class="nav-brand">⚡ EMBEDDED EXAM HUB</a>
     <ul class="nav-links">
       <li><a href="index.html" class="active">หน้าหลัก Index</a></li>
-      <li><a href="#part1-section">🔴 Part 1: ปิดตำรา</a></li>
-      <li><a href="#part2-section">🟢 Part 2: เปิดตำรา</a></li>
-      <li><a href="part2_openbook_printable.html" style="color: #4ade80; font-weight: 700;">📄 สรุปสูตรพิมพ์ A4 พกเข้าห้องสอบ</a></li>
+      <li><a href="#part1-section">🔴 Part 1 ปิดตำรา</a></li>
+      <li><a href="#part2-section">🟢 Part 2 เปิดตำรา</a></li>
+      <li><a href="part2_openbook_printable.html" style="color: #4ade80; font-weight: 700;">📄 พิมพ์ A4 พกเข้าห้องสอบ</a></li>
     </ul>
   </nav>
 
@@ -47,10 +59,10 @@
 
     <!-- HERO SECTION -->
     <header class="page-banner">
-      <span class="source-tag" style="margin-bottom: 8px; display: inline-block;">วันสอบ: วันศุกร์ที่ 14 สิงหาคม 2569 (แบ่งเป็น 2 Part เช้า-บ่าย)</span>
-      <h1 class="page-title">⚡ ศูนย์การเรียนรู้เตรียมสอบวิชา Embedded System Design</h1>
+      <span class="source-tag" style="margin-bottom: 8px; display: inline-block;">วันสอบ: วันศุกร์ที่ 14 สิงหาคม 2569 (สรุปกระชับตรงประเด็น 12 หัวข้อหลัก)</span>
+      <h1 class="page-title">⚡ ศูนย์การเรียนรู้สรุปเนื้อหาเตรียมสอบ Embedded System Design</h1>
       <p class="page-subtitle">
-        จัดหมวดหมู่แยกตามรูปแบบการสอบจริง: 🔴 <b>Part 1 ตอนเช้า (ปิดตำรา)</b> เน้นแนวคิดดิจิทัล ALU และ Datapath และ 🟢 <b>Part 2 ตอนบ่าย (เปิดตำรา)</b> เน้น AVR Assembly, Registers และโค้ดตัวอย่างที่พกเข้าห้องสอบได้!
+        เรียบเรียงสรุปมโนทัศน์สำคัญ สูตรคำนวณ วงจรดิจิทัล และชุดคำสั่ง AVR Assembly สกัดโดยตรงจากตำราเรียนสากล (Enoch Hwang, Mano, Mazidi AVR Ch 1-6) อ่านเข้าใจง่าย กระชับ ตรงประเด็นสอบ ไม่ต้องไล่อ่านสไลด์ทีละหน้า!
       </p>
     </header>
 
@@ -60,131 +72,59 @@
         <div>
           <h2 style="color: #f87171; margin: 0; font-size: 1.25rem;">🔴 PART 1: สอบตอนเช้า (09:30 - 11:30 น.) — สอบแบบปิดตำรา (CLOSED BOOK EXAM)</h2>
           <p style="color: #cbd5e1; font-size: 0.9rem; margin-top: 4px;">
-            เน้นเนื้อหา Digital Design, ALU, Datapath, Control Unit, ISA, Sequential Logic, Pipeline และ Mano Chapters 1-3, 8, 10, 11 (ไม่อนุญาตให้นำเอกสารทุกชนิดเข้าห้องสอบ)
+            เน้นความเข้าใจมโนทัศน์ Digital Design, K-Map, ALU, Datapath, Control Unit, ISA, Pipeline CPU (สรุป 5 หัวข้อหลัก สกัดจาก Enoch Hwang & Mano)
           </p>
         </div>
-        <span class="source-tag" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border-color: #f87171;">รวม 15 หน้าบทเรียน</span>
+        <span class="source-tag" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border-color: #f87171;">5 สรุปบทเรียน</span>
       </div>
 
-      <div style="overflow-x: auto;">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>ชื่อหัวข้อบทเรียน (Part 1: Digital Design & Microarchitecture)</th>
-              <th>ไฟล์อ้างอิงต้นฉบับ</th>
-              <th>ลิงก์เปิดบทเรียน</th>
-            </tr>
-          </thead>
-          <tbody>
+      <div style="display: grid; grid-template-columns: 1fr; gap: 14px;">
 
-            <tr>
-              <td><b>01</b></td>
-              <td><b>01. Micro1.pdf — สถาปัตยกรรมคอมพิวเตอร์เบื้องต้นและการย้ายข้อมูลผ่านบัส</b></td>
-              <td><a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Micro1.pdf" class="file-link">Micro1.pdf</a></td>
-              <td><a href="file01_micro1.html" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.85rem;">📖 อ่านบทเรียนที่ 01 &rarr;</a></td>
-            </tr>
+        <div class="topic-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span class="source-tag" style="color: #f87171; border-color: #f87171;">Topic 01</span>
+            <a href="topic1_digital_logic.html" class="btn btn-primary" style="padding: 6px 14px; font-size: 0.85rem;">📖 เปิดอ่านสรุปหัวข้อที่ 01 &rarr;</a>
+          </div>
+          <h3 style="color: #fff; margin-bottom: 8px;">Topic 01: Digital Logic, Gate Minimization & K-Maps</h3>
+          <p style="color: #cbd5e1; font-size: 0.9rem; margin: 0;">สรุปหลักการพีชคณิตบูลีน, ทฤษฎี DeMorgan, Minterm/Maxterm, SOP/POS, การลดรูปตาราง K-Map 2-4 ตัวแปร และ Interactive K-Map Playground</p>
+        </div>
         
-            <tr>
-              <td><b>02</b></td>
-              <td><b>02. Micro2.pdf — วงจรตรรกศาสตร์ดิจิทัล การลดรูป K-Map และ Combinational Circuits</b></td>
-              <td><a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Micro2.pdf" class="file-link">Micro2.pdf</a></td>
-              <td><a href="file02_micro2.html" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.85rem;">📖 อ่านบทเรียนที่ 02 &rarr;</a></td>
-            </tr>
+        <div class="topic-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span class="source-tag" style="color: #f87171; border-color: #f87171;">Topic 02</span>
+            <a href="topic2_sequential_circuits.html" class="btn btn-primary" style="padding: 6px 14px; font-size: 0.85rem;">📖 เปิดอ่านสรุปหัวข้อที่ 02 &rarr;</a>
+          </div>
+          <h3 style="color: #fff; margin-bottom: 8px;">Topic 02: Sequential Circuits, Flip-Flops & Counters</h3>
+          <p style="color: #cbd5e1; font-size: 0.9rem; margin: 0;">สรุปความแตกต่าง Latches vs Flip-Flops (SR, D, JK, T), การทำงานตามขอบ Clock, Synchronous/Asynchronous Counters และ Shift Registers</p>
+        </div>
         
-            <tr>
-              <td><b>03</b></td>
-              <td><b>03. micro2_ALU.pdf — การออกแบบวงจรคำนวณและลอจิก (ALU 4-bit) และ Status Flags</b></td>
-              <td><a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/micro2_ALU.pdf" class="file-link">micro2_ALU.pdf</a></td>
-              <td><a href="file03_micro2_alu.html" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.85rem;">📖 อ่านบทเรียนที่ 03 &rarr;</a></td>
-            </tr>
+        <div class="topic-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span class="source-tag" style="color: #f87171; border-color: #f87171;">Topic 03</span>
+            <a href="topic3_datapath_alu.html" class="btn btn-primary" style="padding: 6px 14px; font-size: 0.85rem;">📖 เปิดอ่านสรุปหัวข้อที่ 03 &rarr;</a>
+          </div>
+          <h3 style="color: #fff; margin-bottom: 8px;">Topic 03: Datapath Components & 4-bit ALU Design</h3>
+          <p style="color: #cbd5e1; font-size: 0.9rem; margin: 0;">สรุป Full Adder, Adder-Subtractor, 4-bit ALU Function Selector, ธงสถานะ (C, V, Z, N), Common Data Bus & Interactive 4-bit ALU Playground</p>
+        </div>
         
-            <tr>
-              <td><b>04</b></td>
-              <td><b>04. Micro3.pdf — วงจรลอจิกแบบลำดับ (Sequential Logic), Flip-Flops & Counters</b></td>
-              <td><a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Micro3.pdf" class="file-link">Micro3.pdf</a></td>
-              <td><a href="file04_micro3.html" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.85rem;">📖 อ่านบทเรียนที่ 04 &rarr;</a></td>
-            </tr>
+        <div class="topic-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span class="source-tag" style="color: #f87171; border-color: #f87171;">Topic 04</span>
+            <a href="topic4_control_unit.html" class="btn btn-primary" style="padding: 6px 14px; font-size: 0.85rem;">📖 เปิดอ่านสรุปหัวข้อที่ 04 &rarr;</a>
+          </div>
+          <h3 style="color: #fff; margin-bottom: 8px;">Topic 04: Control Unit Design — Hardwired FSM vs Microprogrammed ROM</h3>
+          <p style="color: #cbd5e1; font-size: 0.9rem; margin: 0;">สรุปเปรียบเทียบ Hardwired Control Unit vs Microprogrammed ROM Store, ตาราง Control Word 8-bit, Branch Logic และ 42-Clock Stepper Machine</p>
+        </div>
         
-            <tr>
-              <td><b>05</b></td>
-              <td><b>05. Micro4.pdf — การออกแบบ Control Unit แบบ Hardwired FSM vs Microprogrammed ROM</b></td>
-              <td><a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Micro4.pdf" class="file-link">Micro4.pdf</a></td>
-              <td><a href="file05_micro4.html" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.85rem;">📖 อ่านบทเรียนที่ 05 &rarr;</a></td>
-            </tr>
+        <div class="topic-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span class="source-tag" style="color: #f87171; border-color: #f87171;">Topic 05</span>
+            <a href="topic5_isa_pipeline.html" class="btn btn-primary" style="padding: 6px 14px; font-size: 0.85rem;">📖 เปิดอ่านสรุปหัวข้อที่ 05 &rarr;</a>
+          </div>
+          <h3 style="color: #fff; margin-bottom: 8px;">Topic 05: Instruction Set Architecture (ISA) & 5-Stage Pipeline CPU</h3>
+          <p style="color: #cbd5e1; font-size: 0.9rem; margin: 0;">สรุปรูปแบบคำสั่ง ISA, Opcode Decoding, Addressing Modes, 5-Stage Pipeline (IF-ID-EX-MEM-WB), Hazards & CPU EC-1 3-Stage FSM Cycle</p>
+        </div>
         
-            <tr>
-              <td><b>06</b></td>
-              <td><b>06. Micro5.pdf & Enoch Hwang — สถาปัตยกรรม CPU 5-Stage Pipeline & Interfacing</b></td>
-              <td><a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Micro5.pdf" class="file-link">Micro5.pdf</a></td>
-              <td><a href="file06_micro5.html" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.85rem;">📖 อ่านบทเรียนที่ 06 &rarr;</a></td>
-            </tr>
-        
-            <tr>
-              <td><b>07</b></td>
-              <td><b>07. lab1_rom_as_control_store.pdf + รายงานผลการทดลองที่ 1 (ROM Control Store)</b></td>
-              <td><a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/lab1_rom_as_control_store.pdf" class="file-link">lab1_rom_as_control_store.pdf</a></td>
-              <td><a href="file07_lab1_rom.html" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.85rem;">📖 อ่านบทเรียนที่ 07 &rarr;</a></td>
-            </tr>
-        
-            <tr>
-              <td><b>08</b></td>
-              <td><b>08. lab2_ec1_microprocessor.pdf + รายงานผลการทดลองที่ 2 (CPU EC-1 FSM)</b></td>
-              <td><a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/lab2_ec1_microprocessor.pdf" class="file-link">lab2_ec1_microprocessor.pdf</a></td>
-              <td><a href="file08_lab2_ec1.html" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.85rem;">📖 อ่านบทเรียนที่ 08 &rarr;</a></td>
-            </tr>
-        
-            <tr>
-              <td><b>09</b></td>
-              <td><b>09. ISA copy.pdf — สถาปัตยกรรมชุดคำสั่ง (Instruction Set Architecture Specification)</b></td>
-              <td><a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/ISA%20copy.pdf" class="file-link">ISA copy.pdf</a></td>
-              <td><a href="file09_isa_copy.html" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.85rem;">📖 อ่านบทเรียนที่ 09 &rarr;</a></td>
-            </tr>
-        
-            <tr>
-              <td><b>10</b></td>
-              <td><b>10. 0132539977_p1a.pdf — Mano Chapter 1: Digital Logic Circuits & Gates</b></td>
-              <td><a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/0132539977_p1a.pdf" class="file-link">0132539977_p1a.pdf</a></td>
-              <td><a href="file10_mano_p1a.html" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.85rem;">📖 อ่านบทเรียนที่ 10 &rarr;</a></td>
-            </tr>
-        
-            <tr>
-              <td><b>11</b></td>
-              <td><b>11. 0132539977_p2a.pdf — Mano Chapter 2: Digital Components & Data Representation</b></td>
-              <td><a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/0132539977_p2a.pdf" class="file-link">0132539977_p2a.pdf</a></td>
-              <td><a href="file11_mano_p2a.html" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.85rem;">📖 อ่านบทเรียนที่ 11 &rarr;</a></td>
-            </tr>
-        
-            <tr>
-              <td><b>12</b></td>
-              <td><b>12. 0132539977_p3a.pdf — Mano Chapter 3: Register Transfer & Microoperations</b></td>
-              <td><a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/0132539977_p3a.pdf" class="file-link">0132539977_p3a.pdf</a></td>
-              <td><a href="file12_mano_p3a.html" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.85rem;">📖 อ่านบทเรียนที่ 12 &rarr;</a></td>
-            </tr>
-        
-            <tr>
-              <td><b>15</b></td>
-              <td><b>15. 0132539977_p4a.pdf — Mano Chapter 8: Central Processing Unit & Addressing Modes</b></td>
-              <td><a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/0132539977_p4a.pdf" class="file-link">0132539977_p4a.pdf</a></td>
-              <td><a href="file15_mano_p4a.html" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.85rem;">📖 อ่านบทเรียนที่ 15 &rarr;</a></td>
-            </tr>
-        
-            <tr>
-              <td><b>16</b></td>
-              <td><b>16. 0132539977_p5a.pdf — Mano Chapter 10: Computer Arithmetic (Fixed & Floating Point)</b></td>
-              <td><a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/0132539977_p5a.pdf" class="file-link">0132539977_p5a.pdf</a></td>
-              <td><a href="file16_mano_p5a.html" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.85rem;">📖 อ่านบทเรียนที่ 16 &rarr;</a></td>
-            </tr>
-        
-            <tr>
-              <td><b>17</b></td>
-              <td><b>17. 0132539977_pp6a.pdf — Mano Chapter 11: Input-Output Organization & DMA</b></td>
-              <td><a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/0132539977_pp6a.pdf" class="file-link">0132539977_pp6a.pdf</a></td>
-              <td><a href="file17_mano_pp6a.html" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.85rem;">📖 อ่านบทเรียนที่ 17 &rarr;</a></td>
-            </tr>
-        
-          </tbody>
-        </table>
       </div>
     </section>
 
@@ -194,74 +134,83 @@
         <div>
           <h2 style="color: #4ade80; margin: 0; font-size: 1.25rem;">🟢 PART 2: สอบตอนบ่าย (13:00 - 15:30 น.) — สอบแบบเปิดตำรา (OPEN BOOK EXAM)</h2>
           <p style="color: #cbd5e1; font-size: 0.9rem; margin-top: 4px;">
-            เน้นเนื้อหา AVR Microcontroller Chapters 1–6 (Mazidi Textbook), โครงสร้างฮาร์ดแวร์ ATmega328P และการเขียนโปรแกรมภาษา Assembly (อนุญาตให้นำตำราและกระดาษจดสรุปเข้าห้องสอบได้!)
+            เน้นฮาร์ดแวร์ ATmega328P, รีจิสเตอร์ SREG, พอร์ต I/O และการเขียนโค้ดภาษา AVR Assembly (สรุป 6 หัวข้อหลัก สกัดจาก Mazidi AVR Ch 1-6 + หน้าสรุปสั่งพิมพ์ A4)
           </p>
         </div>
         <a href="part2_openbook_printable.html" class="btn-print" style="padding: 8px 16px; font-size: 0.9rem;">📄 พิมพ์กระดาษ A4 พกเข้าห้องสอบ &rarr;</a>
       </div>
 
-      <div style="overflow-x: auto;">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>ชื่อหัวข้อบทเรียน (Part 2: AVR Microcontroller & Assembly)</th>
-              <th>ไฟล์อ้างอิงต้นฉบับ</th>
-              <th>ลิงก์เปิดบทเรียน</th>
-            </tr>
-          </thead>
-          <tbody>
+      <div style="display: grid; grid-template-columns: 1fr; gap: 14px;">
 
-            <tr>
-              <td><b>13</b></td>
-              <td><b>13. AVR Mazidi Textbook Ch 1-6 — สถาปัตยกรรม ATmega328P RISC, SREG Flags & Assembly</b></td>
-              <td><a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/AVR%20Microcontroller%20and%20Embedded%20Systems.pdf" class="file-link">AVR Microcontroller and Embedded Systems.pdf</a></td>
-              <td><a href="file13_avr_mazidi.html" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.85rem; background: #4ade80; border-color: #4ade80; color: #052e16;">📖 อ่านบทเรียนที่ 13 &rarr;</a></td>
-            </tr>
+        <div class="topic-card" style="border-color: rgba(74, 222, 128, 0.3);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span class="source-tag" style="color: #4ade80; border-color: #4ade80;">Topic 06</span>
+            <a href="topic6_microcontroller_architecture.html" class="btn btn-primary" style="padding: 6px 14px; font-size: 0.85rem; ">📖 เปิดอ่านสรุปหัวข้อที่ 06 &rarr;</a>
+          </div>
+          <h3 style="color: #fff; margin-bottom: 8px;">Topic 06: Microcontroller Architecture & RISC vs CISC (Mazidi Ch. 1)</h3>
+          <p style="color: #cbd5e1; font-size: 0.9rem; margin: 0;">สรุปเปรียบเทียบ Microprocessor (MPU) vs Microcontroller (MCU), RISC vs CISC, Harvard Architecture (แยก Flash ROM & Data SRAM) ของ ATmega328P</p>
+        </div>
         
-            <tr>
-              <td><b>14</b></td>
-              <td><b>14. lab2-Atmel AVR Studio Tutorial.pdf + รายงานคู่มือ Atmel Studio 7 IDE</b></td>
-              <td><a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/lab2-Atmel%20AVR%20Studio%20Tutorial.pdf" class="file-link">lab2-Atmel AVR Studio Tutorial.pdf</a></td>
-              <td><a href="file14_avr_studio_tutorial.html" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.85rem; background: #4ade80; border-color: #4ade80; color: #052e16;">📖 อ่านบทเรียนที่ 14 &rarr;</a></td>
-            </tr>
+        <div class="topic-card" style="border-color: rgba(74, 222, 128, 0.3);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span class="source-tag" style="color: #4ade80; border-color: #4ade80;">Topic 07</span>
+            <a href="topic7_avr_architecture_registers.html" class="btn btn-primary" style="padding: 6px 14px; font-size: 0.85rem; ">📖 เปิดอ่านสรุปหัวข้อที่ 07 &rarr;</a>
+          </div>
+          <h3 style="color: #fff; margin-bottom: 8px;">Topic 07: AVR Architecture, Register File & SREG Flags (Mazidi Ch. 2)</h3>
+          <p style="color: #cbd5e1; font-size: 0.9rem; margin: 0;">สรุป General Purpose Registers R0-R31, Status Register SREG (I, T, H, S, V, N, Z, C), Memory Map (Flash ROM vs SRAM Data) และ Assembly Directives</p>
+        </div>
         
-            <tr>
-              <td><b>18</b></td>
-              <td><b>18. Lab3 Proteus and AVR Microcontroller.pdf + รายงานผลการทดลอง Proteus VSM</b></td>
-              <td><a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Lab3%20Proteus%20and%20AVR%20Microcontroller.pdf" class="file-link">Lab3 Proteus and AVR Microcontroller.pdf</a></td>
-              <td><a href="file18_lab3_proteus.html" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.85rem; background: #4ade80; border-color: #4ade80; color: #052e16;">📖 อ่านบทเรียนที่ 18 &rarr;</a></td>
-            </tr>
+        <div class="topic-card" style="border-color: rgba(74, 222, 128, 0.3);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span class="source-tag" style="color: #4ade80; border-color: #4ade80;">Topic 08</span>
+            <a href="topic8_branch_loop_subroutines.html" class="btn btn-primary" style="padding: 6px 14px; font-size: 0.85rem; ">📖 เปิดอ่านสรุปหัวข้อที่ 08 &rarr;</a>
+          </div>
+          <h3 style="color: #fff; margin-bottom: 8px;">Topic 08: Branching, Looping, Subroutines & Stack (Mazidi Ch. 3)</h3>
+          <p style="color: #cbd5e1; font-size: 0.9rem; margin: 0;">สรุปการเขียนลูปด้วย DEC/BRNE, คำสั่งกระโดดเงื่อนไข BREQ/BRNE/BRLO/BRSH, การเรียกฟังก์ชันย่อย CALL/RET และการจัดการ Stack Pointer (SPH/SPL, PUSH/POP)</p>
+        </div>
         
-            <tr>
-              <td><b>19</b></td>
-              <td><b>19. AVR Exercise 5-8 — โปรแกรมแปลง Hex เป็น BCD 0-99 ออกพอร์ต B ( Assembly)</b></td>
-              <td><a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Reports/Exercise_5_8/Report_Example_5_8_Formal.pdf" class="file-link">Reports/Exercise_5_8/Report_Example_5_8_Formal.pdf</a></td>
-              <td><a href="file19_lab_example_5_8.html" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.85rem; background: #4ade80; border-color: #4ade80; color: #052e16;">📖 อ่านบทเรียนที่ 19 &rarr;</a></td>
-            </tr>
+        <div class="topic-card" style="border-color: rgba(74, 222, 128, 0.3);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span class="source-tag" style="color: #4ade80; border-color: #4ade80;">Topic 09</span>
+            <a href="topic9_io_port_programming.html" class="btn btn-primary" style="padding: 6px 14px; font-size: 0.85rem; ">📖 เปิดอ่านสรุปหัวข้อที่ 09 &rarr;</a>
+          </div>
+          <h3 style="color: #fff; margin-bottom: 8px;">Topic 09: AVR I/O Port Programming & Bit Manipulation (Mazidi Ch. 4)</h3>
+          <p style="color: #cbd5e1; font-size: 0.9rem; margin: 0;">สรุปการตั้งค่าพอร์ต I/O (DDRx, PORTx, PINx), คำสั่งจัดการบิต SBI/CBI, คำสั่งข้ามเงื่อนไขบิต SBIS/SBIC และโค้ดอ่านสวิตช์ควบคุมไฟ LED</p>
+        </div>
         
-            <tr>
-              <td><b>20</b></td>
-              <td><b>20. AVR Exercise Lab 2 — โปรแกรมภาษาแอสเซมบลี นับเลข 1 ถึง 10 บน PORTB</b></td>
-              <td><a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Reports/Lab_2_Counting_1_to_10/Report_Counting_1_to_10.pdf" class="file-link">Reports/Lab_2_Counting_1_to_10/Report_Counting_1_to_10.pdf</a></td>
-              <td><a href="file20_lab_counting_1_to_10.html" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.85rem; background: #4ade80; border-color: #4ade80; color: #052e16;">📖 อ่านบทเรียนที่ 20 &rarr;</a></td>
-            </tr>
+        <div class="topic-card" style="border-color: rgba(74, 222, 128, 0.3);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span class="source-tag" style="color: #4ade80; border-color: #4ade80;">Topic 10</span>
+            <a href="topic10_arithmetic_logic_programs.html" class="btn btn-primary" style="padding: 6px 14px; font-size: 0.85rem; ">📖 เปิดอ่านสรุปหัวข้อที่ 10 &rarr;</a>
+          </div>
+          <h3 style="color: #fff; margin-bottom: 8px;">Topic 10: Arithmetic, Logic Instructions & Programs (Mazidi Ch. 5)</h3>
+          <p style="color: #cbd5e1; font-size: 0.9rem; margin: 0;">สรุปชุดคำสั่งคำนวณ ADD/ADC, SUB/SUBI/SBC, MUL (8x8 -> 16-bit R1:R0), AND/OR/EOR, Bit Shift & Rotate (LSL, LSR, ROL, ROR) และโปรแกรมบวกเลขหลายบิต</p>
+        </div>
         
-            <tr>
-              <td><b>21</b></td>
-              <td><b>21. AVR Exercise Lab 3 — โปรแกรมหาผลรวม Sum N down to 1 บน ATmega328P</b></td>
-              <td><a href="file:///d:/My_server/University/3rd%20year/Term_1/Embedded_system/Reports/Lab_3_Sum_n_down_to_1/Report_Sum_n_down_to_1.pdf" class="file-link">Reports/Lab_3_Sum_n_down_to_1/Report_Sum_n_down_to_1.pdf</a></td>
-              <td><a href="file21_lab_sum_n_down_to_1.html" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.85rem; background: #4ade80; border-color: #4ade80; color: #052e16;">📖 อ่านบทเรียนที่ 21 &rarr;</a></td>
-            </tr>
+        <div class="topic-card" style="border-color: rgba(74, 222, 128, 0.3);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span class="source-tag" style="color: #4ade80; border-color: #4ade80;">Topic 11</span>
+            <a href="topic11_advanced_assembly_conversions.html" class="btn btn-primary" style="padding: 6px 14px; font-size: 0.85rem; ">📖 เปิดอ่านสรุปหัวข้อที่ 11 &rarr;</a>
+          </div>
+          <h3 style="color: #fff; margin-bottom: 8px;">Topic 11: Advanced Assembly & BCD/Delay Calculations (Mazidi Ch. 6)</h3>
+          <p style="color: #cbd5e1; font-size: 0.9rem; margin: 0;">สรุปอัลกอริทึมแปลง Hex เป็น BCD 0-99 ด้วยวิธีลบซ้ำด้วย 10, การคำนวณคาบเวลาหน่วง Time Delay Loops (16MHz Crystal -> 62.5ns) และแม่แบบโค้ดออกสอบ</p>
+        </div>
         
-          </tbody>
-        </table>
+        <div class="topic-card" style="border-color: rgba(74, 222, 128, 0.3);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span class="source-tag" style="color: #4ade80; border-color: #4ade80;">Topic 12</span>
+            <a href="part2_openbook_printable.html" class="btn btn-primary" style="padding: 6px 14px; font-size: 0.85rem; background: #4ade80; border-color: #4ade80; color: #052e16;">📖 เปิดอ่านสรุปหัวข้อที่ 12 &rarr;</a>
+          </div>
+          <h3 style="color: #fff; margin-bottom: 8px;">📄 สรุปสูตรพิมพ์ A4 พกเข้าห้องสอบ (Part 2 Open-Book Master Reference Sheet)</h3>
+          <p style="color: #cbd5e1; font-size: 0.9rem; margin: 0;">หน้าสรุปสูตรพิมพ์ออกกระดาษ A4 พกเข้าห้องสอบตอนบ่าย รวมตารางชุดคำสั่ง AVR Assembly, ธง SREG, พอร์ต I/O และแม่แบบโค้ด 5 รูปแบบ</p>
+        </div>
+        
       </div>
     </section>
 
     <!-- FOOTER -->
     <footer class="footer">
-      <p>Embedded System Exam Portal &copy; 2569 | 2-Part Exam Portal (Part 1 Closed-Book & Part 2 Open-Book)</p>
+      <p>Embedded System Exam Portal &copy; 2569 | Concise Concept-Driven Exam Portal</p>
     </footer>
 
   </main>
