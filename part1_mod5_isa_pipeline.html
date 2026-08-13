@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔴 Module 5: Instruction Set Architecture (ISA) & 5-Stage Pipeline CPU (Enoch Hwang Ch 8 / Micro5)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- TOP NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">⚡ EMBEDDED EXAM HUB</a>
+    <ul class="nav-links">
+      <li><a href="index.html">หน้าหลัก Index</a></li>
+      <li><a href="#part1-section">🔴 Part 1 ปิดตำรา</a></li>
+      <li><a href="#part2-section">🟢 Part 2 เปิดตำรา</a></li>
+      <li><a href="part2_openbook_printable.html" style="color: #4ade80; font-weight: 700;">📄 พิมพ์ A4 พกเข้าห้องสอบ</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <header class="page-banner">
+      <span class="source-tag" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border-color: #f87171;">🔴 PART 1: ปิดตำรา (09:30 - 11:30)</span>
+      <h1 class="page-title">🔴 Module 5: Instruction Set Architecture (ISA) & 5-Stage Pipeline CPU (Enoch Hwang Ch 8 / Micro5)</h1>
+      <p class="page-subtitle">
+        สรุปเจาะลึกจากตำราเรียนสากล (Enoch Hwang, M. Morris Mano, Mazidi AVR) สำหรับการเตรียมสอบวิชา Embedded System Design
+      </p>
+    </header>
+
+    <div class="slide-card">
+      <div class="slide-header">
+        <span class="slide-num-badge">สถาปัตยกรรมไปป์ไลน์</span>
+        <h3 style="color: #fff;">1. สถาปัตยกรรม CPU 5-Stage Pipeline & Hazards</h3>
+      </div>
+      <div class="wwh-box what-box" style="margin-bottom: 12px;">
+        <div class="wwh-title" style="color: var(--primary);">📌 5 สเตจของไปป์ไลน์ (What):</div>
+        <div>1. <b>IF (Instruction Fetch):</b> ดึงคำสั่งจาก Flash ROM ตาม Program Counter<br>
+        2. <b>ID (Instruction Decode):</b> ถอดรหัสคำสั่งและอ่านค่าจาก Register File<br>
+        3. <b>EX (Execute):</b> ประมวลผลทางคณิตศาสตร์/ลอจิกด้วย ALU<br>
+        4. <b>MEM (Memory Access):</b> อ่าน/เขียนข้อมูลใน SRAM (คำสั่ง Load/Store)<br>
+        5. <b>WB (Write Back):</b> บันทึกผลลัพธ์ย้อนกลับลง Register File</div>
+      </div>
+      <div class="wwh-box why-box" style="margin-bottom: 12px;">
+        <div class="wwh-title" style="color: var(--warning);">❓ ข้อผิดพลาดวิกฤต (Pipeline Hazards):</div>
+        <div>• <b>Structural Hazard:</b> ฮาร์ดแวร์ไม่พอ (แก้โดยแยก Memory Instruction/Data)<br>
+        • <b>Data Hazard (RAW):</b> คำสั่งถัดไปต้องการใช้ผลลัพธ์ที่คำสั่งก่อนหน้ายังเขียนไม่เสร็จ (แก้โดยทำ Data Forwarding/Bypassing หรือแทรก Stall/NOP)<br>
+        • <b>Control Hazard:</b> คำสั่ง Branch/Jump เปลี่ยนทิศทางกระโดด (แก้โดยทำ Branch Prediction หรือ Flush สเตจ)</div>
+      </div>
+    </div>
+
+    <!-- PAGINATION NAVIGATION -->
+    <div class="pagination-nav">
+      <a href="part1_mod4_control_unit.html" class="pagination-btn">⬅️ ย้อนกลับ</a>
+      <span style="color: var(--text-muted); font-size: 0.9rem;">Module 5: ISA & Pipeline</span>
+      <a href="part2_ch1_microcontroller_intro.html" class="pagination-btn">หน้าถัดไป ➡️</a>
+    </div>
+
+    <footer class="footer">
+      <p>Embedded System Exam Portal &copy; 2569 | Textbook-based Complete Exam Portal</p>
+    </footer>
+  </main>
+</body>
+</html>

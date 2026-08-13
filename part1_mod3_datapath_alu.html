@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔴 Module 3: Datapath Components & 4-bit ALU Design (Enoch Hwang Ch 4,6 / Mano Ch 3)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- TOP NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">⚡ EMBEDDED EXAM HUB</a>
+    <ul class="nav-links">
+      <li><a href="index.html">หน้าหลัก Index</a></li>
+      <li><a href="#part1-section">🔴 Part 1 ปิดตำรา</a></li>
+      <li><a href="#part2-section">🟢 Part 2 เปิดตำรา</a></li>
+      <li><a href="part2_openbook_printable.html" style="color: #4ade80; font-weight: 700;">📄 พิมพ์ A4 พกเข้าห้องสอบ</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <header class="page-banner">
+      <span class="source-tag" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border-color: #f87171;">🔴 PART 1: ปิดตำรา (09:30 - 11:30)</span>
+      <h1 class="page-title">🔴 Module 3: Datapath Components & 4-bit ALU Design (Enoch Hwang Ch 4,6 / Mano Ch 3)</h1>
+      <p class="page-subtitle">
+        สรุปเจาะลึกจากตำราเรียนสากล (Enoch Hwang, M. Morris Mano, Mazidi AVR) สำหรับการเตรียมสอบวิชา Embedded System Design
+      </p>
+    </header>
+
+    <div class="slide-card">
+      <div class="slide-header">
+        <span class="slide-num-badge">โครงสร้างทางเดินข้อมูล</span>
+        <h3 style="color: #fff;">1. วงจรบวก วงจรลบ และ ALU 4 บิต</h3>
+      </div>
+      <div class="wwh-box what-box" style="margin-bottom: 12px;">
+        <div class="wwh-title" style="color: var(--primary);">📌 Full Adder & Subtractor (What):</div>
+        <div>Full Adder 1 บิต มีสมการเอาต์พุต:<br>
+        • <code>Sum = A $\oplus$ B $\oplus$ Cin</code><br>
+        • <code>Cout = (A · B) + (Cin · (A $\oplus$ B))</code><br>
+        เมื่อต้องการทำวงจรบวกลบร่วมกัน จะใช้ XOR Gate ควบคุมอินพุต B กับสัญญาณ <code>M</code> (ถ้า M=1 ทำการ 2's Complement เพื่อลบเลข)</div>
+      </div>
+      <div class="wwh-box how-box">
+        <div class="wwh-title" style="color: var(--accent);">⚙️ ธงสถานะการคำนวณ (Status Flags):</div>
+        <div>• <b>Carry Flag (C):</b> ตัวทดออกจากบิต MSB<br>
+        • <b>Zero Flag (Z):</b> เป็น 1 เมื่อเอาต์พุตคำนวณเป็น 0 ทั้งหมด<br>
+        • <b>Negative Flag (N):</b> บิตสูงสุด MSB ของผลลัพธ์ (บอกเครื่องหมายใน 2's Complement)<br>
+        • <b>Overflow Flag (V):</b> <code>V = C_in(MSB) $\oplus$ C_out(MSB)</code> เกิดการล้นของเลขมีเครื่องหมาย</div>
+      </div>
+    </div>
+
+    <!-- 4-BIT ALU PLAYGROUND -->
+    <div class="playground-card" id="alu-playground">
+      <div class="playground-title">⚡ 4-bit ALU & Status Flags Interactive Playground (ทดลองกดเปลี่ยนบิตอินพุตและคำสั่ง)</div>
+      <p style="font-size: 0.9rem; color: #94a3b8; margin-bottom: 16px;">
+        ลองกดเปลี่ยนค่าบิตอินพุต A, B และคำสั่ง ALU เพื่อสังเกตการคำนวณเอาต์พุต Y และธงสถานะ (Status Flags: C, V, Z, N) แบบสดๆ:
+      </p>
+      <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: center; margin-bottom: 20px;">
+        <div>
+          <b>Input A (4-bit):</b> 
+          <button class="bit-btn" id="a3" onclick="toggleBitA(3)">0</button>
+          <button class="bit-btn active-1" id="a2" onclick="toggleBitA(2)">1</button>
+          <button class="bit-btn" id="a1" onclick="toggleBitA(1)">0</button>
+          <button class="bit-btn active-1" id="a0" onclick="toggleBitA(0)">1</button>
+          <span style="color: #fbbf24; margin-left: 8px;" id="a-val-dec">(5)</span>
+        </div>
+        <div>
+          <b>Input B (4-bit):</b> 
+          <button class="bit-btn" id="b3" onclick="toggleBitB(3)">0</button>
+          <button class="bit-btn" id="b2" onclick="toggleBitB(2)">0</button>
+          <button class="bit-btn active-1" id="b1" onclick="toggleBitB(1)">1</button>
+          <button class="bit-btn active-1" id="b0" onclick="toggleBitB(0)">1</button>
+          <span style="color: #fbbf24; margin-left: 8px;" id="b-val-dec">(3)</span>
+        </div>
+        <div>
+          <b>Operation:</b>
+          <select id="alu-op-select" onchange="calculateALUPlayground()" style="background: #1e293b; color: #38bdf8; border: 1px solid #38bdf8; padding: 8px 12px; border-radius: 8px; font-weight: 700;">
+            <option value="ADD">ADD (A + B)</option>
+            <option value="SUB">SUB (A - B)</option>
+            <option value="AND">AND (A & B)</option>
+            <option value="OR">OR (A | B)</option>
+          </select>
+        </div>
+      </div>
+      <div class="formula-box" style="border-color: #38bdf8;">
+        <div>📤 เอาต์พุตผลลัพธ์ Y (4-bit): <b id="alu-res-bin" style="color: #38bdf8; font-size: 1.1rem;">1000</b> <span id="alu-res-dec">(8)</span></div>
+        <div style="margin-top: 10px; display: flex; gap: 16px;">
+          <span>🚩 Carry Flag (C): <b id="flag-c" style="color: #f87171;">0</b></span>
+          <span>🚩 Overflow Flag (V): <b id="flag-v" style="color: #f87171;">0</b></span>
+          <span>🚩 Zero Flag (Z): <b id="flag-z" style="color: #f87171;">0</b></span>
+          <span>🚩 Negative Flag (N): <b id="flag-n" style="color: #4ade80;">1</b></span>
+        </div>
+      </div>
+    </div>
+    <script>
+      let bitsA = [1,0,1,0];
+      let bitsB = [1,1,0,0];
+      function toggleBitA(idx) {
+        bitsA[idx] = bitsA[idx] ? 0 : 1;
+        document.getElementById(`a${idx}`).innerText = bitsA[idx];
+        document.getElementById(`a${idx}`).className = bitsA[idx] ? 'bit-btn active-1' : 'bit-btn';
+        calculateALUPlayground();
+      }
+      function toggleBitB(idx) {
+        bitsB[idx] = bitsB[idx] ? 0 : 1;
+        document.getElementById(`b${idx}`).innerText = bitsB[idx];
+        document.getElementById(`b${idx}`).className = bitsB[idx] ? 'bit-btn active-1' : 'bit-btn';
+        calculateALUPlayground();
+      }
+      function calculateALUPlayground() {
+        const valA = bitsA[0] + bitsA[1]*2 + bitsA[2]*4 + bitsA[3]*8;
+        const valB = bitsB[0] + bitsB[1]*2 + bitsB[2]*4 + bitsB[3]*8;
+        document.getElementById('a-val-dec').innerText = `(${valA})`;
+        document.getElementById('b-val-dec').innerText = `(${valB})`;
+        const op = document.getElementById('alu-op-select').value;
+        let res = 0;
+        let carry = 0;
+        if (op === 'ADD') {
+          res = valA + valB;
+          if (res > 15) carry = 1;
+        } else if (op === 'SUB') {
+          res = valA - valB;
+          if (res < 0) res = (res + 16) % 16;
+        } else if (op === 'AND') {
+          res = valA & valB;
+        } else if (op === 'OR') {
+          res = valA | valB;
+        }
+        const masked = res & 0xF;
+        const binStr = masked.toString(2).padStart(4, '0');
+        document.getElementById('alu-res-bin').innerText = binStr;
+        document.getElementById('alu-res-dec').innerText = `(${masked})`;
+        document.getElementById('flag-c').innerText = carry;
+        document.getElementById('flag-z').innerText = (masked === 0) ? '1' : '0';
+        document.getElementById('flag-n').innerText = (masked >= 8) ? '1' : '0';
+      }
+    </script>
+
+    <!-- PAGINATION NAVIGATION -->
+    <div class="pagination-nav">
+      <a href="part1_mod2_sequential_logic.html" class="pagination-btn">⬅️ ย้อนกลับ</a>
+      <span style="color: var(--text-muted); font-size: 0.9rem;">Module 3: Datapath & ALU</span>
+      <a href="part1_mod4_control_unit.html" class="pagination-btn">หน้าถัดไป ➡️</a>
+    </div>
+
+    <footer class="footer">
+      <p>Embedded System Exam Portal &copy; 2569 | Textbook-based Complete Exam Portal</p>
+    </footer>
+  </main>
+</body>
+</html>
