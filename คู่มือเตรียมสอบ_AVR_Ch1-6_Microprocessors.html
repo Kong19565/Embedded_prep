@@ -140,6 +140,103 @@
     </tbody>
   </table>
 
+  
+    <!-- OPCODE BIT-FIELD ENCODING TABLE -->
+    <div class="print-card" style="border-color: #38bdf8;">
+      <div class="print-header">
+        <span>2.1.1 ตารางถอดรหัสบิต Opcode และ Operand 16 บิตของ AVR (16-Bit Instruction Bit-Encoding)</span>
+        <span class="badge-sw">OPCODE BIT MAP</span>
+      </div>
+      <p style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 12px;">
+        จำแนกบิต Opcode (รหัสคำสั่ง), บิตระบุรีจิสเตอร์เป้าหมาย ($d$), รีจิสเตอร์ต้นทาง ($r$), แอดเดรส I/O ($A$), ค่าคงที่ ($K$), ตำแหน่งบิต ($b$), และ Relative Offset ($k$) ในคำสั่งขนาด 16 บิต (Bit 15 ถึง Bit 0):
+      </p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>หมวดคำสั่ง</th>
+            <th>คำสั่ง (Instruction)</th>
+            <th>โครงสร้างรหัสบิต 16 บิต (16-Bit Opcode Encoding)</th>
+            <th>การกระจายบิต Opcode (Bit 15 - Bit 0)</th>
+            <th>รายละเอียดความหมายของบิตแต่ละส่วน</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td rowspan="2"><b>คณิตศาสตร์<br>2 รีจิสเตอร์</b></td>
+            <td><code>ADD Rd, Rr</code></td>
+            <td><code>0000 11rd dddd rrrr</code></td>
+            <td>[15:10] Opcode <code>000011</code><br>[9,3:0] $R_r$ <code>r rrrr</code><br>[8:4] $R_d$ <code>d dddd</code></td>
+            <td>• <b>Bit 15-10:</b> Opcode คำสั่ง ADD (000011)<br>• <b>Bit 8-4:</b> $R_d$ 5 บิต ($R_0-R_{31}$)<br>• <b>Bit 9,3-0:</b> $R_r$ 5 บิต ($R_0-R_{31}$)</td>
+          </tr>
+          <tr>
+            <td><code>SUB Rd, Rr</code></td>
+            <td><code>0001 10rd dddd rrrr</code></td>
+            <td>[15:10] Opcode <code>000110</code><br>[9,3:0] $R_r$ <code>r rrrr</code><br>[8:4] $R_d$ <code>d dddd</code></td>
+            <td>• <b>Bit 15-10:</b> Opcode คำสั่ง SUB (000110)<br>• <b>Bit 8-4:</b> $R_d$ 5 บิต<br>• <b>Bit 9,3-0:</b> $R_r$ 5 บิต</td>
+          </tr>
+          <tr>
+            <td><b>โหลดค่าคงที่</b></td>
+            <td><code>LDI Rd, K</code></td>
+            <td><code>1110 KKKK dddd KKKK</code></td>
+            <td>[15:12] Opcode <code>1110</code><br>[11:8] $K_{7-4}$ <code>KKKK</code><br>[7:4] $R_d$ <code>dddd</code><br>[3:0] $K_{3-0}$ <code>KKKK</code></td>
+            <td>• <b>Bit 15-12:</b> Opcode คำสั่ง LDI (1110)<br>• <b>Bit 11-8:</b> ค่าคงที่ $K$ 4 บิตสูง ($K_7-K_4$)<br>• <b>Bit 7-4:</b> $R_d$ 4 บิต ($R_{16}-R_{31}$)<br>• <b>Bit 3-0:</b> ค่าคงที่ $K$ 4 บิตต่ำ ($K_3-K_0$)</td>
+          </tr>
+          <tr>
+            <td rowspan="2"><b>อ่าน/เขียน I/O</b></td>
+            <td><code>IN Rd, A</code></td>
+            <td><code>1011 0AAd dddd AAAA</code></td>
+            <td>[15:11] Opcode <code>10110</code><br>[10:9,3:0] Address $A$ <code>AAAAAA</code><br>[8:4] $R_d$ <code>ddddd</code></td>
+            <td>• <b>Bit 15-11:</b> Opcode คำสั่ง IN (10110)<br>• <b>Bit 10-9,3-0:</b> I/O Address $A$ 6 บิต (0x00-0x3F)<br>• <b>Bit 8-4:</b> $R_d$ 5 บิต ($R_0-R_{31}$)</td>
+          </tr>
+          <tr>
+            <td><code>OUT A, Rr</code></td>
+            <td><code>1011 1AAr rrrr AAAA</code></td>
+            <td>[15:11] Opcode <code>10111</code><br>[10:9,3:0] Address $A$ <code>AAAAAA</code><br>[8:4] $R_r$ <code>rrrrr</code></td>
+            <td>• <b>Bit 15-11:</b> Opcode คำสั่ง OUT (10111)<br>• <b>Bit 10-9,3-0:</b> I/O Address $A$ 6 บิต (0x00-0x3F)<br>• <b>Bit 8-4:</b> $R_r$ 5 บิต ($R_0-R_{31}$)</td>
+          </tr>
+          <tr>
+            <td rowspan="2"><b>จัดการบิต I/O</b></td>
+            <td><code>SBI A, b</code></td>
+            <td><code>1001 1010 AAAA Abbb</code></td>
+            <td>[15:8] Opcode <code>10011010</code><br>[7:3] Address $A$ <code>AAAAA</code><br>[2:0] Bit pos $b$ <code>bbb</code></td>
+            <td>• <b>Bit 15-8:</b> Opcode คำสั่ง SBI (10011010)<br>• <b>Bit 7-3:</b> I/O Address $A$ 5 บิต (0x00-0x1F)<br>• <b>Bit 2-0:</b> ตำแหน่งบิต $b$ 3 บิต (0 ถึง 7)</td>
+          </tr>
+          <tr>
+            <td><code>CBI A, b</code></td>
+            <td><code>1001 1000 AAAA Abbb</code></td>
+            <td>[15:8] Opcode <code>10011000</code><br>[7:3] Address $A$ <code>AAAAA</code><br>[2:0] Bit pos $b$ <code>bbb</code></td>
+            <td>• <b>Bit 15-8:</b> Opcode คำสั่ง CBI (10011000)<br>• <b>Bit 7-3:</b> I/O Address $A$ 5 บิต (0x00-0x1F)<br>• <b>Bit 2-0:</b> ตำแหน่งบิต $b$ 3 บิต (0 ถึง 7)</td>
+          </tr>
+          <tr>
+            <td rowspan="2"><b>กระโดดเงื่อนไข</b></td>
+            <td><code>BREQ k</code></td>
+            <td><code>1111 00kk kkkk k000</code></td>
+            <td>[15:10] Opcode <code>111100</code><br>[9:3] Offset $k$ <code>kkkkkkk</code><br>[2:0] Flag $Z=1$ <code>000</code></td>
+            <td>• <b>Bit 15-10:</b> Opcode คำสั่ง BRBS (111100)<br>• <b>Bit 9-3:</b> Relative Offset $k$ คิดเครื่องหมาย 7 บิต<br>• <b>Bit 2-0:</b> Flag Bit (000 = ธง Z=1)</td>
+          </tr>
+          <tr>
+            <td><code>BRNE k</code></td>
+            <td><code>1111 01kk kkkk k000</code></td>
+            <td>[15:10] Opcode <code>111101</code><br>[9:3] Offset $k$ <code>kkkkkkk</code><br>[2:0] Flag $Z=0$ <code>000</code></td>
+            <td>• <b>Bit 15-10:</b> Opcode คำสั่ง BRBC (111101)<br>• <b>Bit 9-3:</b> Relative Offset $k$ คิดเครื่องหมาย 7 บิต<br>• <b>Bit 2-0:</b> Flag Bit (000 = ธง Z=0)</td>
+          </tr>
+          <tr>
+            <td rowspan="2"><b>กระโดดสัมพัทธ์</b></td>
+            <td><code>RJMP k</code></td>
+            <td><code>1100 kkkk kkkk kkkk</code></td>
+            <td>[15:12] Opcode <code>1100</code><br>[11:0] Offset $k$ <code>kkkkkkkkkkkk</code></td>
+            <td>• <b>Bit 15-12:</b> Opcode คำสั่ง RJMP (1100)<br>• <b>Bit 11-0:</b> Relative Offset $k$ 12 บิต (-2048 ถึง +2047)</td>
+          </tr>
+          <tr>
+            <td><code>RCALL k</code></td>
+            <td><code>1101 kkkk kkkk kkkk</code></td>
+            <td>[15:12] Opcode <code>1101</code><br>[11:0] Offset $k$ <code>kkkkkkkkkkkk</code></td>
+            <td>• <b>Bit 15-12:</b> Opcode คำสั่ง RCALL (1101)<br>• <b>Bit 11-0:</b> Relative Offset $k$ 12 บิต (-2048 ถึง +2047)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
   <h3>2.2 อธิบายโค้ดตัวอย่างบรรทัดต่อบรรทัด (Line-by-Line Code Explanations)</h3>
 
   <b>📂 1. การตั้งค่า Stack Pointer (SPH:SPL = RAMEND)</b>
