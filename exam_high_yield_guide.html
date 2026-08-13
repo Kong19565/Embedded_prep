@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎯 คู่มือคัดกรองสรุปเนื้อหาเน้นออกสอบวิชา Embedded System Design (High-Yield Exam Guide)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .cut-box {
+      background: rgba(239, 68, 68, 0.08);
+      border: 1.5px solid rgba(239, 68, 68, 0.4);
+      border-radius: 12px;
+      padding: 18px 22px;
+      margin-bottom: 24px;
+    }
+    .cut-title {
+      color: #f87171;
+      font-weight: 800;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .keep-box {
+      background: rgba(74, 222, 128, 0.08);
+      border: 1.5px solid rgba(74, 222, 128, 0.4);
+      border-radius: 12px;
+      padding: 18px 22px;
+      margin-bottom: 24px;
+    }
+    .keep-title {
+      color: #4ade80;
+      font-weight: 800;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">⚡ EMBEDDED EXAM HUB</a>
+    <ul class="nav-links">
+      <li><a href="index.html">หน้าหลัก Index</a></li>
+      <li><a href="exam_high_yield_guide.html" class="active" style="color: #fbbf24; font-weight: 700;">🎯 สรุปเน้นออกสอบ (High Yield)</a></li>
+      <li><a href="part2_openbook_printable.html" style="color: #4ade80;">📄 หน้าสรุปพิมพ์ A4</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+
+    <header class="page-banner">
+      <span class="source-tag" style="background: rgba(251, 191, 36, 0.2); color: #fbbf24; border-color: #fbbf24;">🎯 คู่มือคัดกรองพิเศษ: ตัดส่วนไร้บริบทออก เน้นเฉพาะประเด็นออกสอบ 100%</span>
+      <h1 class="page-title">🎯 สรุปคัดกรองเนื้อหาเน้นออกสอบ (AVR Microcontroller Ch 1-6 & Microprocessors)</h1>
+      <p class="page-subtitle">
+        วิเคราะห์เปรียบเทียบและคัดกรองส่วนที่ไม่จำเป็นออก มุ่งเน้นเฉพาะจุดสำคัญ มโนทัศน์ และโค้ดภาษาแอสเซมบลีที่ออกสอบในวันพรุ่งนี้อย่างแม่นยำที่สุด!
+      </p>
+    </header>
+
+    <!-- SECTION 1: WHAT WAS CUT OUT -->
+    <div class="cut-box">
+      <div class="cut-title">❌ ส่วนที่คัดออกจากเนื้อหา (ส่วนที่ไม่ต้องท่องจำ / ไม่เกี่ยวกับข้อสอบ)</div>
+      <ul style="color: #cbd5e1; line-height: 1.7; font-size: 0.92rem; padding-left: 20px;">
+        <li><b>ประวัติศาสตร์คอมพิวเตอร์ยุคแรก:</b> หลอดสูญญากาศ Vacuum Tubes, ทรานซิสเตอร์ยุค 1950s และประวัติชิป Intel 4004/8080</li>
+        <li><b>ฟิสิกส์สารกึ่งตัวนำ & ไฟฟ้าลึก:</b> รายละเอียดโครงสร้างทรานซิสเตอร์ MOSFET level, Gate Capacitance ($C_{in}$), Silicon Doping, อัตราการคายความร้อน (Watts/BTU)</li>
+        <li><b>โปรโตคอลบัสการสื่อสารอนุกรมภายนอกที่ไม่ได้ออกสอบ:</b> CAN Bus, USB 2.0 Packet Framing, Ethernet MAC Controller, ZigBee, I2S Audio Protocol</li>
+        <li><b>รายละเอียด GUI ซอฟต์แวร์ย่อย:</b> ขั้นตอนการลงทะเบียน Atmel Studio VSIX Extension Plugin, Visual Studio SDK</li>
+      </ul>
+    </div>
+
+    <!-- SECTION 2: HIGH YIELD EXAM TOPICS -->
+    <div class="keep-box">
+      <div class="keep-title">✅ ส่วนที่ต้องเน้น 100% (ประเด็นเน้นออกสอบแยกตาม Part 1 & Part 2)</div>
+      <p style="color: #cbd5e1; font-size: 0.92rem; margin-bottom: 14px;">
+        รวบรวมเนื้อหาสำคัญ มโนทัศน์ วงจร และชุดคำสั่งแอสเซมบลีที่นำไปใช้สอบจริงในวันพรุ่งนี้:
+      </p>
+    </div>
+
+    <!-- HIGH YIELD PART 1 -->
+    <div class="slide-card">
+      <div class="slide-header">
+        <span class="slide-num-badge" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border-color: #f87171;">🔴 PART 1: ปิดตำรา (09:30 - 11:30)</span>
+        <h3 style="color: #fff;">1. สรุปประเด็นเน้นสอบ Part 1: Digital Design & Microarchitecture</h3>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 14px; font-size: 0.92rem; color: #cbd5e1; line-height: 1.7;">
+        <div><b>1. พีชคณิตบูลีน & K-Map 4 ตัวแปร:</b> กฎ DeMorgan <code>(A·B)' = A' + B'</code>, การเขียนสมการ SOP/POS, การรวบตาราง K-Map 4x4 เป็นกลุ่ม 4 (Quad) และกลุ่ม 4 มุมโต๊ะ (Corners)</div>
+        <div><b>2. วงจรบวก Full Adder & ธงสถานะ:</b> <code>Sum = A ⊕ B ⊕ Cin</code>, <code>Cout = AB + Cin(A ⊕ B)</code>, ธงล้น <code>V = Cin(MSB) ⊕ Cout(MSB)</code></div>
+        <div><b>3. ฟลิปฟลอป & วงจรนับ:</b> สมการคุณลักษณะ D (<code>Q(t+1)=D</code>), JK (<code>Q(t+1)=J·Q'+K'·Q</code>), T (<code>Q(t+1)=T ⊕ Q</code>), ความแตกต่าง Synchronous vs Asynchronous Counter</div>
+        <div><b>4. หน่วยควบคุม CPU (Control Unit):</b> เปรียบเทียบ Hardwired FSM (เร็ว ยืดหยุ่นน้อย เหมาะกับ RISC) vs Microprogrammed ROM Store (ช้ากว่า แก้ไขง่าย เหมาะกับ CISC)</div>
+        <div><b>5. 5-Stage Pipeline CPU & Hazards:</b> สเตจ IF-ID-EX-MEM-WB, การแก้ Data Hazard (RAW) ด้วย Data Forwarding, Control Hazard เปลี่ยนทิศกระโดด</div>
+      </div>
+    </div>
+
+    <!-- HIGH YIELD PART 2 -->
+    <div class="slide-card">
+      <div class="slide-header">
+        <span class="slide-num-badge" style="background: rgba(74, 222, 128, 0.2); color: #4ade80; border-color: #4ade80;">🟢 PART 2: เปิดตำรา (13:00 - 15:30)</span>
+        <h3 style="color: #fff;">2. สรุปประเด็นเน้นสอบ Part 2: AVR Microcontroller Ch 1–6 & Assembly</h3>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 14px; font-size: 0.92rem; color: #cbd5e1; line-height: 1.7;">
+        <div><b>Ch 1 - MCU Architecture:</b> Harvard Architecture (แยก Flash ROM 32KB และ Data SRAM 2KB) ดึงคำสั่งและอ่านข้อมูลได้ใน 1 คาบ Clock</div>
+        <div><b>Ch 2 - Registers & SREG Flags:</b> 32 Working Registers ($R_0-R_{31}$), ธง SREG (I, T, H, S, V, N, Z, C), Directives <code>.INCLUDE</code>, <code>.ORG</code>, <code>.EQU</code></div>
+        <div><b>Ch 3 - Branch & Stack Pointer:</b> การตั้งค่า Stack Pointer <code>SPH:SPL = RAMEND</code>, การวนลูปด้วย <code>DEC</code> + <code>BRNE</code>, <code>CALL/RET</code></div>
+        <div><b>Ch 4 - I/O Port & Bit Operations:</b> การตั้งค่าพอร์ต <code>DDRx</code> (1=Out, 0=In), <code>PORTx</code>, <code>PINx</code>, คำสั่งจัดการบิต <code>SBI</code>, <code>CBI</code>, <code>SBIS</code>, <code>SBIC</code></div>
+        <div><b>Ch 5 - Arithmetic & Logic Instructions:</b> <code>ADD</code>, <code>ADC</code>, <code>SUB</code>, <code>SUBI</code>, <code>SBC</code>, <code>MUL</code> ($8 	imes 8 ightarrow 16$-bit ในคู่ $R_1:R_0$), <code>AND</code>, <code>OR</code>, <code>EOR</code>, Shifts <code>LSL/LSR/ROL/ROR</code></div>
+        <div><b>Ch 6 - Advanced Assembly & Conversions:</b> อัลกอริทึมแปลง Hex 0-99 เป็น BCD 2 หลัก (ลบซ้ำด้วย 10), การคำนวณคาบเวลาหน่วง Time Delay ($16	ext{ MHz} \implies 62.5	ext{ ns}$)</div>
+      </div>
+    </div>
+
+    <!-- PAGINATION -->
+    <div class="pagination-nav">
+      <a href="index.html" class="pagination-btn">⬅️ หน้าหลัก Index</a>
+      <a href="part2_openbook_printable.html" class="pagination-btn" style="background: #4ade80; color: #052e16;">📄 หน้าสรุปสั่งพิมพ์ A4 พกเข้าห้องสอบ ➡️</a>
+    </div>
+
+  </main>
+</body>
+</html>
