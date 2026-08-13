@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🚀 การ์ดสรุปย่อท่องจำ 10 นาทีสุดท้ายก่อนเข้าห้องสอบ (Part 1 ปิดตำรา)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .flash-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 18px;
+      margin-top: 20px;
+    }
+    .flash-card {
+      background: linear-gradient(145deg, #0f172a, #1e293b);
+      border: 1px solid #38bdf8;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    .flash-header {
+      color: #fbbf24;
+      font-weight: 800;
+      font-size: 1.1rem;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">⚡ EMBEDDED EXAM HUB</a>
+    <ul class="nav-links">
+      <li><a href="index.html">หน้าหลัก Index</a></li>
+      <li><a href="last_minute_flashcards.html" class="active">🚀 สรุปย่อท่องจำ 10 นาที</a></li>
+      <li><a href="exam_practice_bank.html">🎯 เก็งข้อสอบ 20 ข้อ</a></li>
+      <li><a href="assembly_practice_bank.html">💻 10 โค้ดแอสเซมบลีบ่าย</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <header class="page-banner">
+      <span class="source-tag" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border-color: #f87171;">🔴 ท่องจำ 10 นาทีสุดท้ายก่อนเข้าห้องสอบตอนเช้า (ปิดตำรา)</span>
+      <h1 class="page-title">🚀 การ์ดสรุปย่อท่องจำสูตร & ตารางความจำ (Last-Minute Cramming Flashcards)</h1>
+      <p class="page-subtitle">
+        ทบทวนสูตรคำนวณ ตรรกศาสตร์ดิจิทัล และมโนทัศน์สำคัญที่มักออกสอบบ่อยที่สุด อ่านจบได้ภายใน 10 นาทีก่อนเดินเข้าห้องสอบ!
+      </p>
+    </header>
+
+    <div class="flash-grid">
+      <div class="flash-card">
+        <div class="flash-header">📌 1. กฎ DeMorgan & เกต NAND</div>
+        <p style="font-size: 0.9rem; color: #cbd5e1; line-height: 1.6;">
+          • <code>(A · B)' = A' + B'</code><br>
+          • <code>(A + B)' = A' · B'</code><br>
+          • <b>NAND Gate:</b> เอาต์พุตเป็น 0 กรณีเดียวเมื่ออินพุตทุกตัวเป็น 1<br>
+          • <b>NOR Gate:</b> เอาต์พุตเป็น 1 กรณีเดียวเมื่ออินพุตทุกตัวเป็น 0
+        </p>
+      </div>
+
+      <div class="flash-card">
+        <div class="flash-header">📌 2. สูตรวงจรบวก Full Adder</div>
+        <p style="font-size: 0.9rem; color: #cbd5e1; line-height: 1.6;">
+          • <b>Sum:</b> <code>Sum = A $\oplus$ B $\oplus$ C_in</code><br>
+          • <b>Carry Out:</b> <code>C_out = AB + C_in(A $\oplus$ B)</code><br>
+          • <b>Overflow Flag (V):</b> <code>V = C_in(MSB) $\oplus$ C_out(MSB)</code><br>
+          (Overflow เกิดเมื่อบวกเลขมีเครื่องหมายแล้วผลลัพธ์ล้นขอบเขต)
+        </p>
+      </div>
+
+      <div class="flash-card">
+        <div class="flash-header">📌 3. ฟลิปฟลอป (Characteristic Eqs)</div>
+        <p style="font-size: 0.9rem; color: #cbd5e1; line-height: 1.6;">
+          • <b>D FF:</b> <code>Q(t+1) = D</code> (จำค่า D)<br>
+          • <b>JK FF:</b> <code>Q(t+1) = J·Q' + K'·Q</code> (J=1,K=1 -> Toggle)<br>
+          • <b>T FF:</b> <code>Q(t+1) = T $\oplus$ Q</code> (T=1 -> Toggle)<br>
+          • <b>SR FF:</b> S=1,R=1 ห้ามใช้ (Invalid State)
+        </p>
+      </div>
+
+      <div class="flash-card">
+        <div class="flash-header">📌 4. 5-Stage Pipeline Hazards</div>
+        <p style="font-size: 0.9rem; color: #cbd5e1; line-height: 1.6;">
+          • <b>สเตจ:</b> IF -> ID -> EX -> MEM -> WB<br>
+          • <b>Structural Hazard:</b> แย่งใช้ฮาร์ดแวร์เดียวกัน<br>
+          • <b>Data Hazard (RAW):</b> อ่านก่อนเขียนเสร็จ (แก้ด้วย Data Forwarding)<br>
+          • <b>Control Hazard:</b> กระโดดทิศทาง Branch (แก้ด้วย Branch Prediction/Flush)
+        </p>
+      </div>
+
+      <div class="flash-card">
+        <div class="flash-header">📌 5. EC-1 CPU 3-Stage FSM Cycle</div>
+        <p style="font-size: 0.9rem; color: #cbd5e1; line-height: 1.6;">
+          • <b>State S0:</b> Fetch Opcode (MAR<-PC, MDR<-RAM, IR<-MDR, PC++)<br>
+          • <b>State S1:</b> Decode & Fetch Operand (MAR<-IR[3:0], MDR<-RAM)<br>
+          • <b>State S2:</b> Execute & Writeback (ACC<-ACC+MDR หรือ RAM<-ACC)
+        </p>
+      </div>
+
+      <div class="flash-card">
+        <div class="flash-header">📌 6. Hardwired vs Microprogrammed</div>
+        <p style="font-size: 0.9rem; color: #cbd5e1; line-height: 1.6;">
+          • <b>Hardwired Control:</b> ต่อสายเกตตรง เร็วมาก แต่แก้ไขฮาร์ดแวร์ยาก เหมาะกับ RISC<br>
+          • <b>Microprogrammed Control:</b> เก็บไมโครโค้ดใน ROM Control Store ยืดหยุ่น แก้ไขง่าย เหมาะกับ CISC
+        </p>
+      </div>
+    </div>
+
+    <!-- PAGINATION -->
+    <div class="pagination-nav">
+      <a href="index.html" class="pagination-btn">⬅️ หน้าหลัก Index</a>
+      <a href="exam_practice_bank.html" class="pagination-btn">🎯 ไปทำชุดข้อสอบเก็ง 20 ข้อ ➡️</a>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>💻 ชุดฝึกเขียนโค้ด AVR Assembly 10 โจทย์เก็งข้อสอบตอนบ่าย (Assembly Practice Blueprint Bank)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- TOP NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">⚡ EMBEDDED EXAM HUB</a>
+    <ul class="nav-links">
+      <li><a href="index.html">หน้าหลัก Index</a></li>
+      <li><a href="last_minute_flashcards.html">🚀 สรุปย่อท่องจำ 10 นาที</a></li>
+      <li><a href="exam_practice_bank.html">🎯 เก็งข้อสอบ 20 ข้อ</a></li>
+      <li><a href="assembly_practice_bank.html" class="active">💻 10 โค้ดแอสเซมบลีบ่าย</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <header class="page-banner">
+      <span class="source-tag" style="background: rgba(74, 222, 128, 0.2); color: #4ade80; border-color: #4ade80;">🟢 PART 2: แม่แบบโค้ดเก็งข้อสอบเขียนโปรแกรมภาษา AVR Assembly (10 โจทย์ยอดฮิต)</span>
+      <h1 class="page-title">💻 ชุดฝึกเขียนโค้ด AVR Assembly 10 โจทย์เก็งข้อสอบตอนบ่าย พร้อมคำอธิบายโค้ดทีละบรรทัด</h1>
+      <p class="page-subtitle">
+        รวบรวมพิมพ์เขียวโครงสร้างโค้ดภาษาแอสเซมบลีสำหรับนำเข้าห้องสอบและดัดแปลงตอบโจทย์ข้อสอบเขียนโปรแกรมบ่ายวันนี้!
+      </p>
+    </header>
+
+    <!-- BLUEPRINT 1 -->
+    <div class="slide-card">
+      <div class="slide-header">
+        <span class="slide-num-badge">โจทย์ที่ 1: การนับเลขคู่ 0-20 ออกพอร์ต PORTB</span>
+        <h3 style="color: #fff;">1. โปรแกรมส่งค่าเลขคู่ 0, 2, 4, ..., 20 ออก PORTB</h3>
+      </div>
+      <pre style="background: #060b19; color: #4ade80; padding: 14px; border-radius: 10px; font-family: var(--font-code); font-size: 0.88rem; line-height: 1.6;">
+.INCLUDE "M328PDEF.INC"
+.ORG 0x0000
+
+LDI R16, HIGH(RAMEND)   ; 1. ตั้งค่า Stack Pointer
+OUT SPH, R16
+LDI R16, LOW(RAMEND)
+OUT SPL, R16
+
+LDI R16, 0xFF           ; 2. กำหนดให้ PORTB เป็นเอาต์พุตทั้งหมด
+OUT DDRB, R16
+
+CLR R17                 ; 3. ให้ R17 = 0 (ตัวนับเริ่มต้นเลขคู่)
+
+COUNT_EVEN_LOOP:
+    OUT PORTB, R17      ; ส่งค่าเลขคู่ออก PORTB
+    CPI R17, 20         ; เปรียบเทียบกับ 20
+    BREQ LOOP_RESET     ; ถ้าเท่ากับ 20 ให้กระโดดไปรีเซ็ต
+    SUBI R17, -2        ; R17 = R17 + 2 (บวกเพิ่มทีละ 2)
+    RJMP COUNT_EVEN_LOOP
+
+LOOP_RESET:
+    CLR R17             ; วนกลับไปเริ่มที่ 0 ใหม่
+    RJMP COUNT_EVEN_LOOP
+      </pre>
+    </div>
+
+    <!-- BLUEPRINT 2 -->
+    <div class="slide-card">
+      <div class="slide-header">
+        <span class="slide-num-badge">โจทย์ที่ 2: การอ่านปุ่มกดพอร์ต C ควบคุมไฟ LED พอร์ต B</span>
+        <h3 style="color: #fff;">2. อ่านสวิตช์ PINC บิต 0 (Active Low) กดแล้วไฟ PB5 สว่าง</h3>
+      </div>
+      <pre style="background: #060b19; color: #38bdf8; padding: 14px; border-radius: 10px; font-family: var(--font-code); font-size: 0.88rem; line-height: 1.6;">
+.INCLUDE "M328PDEF.INC"
+.ORG 0x0000
+
+SBI DDRB, 5             ; ตั้งขา PB5 เป็นเอาต์พุต (LED)
+CBI DDRC, 0             ; ตั้งขา PC0 เป็นอินพุต (Switch)
+SBI PORTC, 0            ; เปิด Pull-up Resistor บน PC0
+
+MAIN:
+    SBIC PINC, 0        ; ข้ามคำสั่งถัดไปถ้าสวิตช์ PC0 ถูกกด (เป็น 0)
+    RJMP LED_OFF        ; ถ้าไม่ได้กด (เป็น 1) กระโดดไปปิดไฟ
+LED_ON:
+    SBI PORTB, 5        ; ติดไฟ LED บน PB5
+    RJMP MAIN
+LED_OFF:
+    CBI PORTB, 5        ; ดับไฟ LED บน PB5
+    RJMP MAIN
+      </pre>
+    </div>
+
+    <!-- PAGINATION -->
+    <div class="pagination-nav">
+      <a href="exam_practice_bank.html" class="pagination-btn">⬅️ ย้อนกลับไปชุดข้อสอบ 20 ข้อ</a>
+      <a href="part2_openbook_printable.html" class="pagination-btn">📄 หน้าสรุปพิมพ์ A4 พกเข้าห้องสอบ ➡️</a>
+    </div>
+  </main>
+</body>
+</html>

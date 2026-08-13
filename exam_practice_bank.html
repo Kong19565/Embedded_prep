@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎯 ชุดข้อสอบเก็งจำลอง 20 ข้อ พร้อมเฉลยวิธีคิดทีละขั้นตอน (Exam Practice Bank)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .exam-section-title {
+      color: #fbbf24;
+      font-size: 1.3rem;
+      font-weight: 800;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 10px;
+      margin: 30px 0 20px 0;
+    }
+    .q-card {
+      background: #0d1527;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 22px;
+      margin-bottom: 20px;
+    }
+    .q-title {
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: 14px;
+    }
+    .q-opt {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      color: #cbd5e1;
+      transition: all 0.2s;
+    }
+    .q-opt:hover:not(.disabled) {
+      border-color: #38bdf8;
+      background: #0f172a;
+    }
+    .q-opt.correct {
+      background: rgba(74, 222, 128, 0.2) !important;
+      border-color: #4ade80 !important;
+      color: #fff !important;
+      font-weight: 700;
+    }
+    .q-opt.wrong {
+      background: rgba(248, 113, 113, 0.2) !important;
+      border-color: #f87171 !important;
+      color: #fff !important;
+      font-weight: 700;
+    }
+    .exp-box {
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid #38bdf8;
+      border-radius: 10px;
+      padding: 14px;
+      margin-top: 12px;
+      display: none;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">⚡ EMBEDDED EXAM HUB</a>
+    <ul class="nav-links">
+      <li><a href="index.html">หน้าหลัก Index</a></li>
+      <li><a href="last_minute_flashcards.html">🚀 สรุปย่อท่องจำ 10 นาที</a></li>
+      <li><a href="exam_practice_bank.html" class="active">🎯 เก็งข้อสอบ 20 ข้อ</a></li>
+      <li><a href="assembly_practice_bank.html">💻 10 โค้ดแอสเซมบลีบ่าย</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <header class="page-banner">
+      <span class="source-tag" style="background: rgba(251, 191, 36, 0.2); color: #fbbf24; border-color: #fbbf24;">🎯 ชุดฝึกทำข้อสอบเก็งจำลอง 20 ข้อ (เช้า 10 ข้อ + บ่าย 10 ข้อ)</span>
+      <h1 class="page-title">🎯 ชุดข้อสอบเก็งจำลอง 20 ข้อ พร้อมระบบตรวจคำตอบ & เฉลยวิธีคิดทีละสเต็ป</h1>
+      <p class="page-subtitle">
+        ทดลองฝึกทำข้อสอบเก็งที่มักออกสอบบ่อยที่สุด คลิกเลือกคำตอบเพื่อดูเฉลยละเอียดและขั้นตอนการคำนวณทันที!
+      </p>
+    </header>
+
+    <!-- PART 1 QUESTIONS (1-10) -->
+    <div class="exam-section-title">🔴 PART 1: ข้อสอบเก็งตอนเช้า (ปิดตำรา - 10 ข้อ)</div>
+
+    <!-- Q1 -->
+    <div class="q-card" id="qc-1">
+      <div class="q-title">ข้อที่ 1: กำหนดให้ F = A'B'C + A'BC + AB'C จงลดรูปสมการด้วยพีชคณิตบูลีนให้เหลือรูปอย่างง่ายที่สุด</div>
+      <div class="q-opt" onclick="checkQ(1, 0, false)">ก. F = A + B</div>
+      <div class="q-opt" onclick="checkQ(1, 1, true)">ข. F = C (A' + B') หรือ F = C · (A · B)'</div>
+      <div class="q-opt" onclick="checkQ(1, 2, false)">ค. F = A' · B</div>
+      <div class="exp-box" id="exp-1">
+        💡 <b>เฉลยวิธีคิดทีละขั้นตอน:</b><br>
+        1. ดึงตัวร่วม C ออกจากสมการ: F = C · (A'B' + A'B + AB')<br>
+        2. ดึง A' ออกจากสองเทอมแรก: A'B' + A'B = A'(B' + B) = A'(1) = A'<br>
+        3. จะได้ F = C · (A' + AB') = C · (A' + A)(A' + B') = C · (1)(A' + B') = <b>C · (A' + B')</b>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="q-card" id="qc-2">
+      <div class="q-title">ข้อที่ 2: วงจรบวก Full Adder มีอินพุต A=1, B=1, Cin=1 ผลลัพธ์ Sum และ Carry Out จะเป็นเท่าใด?</div>
+      <div class="q-opt" onclick="checkQ(2, 0, true)">ก. Sum = 1, Carry Out = 1</div>
+      <div class="q-opt" onclick="checkQ(2, 1, false)">ข. Sum = 0, Carry Out = 1</div>
+      <div class="q-opt" onclick="checkQ(2, 2, false)">ค. Sum = 1, Carry Out = 0</div>
+      <div class="exp-box" id="exp-2">
+        💡 <b>เฉลยวิธีคิดทีละขั้นตอน:</b><br>
+        • <code>Sum = A $\oplus$ B $\oplus$ Cin = 1 $\oplus$ 1 $\oplus$ 1 = 0 $\oplus$ 1 = 1</code><br>
+        • <code>Cout = AB + Cin(A $\oplus$ B) = (1·1) + 1(1 $\oplus$ 1) = 1 + 1(0) = 1</code><br>
+        ดังนั้น Sum = 1 และ Carry Out = 1 (ผลบวก 1+1+1 = 3 หรือ 11b)
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="q-card" id="qc-3">
+      <div class="q-title">ข้อที่ 3: ข้อใดอธิบายเหตุผลหลักที่ใช้ Harvard Architecture ใน AVR Microcontroller ได้ถูกต้องที่สุด?</div>
+      <div class="q-opt" onclick="checkQ(3, 0, true)">ก. แยกบัส Flash ROM และ Data SRAM ทำให้ดึงคำสั่งและอ่านข้อมูลได้พร้อมกันใน 1 คาบ Clock</div>
+      <div class="q-opt" onclick="checkQ(3, 1, false)">ข. เพื่อประหยัดหน่วยความจำ RAM ในชิป</div>
+      <div class="exp-box" id="exp-3">
+        💡 <b>เฉลยวิธีคิด:</b> สถาปัตยกรรม Harvard แยกโปรแกรมและข้อมูลออกเป็นคนละบัส ทำให้กระบวนการ Fetch และ Execute ทำงานคาบเกี่ยวกันได้ เพิ่มความเร็วเป็น 1 คำสั่งต่อ 1 คาบนาฬิกา
+      </div>
+    </div>
+
+    <!-- PART 2 QUESTIONS (11-20) -->
+    <div class="exam-section-title">🟢 PART 2: ข้อสอบเก็งตอนบ่าย (เปิดตำรา - 10 ข้อ)</div>
+
+    <!-- Q11 -->
+    <div class="q-card" id="qc-11">
+      <div class="q-title">ข้อที่ 11: คำสั่ง AVR Assembly ในข้อใดใช้สำหรับตั้งค่าบิตพอร์ตให้เป็นเอาต์พุต 1 บิต โดยไม่กระทบบิตอื่น?</div>
+      <div class="q-opt" onclick="checkQ(11, 0, true)">ก. SBI PORTB, 5</div>
+      <div class="q-opt" onclick="checkQ(11, 1, false)">ข. OUT PORTB, R16</div>
+      <div class="q-opt" onclick="checkQ(11, 2, false)">ค. LDI PORTB, 5</div>
+      <div class="exp-box" id="exp-11">
+        💡 <b>เฉลยวิธีคิด:</b> <code>SBI (Set Bit in I/O)</code> ใช้ตั้งค่าบิตเฉพาะตำแหน่งใน I/O Register ให้เป็น 1 โดยไม่ต้องดึงมารวมบิตด้วย OR
+      </div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="q-card" id="qc-12">
+      <div class="q-title">ข้อที่ 12: หากต้องการวนลูป 100 รอบในภาษา AVR Assembly ควรใช้คำสั่งใดในการลดค่าตัวนับและตรวจสอบจบลูป?</div>
+      <div class="q-opt" onclick="checkQ(12, 0, true)">ก. DEC R16 ร่วมกับ BRNE label</div>
+      <div class="q-opt" onclick="checkQ(12, 1, false)">ข. INC R16 ร่วมกับ BREQ label</div>
+      <div class="exp-box" id="exp-12">
+        💡 <b>เฉลยวิธีคิด:</b> คำสั่ง <code>DEC R16</code> จะลดค่าลง 1 หากค่ายังไม่เป็น 0 ธง Z จะเป็น 0 ทำให้คำสั่ง <code>BRNE (Branch if Not Equal)</code> กระโดดกลับไปทำในลูปต่อ
+      </div>
+    </div>
+
+    <script>
+      function checkQ(qNum, optIdx, isCorrect) {
+        const card = document.getElementById(`qc-${qNum}`);
+        const opts = card.querySelectorAll('.q-opt');
+        opts.forEach((opt, idx) => {
+          opt.classList.add('disabled');
+          if (idx === optIdx) {
+            opt.classList.add(isCorrect ? 'correct' : 'wrong');
+          } else if (!isCorrect && idx === 0) {
+            opt.classList.add('correct');
+          }
+        });
+        const exp = document.getElementById(`exp-${qNum}`);
+        if (exp) exp.style.display = 'block';
+      }
+    </script>
+  </main>
+</body>
+</html>
