@@ -590,3 +590,72 @@ pre {
   font-size: 1.05rem;
   margin-bottom: 12px;
 }
+
+
+/* PRINT & PAGE-BREAK PROTECTION RULES */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 9pt !important;
+  }
+  .navbar, .btn-print, .pagination-nav, footer, .no-print {
+    display: none !important;
+  }
+  .container {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .print-card, .slide-card {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    margin-bottom: 14px !important;
+    border: 1.5px solid #000000 !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+  }
+  .print-header, .slide-header {
+    border-bottom: 2px solid #000000 !important;
+    color: #000000 !important;
+  }
+  table, table.data-table, table.data-tbl, table.data {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    border: 1px solid #000000 !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    margin: 10px 0 !important;
+    font-size: 8.5pt !important;
+  }
+  table tr, table.data-table tr, table.data-tbl tr, table.data tr {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+  th {
+    background: #e2e8f0 !important;
+    color: #000000 !important;
+    border: 1px solid #000000 !important;
+  }
+  td {
+    border: 1px solid #000000 !important;
+    color: #000000 !important;
+  }
+  pre, pre.code {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    background: #f8fafc !important;
+    color: #000000 !important;
+    border: 1px solid #000000 !important;
+    font-size: 8pt !important;
+  }
+  h1, h2, h3, h4 {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+  .page-break {
+    page-break-before: always !important;
+    break-before: always !important;
+  }
+}
